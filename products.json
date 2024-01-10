@@ -1,0 +1,65 @@
+[
+  {
+    "id": 1,
+    "title": "ZAPATILLAS RUNNING ADIDAS DURAMO SL 10 NEGRA",
+    "description": "Mantené tus pies cómodos y tu estilo impecable en todo momento con estas zapatillas ADIDAS. Usalas con tus shorts de running favoritos para lucir un look deportivo y casual. El exterior de malla ayuda a mantener tus pies frescos, mientras que la amortiguación ultraliviana te ofrece soporte en cada uno de tus pasos. Hechas con una serie de materiales reciclados, su exterior incorpora al menos un 50 % de contenido reciclado. Este producto representa solo una de nuestras soluciones para acabar con los residuos plásticos.",
+    "price": 74999,
+    "thumbnail": "No hay imagen",
+    "code": "SKU 100010GW8336001",
+    "stock": 9
+  },
+  {
+    "id": 2,
+    "title": "Nuevo Nombre del Producto",
+    "description": "Nueva Descripción del Producto",
+    "price": 9999,
+    "thumbnail": "Nueva URL de la Imagen",
+    "code": "Nuevo Código del Producto",
+    "stock": 20
+  },
+  {
+    "id": 3,
+    "title": "OJOTAS LACOSTE CROCO 119 VERDE",
+    "description": "Estilo veraniego perfecto en estas ojotas discretas y listas para el resort inspirados en la herencia del tenis de LACOSTE. El diseño está hecho de caucho repelente al agua y cuenta con una plantilla moldeada para garantizar la comodidad. Las suelas presentan detalles de líneas diagonales que hacen referencia a la cancha de tenis y maximizan el agarre antideslizante. La marca de cocodrilo de gran tamaño en colores contrastantes agrega un acabado sobresaliente.",
+    "price": 55000,
+    "thumbnail": "No hay imagen",
+    "code": "SKU 40001MA018BR1R7",
+    "stock": 10
+  },
+  {
+    "id": 4,
+    "title": "CAMPERA ADIDAS RUNNING OWN THE RUN NEGRA",
+    "description": "Rétate a correr bajo la lluvia y termina sintiéndote fuerte, seguro y listo para lo que viene. Ponete esta campera de running ADIDAS para sentir el soporte que necesitas en el camino. Repele el aire frío y la lluvia ligera mientras te permite moverte con libertad. Los detalles reflectantes te hacen más visible en condiciones de poca luz. Regular fit. Cuello alto con capucha. Puños elastizados. Bolsillos laterales con pequeño bolsillo interno con cierre. Cintura con cordón de ajuste. Logo ADIDAS y detalles en estampado reflectivos.",
+    "price": 87.999,
+    "thumbnail": "No hay imagen",
+    "code": "SKU 100020H58592001",
+    "stock": 3
+  },
+  {
+    "id": 5,
+    "title": "MEDIAS SOQUETES PACK X3 ADIDAS LIGHT",
+    "description": "Caminá con comodidad con este trío de medias tobilleras confeccionadas en un tejido fino y ligero. Incorporan un refuerzo tejido en el arco que aporta mayor sujeción y un mejor ajuste. El logotipo de ADIDAS bordado debajo del puño cierra el look.",
+    "price": 7.499,
+    "thumbnail": "No hay Imagen",
+    "code": "SKU 100040DZ9400001",
+    "stock": 15
+  },
+  {
+    "id": 6,
+    "title": "remera",
+    "description": "remera blanca algodon",
+    "price": 12.339,
+    "thumbnail": "no hay imagen",
+    "code": "SKU 4544145",
+    "stock": 5
+  },
+  {
+    "id": 7,
+    "title": "remera",
+    "description": "remfdfdfdlgodon",
+    "price": 12.339,
+    "thumbnail": "no hay imagen",
+    "code": "SKU 454fdfd4145",
+    "stock": 5
+  }
+]
