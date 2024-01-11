@@ -17,17 +17,17 @@ app.get('/products', async (req, res) => {
 
         if (limit) {
             const limitedProducts = products.slice(0, limit);
-            const htmlOutput = limitedProducts.map(product => `<p>${JSON.stringify(product)}</p>`).join('');
-            res.send(htmlOutput);
+            res.json(limitedProducts);
         } else {
-            const htmlOutput = products.map(product => `<p>${JSON.stringify(product)}</p>`).join('');
-            res.send(htmlOutput);
+            res.json(products);
         }
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error al obtener productos' });
     }
 });
+
+app.set('json spaces', 2);
 
 app.get('/products/:pid', async (req, res) => {
     try {
