@@ -1,0 +1,81 @@
+[
+  {
+    "id": 1,
+    "title": "ZAPATILLAS RUNNING ADIDAS DURAMO SL 10 NEGRA",
+    "description": "Mantené tus pies cómodos y tu estilo impecable en todo momento con estas zapatillas ADIDAS. Usalas con tus shorts de running favoritos para lucir un look deportivo y casual. El exterior de malla ayuda a mantener tus pies frescos, mientras que la amortiguación ultraliviana te ofrece soporte en cada uno de tus pasos. Hechas con una serie de materiales reciclados, su exterior incorpora al menos un 50 % de contenido reciclado. Este producto representa solo una de nuestras soluciones para acabar con los residuos plásticos.",
+    "price": 74999,
+    "thumbnail": "No hay imagen",
+    "code": "SKU 100010GW8336001",
+    "stock": 9,
+    "status": true,
+    "category": "Calzado"
+  },
+  {
+    "id": 2,
+    "title": "ZAPATILLAS DE BASQUET UNDER ARMOUR CURRY 10 DUB NATION AZUL",
+    "description": "Cambie de dirección, rápido. La amortiguación UA Flow no contiene goma, lo que hace que estos zapatos sean livianos y con un agarre ridículo. La parte superior UA Warp funciona como mini cinturones de seguridad que te sujetan. Juntos, obtienes velocidad y control para detenerte y arrancar. La tecnología superior UA WARP proporciona mayor comodidad y control durante los movimientos dinámicos del baloncesto. Plantilla de mezcla de TPE con ajuste de baja compresión para retorno de energía y longevidad. La tecnología de amortiguación UA Flow es súper ligera, rebota y proporciona un agarre increíble. La caña interna en la parte media del pie añade soporte y estabilidad a cada movimiento. La duradera suela UA Flow proporciona una mejor sensación en la cancha para que puedas cortar y parar/empezar más rápido que nunca.",
+    "price": 199999,
+    "thumbnail": "No hay imagen",
+    "code": "SKU 700013026949400",
+    "stock": 4,
+    "status": true,
+    "category": "Calzado"
+  },
+  {
+    "id": 3,
+    "title": "OJOTAS LACOSTE CROCO 119 VERDE",
+    "description": "Estilo veraniego perfecto en estas ojotas discretas y listas para el resort inspirados en la herencia del tenis de LACOSTE. El diseño está hecho de caucho repelente al agua y cuenta con una plantilla moldeada para garantizar la comodidad. Las suelas presentan detalles de líneas diagonales que hacen referencia a la cancha de tenis y maximizan el agarre antideslizante. La marca de cocodrilo de gran tamaño en colores contrastantes agrega un acabado sobresaliente.",
+    "price": 55000,
+    "thumbnail": "No hay imagen",
+    "code": "SKU 40001MA018BR1R7",
+    "stock": 10,
+    "status": true,
+    "category": "Calzado"
+  },
+  {
+    "id": 4,
+    "title": "CAMPERA ADIDAS RUNNING OWN THE RUN NEGRA",
+    "description": "Rétate a correr bajo la lluvia y termina sintiéndote fuerte, seguro y listo para lo que viene. Ponete esta campera de running ADIDAS para sentir el soporte que necesitas en el camino. Repele el aire frío y la lluvia ligera mientras te permite moverte con libertad. Los detalles reflectantes te hacen más visible en condiciones de poca luz. Regular fit. Cuello alto con capucha. Puños elastizados. Bolsillos laterales con pequeño bolsillo interno con cierre. Cintura con cordón de ajuste. Logo ADIDAS y detalles en estampado reflectivos.",
+    "price": 87.999,
+    "thumbnail": "No hay imagen",
+    "code": "SKU 100020H58592001",
+    "stock": 3,
+    "status": true,
+    "category": "Camperas"
+  },
+  {
+    "id": 5,
+    "title": "MEDIAS SOQUETES PACK X3 ADIDAS LIGHT",
+    "description": "Caminá con comodidad con este trío de medias tobilleras confeccionadas en un tejido fino y ligero. Incorporan un refuerzo tejido en el arco que aporta mayor sujeción y un mejor ajuste. El logotipo de ADIDAS bordado debajo del puño cierra el look.",
+    "price": 7.499,
+    "thumbnails": [
+      "C:/Users/Asus/Desktop/pruebas-backend/100040dz9400001-1.jpg",
+      "C:/Users/Asus/Desktop/pruebas-backend/100040dz9400001-2.jpg"
+    ],
+    "code": "SKU 100040DZ9400001",
+    "stock": 15,
+    "status": true,
+    "category": "Accesorios"
+  },
+  {
+    "id": 6,
+    "title": "Nuevo Producto",
+    "description": "Descripción del nuevo producto",
+    "price": 19.99,
+    "thumbnail": "No hay Imagen",
+    "code": "ABC12dsds3",
+    "stock": 10,
+    "status": true,
+    "category": "Ropa interior"
+  },
+  {
+    "id": 7,
+    "title": "Nuevo Producto",
+    "description": "Descripción del nuevo producto",
+    "price": 60000,
+    "code": "ABC1dg23",
+    "stock": 11,
+    "status": true,
+    "category": "Calzado"
+  }
+]
