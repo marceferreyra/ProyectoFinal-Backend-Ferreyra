@@ -54,7 +54,7 @@ productRouter.post('/api/products', async (req, res) => {
     } catch (error) {
        if (error.message === "Todos los campos son obligatorios") {
     res.status(400).json({ error: error.message });
-        } else if (error.message.includes('Ya existe un producto con el código')) {
+        } else if (error.message.includes(`Ya existe un producto con el código ${code}`)) {
             res.status(400).json({ error: error.message });
         } else {
             console.error(error);
@@ -65,7 +65,7 @@ productRouter.post('/api/products', async (req, res) => {
 
 
 
-productRouter.delete('/api/product/:pid', async (req, res) => {
+productRouter.delete('/api/products/:pid', async (req, res) => {
     try {
         const productId = parseInt(req.params.pid);
 
@@ -78,7 +78,7 @@ productRouter.delete('/api/product/:pid', async (req, res) => {
     }
 });
 
-productRouter.put('/api/product/:pid', async (req, res) => {
+productRouter.put('/api/products/:pid', async (req, res) => {
     try {
         const productId = parseInt(req.params.pid);
         const updatedProduct = req.body;

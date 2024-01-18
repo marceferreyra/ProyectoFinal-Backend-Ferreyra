@@ -73,9 +73,25 @@
     "title": "Nuevo Producto",
     "description": "Descripción del nuevo producto",
     "price": 60000,
-    "code": "ABC1dg23",
-    "stock": 11,
+    "code": "ABCSS1dg23",
+    "thumbnail": [],
+    "stock": 18,
     "status": true,
-    "category": "Calzado"
+    "category": "Caado"
+  },
+  {
+    "title": "Nuevo Producto",
+    "description": "Descripción del nuevo producto",
+    "price": 60000,
+    "code": "4567",
+    "thumbnail": [
+      "ruta.jpg",
+      "ruta1.jpg",
+      "ruta3.jpg"
+    ],
+    "stock": 18,
+    "status": true,
+    "category": "Calzado",
+    "id": 8
   }
 ]

@@ -25,16 +25,16 @@ class ProductManager {
         }
     }
 
-    async addProduct(title, description, price, thumbnail, code, stock) {
+    async addProduct(title, description, price, thumbnail, code, stock, status, category) {
         try {
-            if (!title || !description || !price || !thumbnail || !code || !stock) {
+            if (!title || !description || !price || !thumbnail || !code || !stock || !status || !category) {
                 console.log("Todos los campos son obligatorios");
                 return;
             }
-
+    
             let existingProducts = await this.getProducts();
             const newId = existingProducts.length > 0 ? existingProducts[existingProducts.length - 1].id + 1 : 1;
-
+    
             if (existingProducts.some(p => p.code === code)) {
                 console.log(`Ya existe un producto con el código ${code}`);
             } else {
@@ -43,23 +43,27 @@ class ProductManager {
                     title,
                     description,
                     price,
-                    thumbnail,
                     code,
-                    stock
+                    stock,
+                    thumbnails: [thumbnail],
+                    status: true, 
+                    category,
                 };
-
+    
+                if (existingProducts.some(p => p.id === newId && p.thumbnails)) {
+                    const existingProduct = existingProducts.find(p => p.id === newId);
+                    newProduct.thumbnails = [...existingProduct.thumbnails, thumbnail];
+                }
+    
                 existingProducts.push(newProduct);
-
+    
                 await fs.writeFile(this.path, JSON.stringify(existingProducts, null, 2), 'utf-8');
                 console.log(`Producto ${title} agregado correctamente.`);
             }
         } catch (error) {
             console.error('Error:', error);
         }
-        return;
     }
-    
-    
 
     async getProductById(id) {
         try {
@@ -115,7 +119,7 @@ class ProductManager {
         } catch (error) {
             console.error('Error:', error);
         }
-    }    
+    }
 }
 
 const productManager = new ProductManager();
