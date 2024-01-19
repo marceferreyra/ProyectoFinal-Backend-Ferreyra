@@ -32,7 +32,7 @@ cartRouter.get('/:cid', async (req, res) => {
     }
 });
 
-cartRouter.post('/:cid/product/:pid', async (req, res) => {
+cartRouter.post('/:cid/products/:pid', async (req, res) => {
     try {
         const cartId = parseInt(req.params.cid);
         const productId = parseInt(req.params.pid);
@@ -46,7 +46,7 @@ cartRouter.post('/:cid/product/:pid', async (req, res) => {
     }
 });
 
-cartRouter.delete('/:cid/product/:pid', async (req, res) => {
+cartRouter.delete('/:cid/products/:pid', async (req, res) => {
     try {
         const cartId = parseInt(req.params.cid);
         const productId = parseInt(req.params.pid);

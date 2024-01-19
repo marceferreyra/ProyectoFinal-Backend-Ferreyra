@@ -46,55 +46,57 @@ productRouter.get('/api/products/:pid', async (req, res) => {
 
 
 productRouter.post('/api/products', async (req, res) => {
-    try {
-        const { title, description, price, thumbnail, code, stock, status, category } = req.body;
+    const { title, description, price, thumbnail, code, stock, status, category } = req.body;
 
-        await productManager.addProduct(title, description, price, thumbnail, code, stock, status, category);
-        res.json({ message: 'Producto agregado correctamente.' });
-    } catch (error) {
-       if (error.message === "Todos los campos son obligatorios") {
-    res.status(400).json({ error: error.message });
-        } else if (error.message.includes(`Ya existe un producto con el código ${code}`)) {
-            res.status(400).json({ error: error.message });
+    try {
+        const result = await productManager.addProduct(title, description, price, thumbnail, code, stock, status, category);
+
+        if (result.error) {
+            res.status(400).json({ error: result.error });
         } else {
-            console.error(error);
-            res.status(500).json({ error: 'Error al agregar el producto' });
+            res.status(200).json({ message: result.message });
         }
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Error interno del servidor.' });
     }
 });
 
 
 
 productRouter.delete('/api/products/:pid', async (req, res) => {
+    const productId = parseInt(req.params.pid);
+
     try {
-        const productId = parseInt(req.params.pid);
+        const result = await productManager.deleteProduct(productId);
 
-        await productManager.deleteProduct(productId);
-
-        res.json({ message: `Producto con ID ${productId} eliminado correctamente.` });
+        if (result.error) {
+            res.status(404).json({ error: result.error });
+        } else {
+            res.status(200).json({ message: result.message });
+        }
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Error al eliminar el producto' });
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Error interno del servidor.' });
     }
 });
 
+
 productRouter.put('/api/products/:pid', async (req, res) => {
+    const productId = parseInt(req.params.pid);
+    const updatedProduct = req.body;
+
     try {
-        const productId = parseInt(req.params.pid);
-        const updatedProduct = req.body;
+        const result = await productManager.updateProduct(productId, updatedProduct);
 
-        await productManager.updateProduct(productId, updatedProduct);
-
-        res.json({ message: `Producto con ID ${productId} actualizado correctamente.` });
-    } catch (error) {
-        if (error.message === 'No se puede modificar el ID del producto') {
-            res.status(400).json({ error: 'No se puede modificar el ID del producto' });
-        } else if (error.message.startsWith('No se encontró ningún producto con el ID')) {
-            res.status(404).json({ error: error.message });
+        if (result.error) {
+            res.status(404).json({ error: result.error });
         } else {
-            console.error(error);
-            res.status(500).json({ error: 'Error al actualizar el producto' });
+            res.status(200).json({ message: result.message });
         }
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Error interno del servidor.' });
     }
 });
 

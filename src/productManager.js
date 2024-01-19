@@ -28,15 +28,16 @@ class ProductManager {
     async addProduct(title, description, price, thumbnail, code, stock, status, category) {
         try {
             if (!title || !description || !price || !thumbnail || !code || !stock || !status || !category) {
-                console.log("Todos los campos son obligatorios");
-                return;
+                return { error: "Todos los campos son obligatorios" };
             }
-    
+
             let existingProducts = await this.getProducts();
             const newId = existingProducts.length > 0 ? existingProducts[existingProducts.length - 1].id + 1 : 1;
-    
+
             if (existingProducts.some(p => p.code === code)) {
-                console.log(`Ya existe un producto con el código ${code}`);
+                console.log(`Ya existe un producto con el código ${code}`)
+                return { error: `Ya existe un producto con el código ${code}` };
+
             } else {
                 let newProduct = {
                     id: newId,
@@ -46,22 +47,24 @@ class ProductManager {
                     code,
                     stock,
                     thumbnails: [thumbnail],
-                    status: true, 
+                    status: true,
                     category,
                 };
-    
+
                 if (existingProducts.some(p => p.id === newId && p.thumbnails)) {
                     const existingProduct = existingProducts.find(p => p.id === newId);
                     newProduct.thumbnails = [...existingProduct.thumbnails, thumbnail];
                 }
-    
+
                 existingProducts.push(newProduct);
-    
+
                 await fs.writeFile(this.path, JSON.stringify(existingProducts, null, 2), 'utf-8');
-                console.log(`Producto ${title} agregado correctamente.`);
+                console.log(`Producto ${title} agregado correctamente.`)
+                return { message: `Producto ${title} agregado correctamente.` };
             }
         } catch (error) {
             console.error('Error:', error);
+            return { error: 'Error interno del servidor.' };
         }
     }
 
@@ -92,13 +95,16 @@ class ProductManager {
             if (indexToRemove !== -1) {
                 const removedProduct = existingProducts.splice(indexToRemove, 1);
                 await fs.writeFile(this.path, JSON.stringify(existingProducts, null, 2), 'utf-8');
-                console.log(`Producto con ID ${id} eliminado correctamente.`);
-                console.log('Producto eliminado:', removedProduct[0]);
+                return {
+                    message: `Producto con ID ${id} eliminado correctamente.`,
+                    removedProduct: removedProduct[0],
+                };
             } else {
-                console.log(`No se encontró ningún producto con el ID ${id} para eliminar`);
+                return { error: `No se encontró ningún producto con el ID ${id} para eliminar` };
             }
         } catch (error) {
             console.error('Error:', error);
+            return { error: 'Error interno del servidor.' };
         }
     }
 
@@ -108,16 +114,24 @@ class ProductManager {
             const indexToUpdate = existingProducts.findIndex(p => p.id === id);
 
             if (indexToUpdate !== -1) {
-                updatedProduct.id = id;
-                existingProducts[indexToUpdate] = updatedProduct;
+                if (id !== updatedProduct.id) {
+                    return { error: "No se puede modificar el ID del producto." };
+                }
+
+                existingProducts[indexToUpdate] = {
+                    ...existingProducts[indexToUpdate],
+                    ...updatedProduct,
+                    id: id,
+                };
 
                 await fs.writeFile(this.path, JSON.stringify(existingProducts, null, 2), 'utf-8');
-                console.log(`Producto con ID ${id} actualizado correctamente.`);
+                return { message: `Producto con ID ${id} actualizado correctamente.` };
             } else {
-                console.log(`No se encontró ningún producto con el ID ${id}`);
+                return { error: `No se encontró ningún producto con el ID ${id}` };
             }
         } catch (error) {
             console.error('Error:', error);
+            return { error: 'Error interno del servidor.' };
         }
     }
 }

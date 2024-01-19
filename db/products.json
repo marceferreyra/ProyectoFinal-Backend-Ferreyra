@@ -80,6 +80,7 @@
     "category": "Caado"
   },
   {
+    "id": 8,
     "title": "Nuevo Producto",
     "description": "Descripción del nuevo producto",
     "price": 60000,
@@ -91,7 +92,38 @@
     ],
     "stock": 18,
     "status": true,
-    "category": "Calzado",
-    "id": 8
+    "category": "Calzado"
+  },
+  {
+    "id": 9,
+    "title": "Nuevo Producto",
+    "description": "Descripción del nuevo producto",
+    "price": 60000,
+    "code": "45678",
+    "stock": 18,
+    "thumbnails": [
+      [
+        "ruta.jpg",
+        "ruta1.jpg",
+        "ruta3.jpg"
+      ]
+    ],
+    "status": true,
+    "category": "Calzado"
+  },
+  {
+    "id": 10,
+    "title": "otro Producto",
+    "description": "Descripción del nuevo producto",
+    "price": 60000,
+    "code": "3456789",
+    "thumbnail": [
+      "ruta.jpg",
+      "ruta1.jpg",
+      "ruta3.jpg"
+    ],
+    "stock": 8,
+    "status": true,
+    "category": "Calzado"
   }
 ]
