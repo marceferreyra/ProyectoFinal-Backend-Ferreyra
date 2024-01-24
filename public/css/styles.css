@@ -1,0 +1,16 @@
+.card {
+    display: flex;    
+    width: 400px;
+    margin: 20px;
+}
+
+.card-deck{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;    
+}
+
+.card-img-top {
+    height: 250px;
+    object-fit: contain;
+}
