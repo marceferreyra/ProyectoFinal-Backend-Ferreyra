@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Products</title>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="mt-4">Lista de productos</h1>
+      
+        {{#if products.length}}
+        <div class="card-deck">
+            {{#each products}}
+            <div class="card" id="{{this.id}}">
+                {{#each thumbnails}}
+                <img src="{{this}}" class="card-img-top" alt="{{../title}}">
+                {{/each}}
+                <div class="card-body">
+                    <h5 class="card-title">{{title}}</h5>
+                    <p class="card-text">{{description}}</p>
+                    <p class="card-text">Precio: ${{price}}</p>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+        {{else}}
+        <p class="mt-4">No hay productos disponibles.</p>
+        {{/if}}
+
+        <form id="addProductForm">
+            <div>
+                <label for="productName">Nombre del Producto:</label>
+                <input type="text" id="productName" name="productName" required>
+                <label for="productDescription">Descripción del producto</label>
+                <input type="text" id="productDescription" name="productDescription" required>
+                <label for="productPrice">Precio: $ </label>
+                <input type="text" id="productPrice" name="productPrice" required>
+                <button type="submit">Agregar Producto</button>
+            </div>
+
+        </form>
+
+        <form id="deleteProductForm">
+            <label for="productId">ID del Producto a Eliminar:</label>
+            <input type="number" id="productId" name="productId" required>
+            <button type="submit">Eliminar Producto</button>
+        </form>
+    </div>
+
+    <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+    <script>
+        const socket = io.connect('http://localhost:8080');
+
+        socket.on('updateProducts', (updatedProduct) => {
+            console.log('Productos actualizados:', updatedProduct);
+
+            const cardDeck = document.querySelector('.card-deck');
+
+            if (updatedProduct.deletedProductId) {
+                const deletedProductId = updatedProduct.deletedProductId;
+                const productElement = document.getElementById(deletedProductId);
+
+                if (productElement) {
+                    productElement.remove();
+                    console.log('Producto eliminado:', deletedProductId);
+                }
+            } else {
+                const existingProductElement = document.getElementById(updatedProduct.id);
+
+                if (existingProductElement) {
+                    existingProductElement.querySelector('.card-title').textContent = updatedProduct.title;
+                    existingProductElement.querySelector('.card-text').textContent = updatedProduct.description;
+                    existingProductElement.querySelector('.card-price').textContent = `Precio: $${updatedProduct.price}`;
+                } else {
+                    const newProductCard = document.createElement('div');
+                    newProductCard.className = 'card';
+                    newProductCard.id = updatedProduct.id;
+
+                    newProductCard.innerHTML = `
+                        <img src="${updatedProduct.thumbnail}" class="card-img-top" alt="${updatedProduct.title}">
+                        <div class="card-body">
+                            <h5 class="card-title">${updatedProduct.title}</h5>
+                            <p class="card-text">${updatedProduct.description}</p>
+                            <p class="card-text card-price">Precio: $${updatedProduct.price}</p>
+                        </div>
+                    `;
+
+                    cardDeck.appendChild(newProductCard);
+                    console.log('Producto agregado:', updatedProduct.id);
+                }
+            }
+        });
+
+        document.getElementById('addProductForm').addEventListener('submit', (event) => {
+            event.preventDefault();
+            const productName = document.getElementById('productName').value;
+            const productDescription = document.getElementById('productDescription').value;
+            const productPrice = document.getElementById('productPrice').value;
+
+            const newProduct = {
+                id: Date.now(),
+                title: productName,
+                description: productDescription,
+                price: productPrice,
+                thumbnail: "",
+            };
+
+            socket.emit('productAdded', newProduct);
+        });
+
+        document.getElementById('deleteProductForm').addEventListener('submit', (event) => {
+            event.preventDefault();
+            const productId = document.getElementById('productId').value;
+            socket.emit('productDeleted', productId);
+        });
+    </script>
+</body>
+
+</html>

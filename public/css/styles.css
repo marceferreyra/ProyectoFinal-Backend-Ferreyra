@@ -14,3 +14,15 @@
     height: 250px;
     object-fit: contain;
 }
+
+#addProductForm {
+    display: flex;
+    flex-direction: row;
+    margin: 20px;
+}
+
+#deleteProductForm {
+    display: flex;
+    flex-direction: row;
+    margin: 20px;
+}
