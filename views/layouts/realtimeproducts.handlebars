@@ -10,7 +10,7 @@
 <body>
     <div class="container">
         <h1 class="mt-4">Lista de productos</h1>
-      
+
         {{#if products.length}}
         <div class="card-deck">
             {{#each products}}
@@ -30,24 +30,33 @@
         <p class="mt-4">No hay productos disponibles.</p>
         {{/if}}
 
-        <form id="addProductForm">
-            <div>
-                <label for="productName">Nombre del Producto:</label>
-                <input type="text" id="productName" name="productName" required>
-                <label for="productDescription">Descripción del producto</label>
-                <input type="text" id="productDescription" name="productDescription" required>
-                <label for="productPrice">Precio: $ </label>
-                <input type="text" id="productPrice" name="productPrice" required>
-                <button type="submit">Agregar Producto</button>
-            </div>
+        <div id="productForm">
+            <form id="addProductForm">
+                <div id="labelAddForm">
+                    <div>
+                        <label for="productName">Nombre del Producto:</label>
+                        <input type="text" id="productName" name="productName" required>
+                    </div>
+                    <div>
+                        <label for="productDescription">Descripción del producto</label>
+                        <input type="text" id="productDescription" name="productDescription" required>
+                    </div>
+                    <div>
+                        <label for="productPrice">Precio: $ </label>
+                        <input type="text" id="productPrice" name="productPrice" required>
+                    </div>
+                    <button type="submit">Agregar Producto</button>
+                </div>
+            </form>
 
-        </form>
-
-        <form id="deleteProductForm">
-            <label for="productId">ID del Producto a Eliminar:</label>
-            <input type="number" id="productId" name="productId" required>
-            <button type="submit">Eliminar Producto</button>
-        </form>
+            <form id="deleteProductForm">
+                <div id="labelDeleteForm">
+                    <label for="productId">ID del Producto a Eliminar:</label>
+                    <input type="number" id="productId" name="productId" required>
+                    <button type="submit">Eliminar Producto</button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>

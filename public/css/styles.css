@@ -1,13 +1,13 @@
 .card {
-    display: flex;    
+    display: flex;
     width: 400px;
     margin: 20px;
 }
 
-.card-deck{
+.card-deck {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-around;    
+    justify-content: space-around;
 }
 
 .card-img-top {
@@ -25,4 +25,21 @@
     display: flex;
     flex-direction: row;
     margin: 20px;
+}
+
+#labelAddForm {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end
+}
+
+label {
+    padding: 10px
+}
+
+#productForm {
+    display: flex;
+    justify-content: space-around;
+    margin-right: 20px;
+    flex-wrap: wrap;
 }
