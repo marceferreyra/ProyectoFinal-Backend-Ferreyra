@@ -1,6 +1,6 @@
 const express = require('express');
 const productRouter = require('./routes/productsMongo.routes.js');
-// const cartRouter = require('./routes/carts.routes.js');
+const cartRouter = require('./routes/cartsMongo.routes.js');
 // const homeRouter = require(`./routes/home.routes.js`)
 const realTimeProductsRouter = require('./routes/realTimeProducts.routes.js')
 const handlebars = require(`express-handlebars`)
@@ -19,7 +19,7 @@ app.use(express.json());
 
 app.use(bodyParser.json());
 app.use(productRouter);
-//app.use('/api/carts', cartRouter);
+app.use('/api/carts', cartRouter);
 //app.use(`/home`, homeRouter);
 app.use('/realtimeproducts', realTimeProductsRouter);
 

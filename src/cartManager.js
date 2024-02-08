@@ -36,17 +36,15 @@ class CartManager {
 
     async createCart() {
         try {
-            const carts = await this.getCarts();
-            const newCartId = carts.length > 0 ? carts[carts.length - 1].id + 1 : 1;
-
-            const newCart = {
-                id: newCartId,
+            const carts = await Cart.find();
+            const newCartId = carts.length > 0 ? carts[carts.length - 1].cartId + 1 : 1;
+    
+            const newCart = await Cart.create({
+                cartId: newCartId,
                 products: [],
-            };
-
-            carts.push(newCart);
-            await this.saveCarts(carts);
-
+            });
+    
+            console.log('Carrito creado:', newCart);
             return newCart;
         } catch (error) {
             console.error('Error al crear el carrito:', error);

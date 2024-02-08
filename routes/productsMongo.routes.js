@@ -1,7 +1,12 @@
 const express = require('express');
 const productManagerMongo = require('../dao/productManagerMongo');
+const mongoose = require('mongoose')
 
 const productRouter = express.Router();
+
+productRouter.get(`/`, (req, res) => {
+    res.send(`Bienvenidos a nuestro e-commerce`);
+});
 
 productRouter.get('/api/products', async (req, res) => {
     try {
