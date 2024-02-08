@@ -5,8 +5,15 @@ const productRouter = express.Router();
 
 productRouter.get('/api/products', async (req, res) => {
     try {
-        const products = await productManagerMongo.getProducts();
-        res.status(200).json(products);
+        const limit = parseInt(req.query.limit, 10);
+        
+        if (limit) {
+            const products = await productManagerMongo.getProducts(limit);
+            res.status(200).json(products);
+        } else {
+            const products = await productManagerMongo.getProducts();
+            res.status(200).json(products);
+        }
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error al obtener productos desde MongoDB.' });

@@ -13,6 +13,32 @@ class ProductManagerMongo {
             throw error;
         }
     }
+    
+    async getProductById(id) {
+        try {
+            const product = await Product.findById(id);
+            if (product) {
+                console.log(`Producto encontrado con ID ${id}`);
+                return product;
+            } else {
+                console.log(`No se encontró ningún producto con el ID ${id}`);
+                return null;
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            throw error;
+        }
+    }
+    
+    async getProducts(limit) {
+        try {
+            const products = await Product.find().limit(limit);
+            return products || [];
+        } catch (error) {
+            console.error('Error al obtener los productos:', error);
+            throw error;
+        }
+    }
 
     async addProduct(title, description, price, thumbnail, code, stock, status, category) {
         try {
@@ -36,23 +62,6 @@ class ProductManagerMongo {
         }
     }
 
-
-    async getProductById(id) {
-        try {
-            const product = await Product.findById(id);
-            if (product) {
-                console.log(`Producto encontrado con ID ${id}`);
-                return product;
-            } else {
-                console.log(`No se encontró ningún producto con el ID ${id}`);
-                return null;
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            throw error;
-        }
-    }
-    
     async deleteProduct(id) {
         try {
             const removedProduct = await Product.findByIdAndDelete(id);
