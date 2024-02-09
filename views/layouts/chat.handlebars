@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App</title>
+</head>
+
+<body>
+    <h2 class="mt-4">Chat</h2>
+    <div id="chat">
+        <ul id="messages"></ul>
+        <form id="messageForm">
+            <input id="usernameInput" autocomplete="off" placeholder="Ingresa tu nombre" />
+            <button id="usernameButton" type="button">Ingresar</button><br>
+            <input id="messageInput" autocomplete="off" placeholder="Ingresa tu mensaje" />
+            <button type="submit">Enviar</button>
+        </form>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        let username;
+
+        document.getElementById('usernameButton').addEventListener('click', () => {
+            const inputUsername = document.getElementById('usernameInput');
+            
+            if (inputUsername.value.trim() !== '') {
+                username = inputUsername.value;
+                inputUsername.disabled = true;
+            }
+        });
+
+        document.getElementById('messageForm').addEventListener('submit', (event) => {
+            event.preventDefault();
+            const inputMessage = document.getElementById('messageInput');
+            
+            if (!username) {
+                alert('Por favor, ingresa tu nombre antes de enviar un mensaje.');
+                return;
+            }
+
+            const message = inputMessage.value;
+            inputMessage.value = '';
+
+            socket.emit('message', { user: username, message });
+        });
+
+        socket.on('message', (data) => {
+            const messages = document.getElementById('messages');
+            const li = document.createElement('li');
+            li.textContent = `${data.user}: ${data.message}`;
+            messages.appendChild(li);
+        });
+    </script>
+</body
+
+</html>
