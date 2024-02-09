@@ -1,16 +1,17 @@
 const express = require('express');
 const productManagerMongo = require('../dao/productManagerMongo');
-const productRouter = express.Router();
-const mongoose = require('mongoose')
+const homeRouter = express.Router();
 
-productRouter.get('/', async (req, res) => {
+
+homeRouter.get('/', async (req, res) => {
     try {
         const products = await productManagerMongo.getProducts();
-        res.render('layouts/home', { products });
+        const plainProducts = products.map(product => product.toObject({ getters: true }));
+        res.render('layouts/home', { products: plainProducts });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error al obtener productos desde MongoDB.' });
     }
 });
 
-module.exports = productRouter;
+module.exports = homeRouter;
