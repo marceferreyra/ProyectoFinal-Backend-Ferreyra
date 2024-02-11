@@ -11,9 +11,9 @@ const { Server } = require(`socket.io`)
 const app = express();
 const PORT = 8080;
 const server = http.createServer(app);
-const DataBase = require('./dao/db.js')
+const DataBase = require('./src/dao/db/db.js')
 const bodyParser = require('body-parser');
-const ChatManager = require('./dao/chatManager.js');
+const ChatManager = require('./src/dao/db/chatManager.js');
 
 
 
