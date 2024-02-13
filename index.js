@@ -12,7 +12,6 @@ const app = express();
 const PORT = 8080;
 const server = http.createServer(app);
 const DataBase = require('./src/dao/db/db.js')
-const bodyParser = require('body-parser');
 const ChatManager = require('./src/dao/db/chatManager.js');
 
 
@@ -20,7 +19,6 @@ const ChatManager = require('./src/dao/db/chatManager.js');
 app.use(express.static(__dirname + "/public"))
 app.use(express.json());
 
-app.use(bodyParser.json());
 app.use(productRouter);
 app.use('/api/carts', cartRouter);
 app.use(`/home`, homeRouter);
