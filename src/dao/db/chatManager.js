@@ -7,7 +7,7 @@ class ChatManager {
 
     init() {
         this.io.on('connection', (socket) => {
-            console.log('Cliente conectado');
+          
 
             socket.on('message', async (data) => {
                 const { user, message } = data;

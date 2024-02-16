@@ -4,7 +4,7 @@ const router = express.Router();
 
 router.get('/', (req, res) => {
    
-    res.render('layouts/chat');
+    res.render('chat');
 });
 
 module.exports = router;

@@ -7,7 +7,7 @@ homeRouter.get('/', async (req, res) => {
     try {
         const products = await productManagerMongo.getProducts();
         const plainProducts = products.map(product => product.toObject({ getters: true }));
-        res.render('layouts/home', { products: plainProducts });
+        res.render('home', { products: plainProducts });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error al obtener productos desde MongoDB.' });
