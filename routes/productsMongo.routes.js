@@ -50,7 +50,13 @@ productRouter.get('/api/products', async (req, res) => {
         res.type('json').send(formattedResponse);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ status: 'error', error: 'Error al obtener productos' });
+    
+        const errorResponse = {
+            status: 'error',
+            error: 'Error al obtener productos',
+        };
+    
+        res.status(500).json(errorResponse);
     }
 });
 
@@ -61,15 +67,34 @@ productRouter.get('/api/products/:id', async (req, res) => {
         const product = await productManagerMongo.getProductById(productId);
 
         if (product) {
-            res.status(200).json(product);
+            const response = {
+                status: 'success',
+                payload: product,
+            };
+
+            const formattedResponse = JSON.stringify(response, null, '\t');
+
+            res.type('json').send(formattedResponse);
         } else {
-            res.status(404).json({ error: `No se encontró ningún producto con el ID ${productId}` });
+            const errorResponse = {
+                status: 'error',
+                error: `No se encontró ningún producto con el ID ${productId}`,
+            };
+
+            res.status(404).json(errorResponse);
         }
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Error al obtener el producto desde MongoDB.' });
+
+        const errorResponse = {
+            status: 'error',
+            error: 'Error al obtener el producto desde MongoDB.',
+        };
+
+        res.status(500).json(errorResponse);
     }
 });
+
 
 productRouter.post('/api/products', async (req, res) => {
     const { title, description, price, thumbnail, code, stock, status, category } = req.body;
