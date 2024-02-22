@@ -1,13 +1,15 @@
 const express = require('express');
 const CartManagerMongo = require('../src/dao/db/cartManagerMongo');
 const mongoose = require('mongoose');
+const Cart = require('../src/dao/db/models/cartModel')
 
 const cartRouter = express.Router();
 
 cartRouter.get('/', async (req, res) => {
     try {
         const carts = await CartManagerMongo.getCarts();
-        res.status(200).json(carts);
+        const formattedResponse = JSON.stringify(carts, null, '\t');
+        res.type('json').send(formattedResponse);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error al obtener carritos desde MongoDB.' });
@@ -28,16 +30,28 @@ cartRouter.get('/:cid', async (req, res) => {
     const cartId = req.params.cid;
 
     try {
-        const cart = await CartManagerMongo.getCartById(cartId);
+        const cart = await Cart.findOne({ _id: cartId }).populate('products.product');
 
         if (cart) {
-            res.status(200).json(cart);
+            const formattedResponse = JSON.stringify(cart, null, '\t');
+            res.type('json').send(formattedResponse);
         } else {
-            res.status(404).json({ error: `No se encontró ningún carrito con el ID ${cartId}` });
+            const errorResponse = {
+                status: 'error',
+                error: `No se encontró ningún carrito con el ID ${cartId}`,
+            };
+
+            res.status(404).json(errorResponse);
         }
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Error al obtener el carrito desde MongoDB.' });
+
+        const errorResponse = {
+            status: 'error',
+            error: 'Error al obtener el carrito desde MongoDB.',
+        };
+
+        res.status(500).json(errorResponse);
     }
 });
 
