@@ -1,6 +1,7 @@
 const express = require('express');
 const productManagerMongo = require('../src/dao/db/productManagerMongo');
 const mongoose = require('mongoose')
+const Product = require('../src/dao/db/models/productModel');
 
 const productRouter = express.Router();
 
@@ -10,18 +11,46 @@ productRouter.get(`/`, (req, res) => {
 
 productRouter.get('/api/products', async (req, res) => {
     try {
-        const limit = parseInt(req.query.limit, 10);
-        
-        if (limit) {
-            const products = await productManagerMongo.getProducts(limit);
-            res.status(200).json(products);
-        } else {
-            const products = await productManagerMongo.getProducts();
-            res.status(200).json(products);
+        const limit = parseInt(req.query.limit) || 10;
+        const page = parseInt(req.query.page) || 1;
+        const sortOrder = req.query.sortOrder || 'asc';
+        const orderByField = req.query.orderByField || 'price';
+
+        const filter = {};
+        if (req.query.category) {
+            filter.category = req.query.category;
         }
+        if (req.query.availability !== undefined) {
+            filter.status = req.query.availability === 'true';
+        }
+
+        const options = {
+            limit: limit,
+            page: page,
+            sort: { price: sortOrder === 'asc' ? 1 : -1 },
+        };
+
+        const result = await Product.paginate(filter, options);
+
+        const response = {
+            status: 'success',
+            payload: result.docs,
+            totalPages: result.totalPages,
+            prevPage: result.prevPage,
+            nextPage: result.nextPage,
+            page: result.page,
+            hasPrevPage: result.hasPrevPage,
+            hasNextPage: result.hasNextPage,
+            prevLink: result.hasPrevPage ? `/api/products?page=${result.prevPage}&limit=${limit}&sortOrder=${sortOrder}` : null,
+            nextLink: result.hasNextPage ? `/api/products?page=${result.nextPage}&limit=${limit}&sortOrder=${sortOrder}` : null,
+        };
+
+        const formattedResponse = JSON.stringify(response, null, '\t');
+
+        res.type('json').send(formattedResponse);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Error al obtener productos desde MongoDB.' });
+        res.status(500).json({ status: 'error', error: 'Error al obtener productos' });
     }
 });
 
