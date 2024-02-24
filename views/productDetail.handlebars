@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{product.title}} - Detalles del Producto</title>
+</head>
+
+<body>
+    <div class="container">
+        <h2 class="mt-4">{{product.title}} - Detalles del Producto</h2>
+
+        <div class="card">
+            {{#each product.thumbnails}}
+            <img src="{{this}}" class="card-img-top" alt="{{../product.title}}">
+            {{/each}}
+            <div class="card-body">
+                <h5 class="card-title">{{product.title}}</h5>
+                <p class="card-text">{{product.description}}</p>
+                <p class="card-text">Precio: ${{product.price}}</p>
+                <p class="card-text">Categoría: {{product.category}}</p>
+                <p class="card-text">Estado: {{#if product.status}}Disponible{{else}}No disponible{{/if}}</p>
+                             
+
+                <form action="/cart/{{product._id}}" method="POST">
+                    <button type="submit" class="btn btn-primary">Agregar al carrito</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

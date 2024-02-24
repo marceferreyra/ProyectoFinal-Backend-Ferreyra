@@ -147,4 +147,41 @@ productRouter.put('/api/products/:id', async (req, res) => {
     }
 });
 
+productRouter.get('/products', async (req, res) => {
+    try {
+        const products = await productManagerMongo.getProducts();
+        const plainProducts = products.map(product => product.toObject({ getters: true }));
+        res.render('products', { products: plainProducts });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al obtener productos desde MongoDB.' });
+    }
+});
+
+
+productRouter.get('/products/:id', async (req, res) => {
+    const productId = req.params.id;
+
+    try {
+        const product = await productManagerMongo.getProductById(productId);
+        const plainProduct = product.toObject({ getters: true }); 
+        if (product) {           
+            res.render('productDetail', { product: plainProduct }); 
+        } else {
+            const errorResponse = {
+                status: 'error',
+                error: `No se encontró ningún producto con el ID ${productId}`,
+            };
+            res.status(404).json(errorResponse);
+        }
+    } catch (error) {
+        console.error(error);
+        const errorResponse = {
+            status: 'error',
+            error: 'Error al obtener el producto desde MongoDB.',
+        };
+        res.status(500).json(errorResponse);
+    }
+});
+
 module.exports = productRouter;
