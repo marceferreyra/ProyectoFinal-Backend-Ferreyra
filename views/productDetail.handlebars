@@ -13,7 +13,7 @@
 
         <div class="card">
             {{#each product.thumbnails}}
-            <img src="{{this}}" class="card-img-top" alt="{{../product.title}}">
+            <img src="{{this}}" class="card-img-top" alt="{{../product.title}}" id="imgCart">
             {{/each}}
             <div class="card-body">
                 <h5 class="card-title">{{product.title}}</h5>
@@ -23,7 +23,7 @@
                 <p class="card-text">Estado: {{#if product.status}}Disponible{{else}}No disponible{{/if}}</p>
                              
 
-                <form action="/cart/{{product._id}}" method="POST">
+                <form action="/carts/65c54d2ac9a7e78958d529e9" method="POST">
                     <button type="submit" class="btn btn-primary">Agregar al carrito</button>
                 </form>
             </div>

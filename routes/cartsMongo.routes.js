@@ -3,6 +3,7 @@ const CartManagerMongo = require('../src/dao/db/cartManagerMongo');
 const mongoose = require('mongoose');
 const Cart = require('../src/dao/db/models/cartModel')
 
+
 const cartRouter = express.Router();
 
 cartRouter.get('/', async (req, res) => {
@@ -26,7 +27,7 @@ cartRouter.post('/', async (req, res) => {
     }
 });
 
-cartRouter.get('/:cid', async (req, res) => {
+/*cartRouter.get('/:cid', async (req, res) => {
     const cartId = req.params.cid;
 
     try {
@@ -53,7 +54,7 @@ cartRouter.get('/:cid', async (req, res) => {
 
         res.status(500).json(errorResponse);
     }
-});
+});*/
 
 cartRouter.post('/:cid/products/:pid', async (req, res) => {
     const cartId = req.params.cid;
@@ -106,6 +107,34 @@ cartRouter.delete('/:cid', async (req, res) => {
         res.status(500).json({ error: 'Error interno del servidor al eliminar un carrito desde MongoDB.' });
     }
 });
+
+cartRouter.get('/:id', async (req, res) => {
+    const cartId = req.params.id;
+
+    try {
+        const cart = await Cart.findById(cartId).populate('products.product');
+        
+        if (cart) {
+            const plainCart = cart.toObject({ getters: true });
+            res.render('carts', { carts: [plainCart] });
+        } else {
+            const errorResponse = {
+                status: 'error',
+                error: `No se encontró ningún carrito con el ID ${cartId}`,
+            };
+            res.status(404).json(errorResponse);
+        }
+    } catch (error) {
+        console.error(error);
+        const errorResponse = {
+            status: 'error',
+            error: 'Error al obtener el carrito desde MongoDB.',
+        };
+        res.status(500).json(errorResponse);
+    }
+});
+
+
 
 module.exports = cartRouter;
 

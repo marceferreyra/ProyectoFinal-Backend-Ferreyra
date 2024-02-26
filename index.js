@@ -27,6 +27,7 @@ app.use(`/home`, homeRouter);
 app.use('/chat', chatRouter);
 app.use('/realtimeproducts', realTimeProductsRouter);
 app.use('/cookies', cookiesRouter)
+app.use('/carts', cartRouter)
 
 app.engine(`handlebars`, handlebars.engine())
 app.set(`view engine`, `handlebars`)

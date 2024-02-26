@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrito de Compras</title>
+</head>
+
+<body>
+    <div class="container">
+        <h2 class="mt-4">Carrito de Compras</h2>
+
+        {{#each carts}}
+        {{#if this.products.length}}
+        <div class="card-deck">
+            {{#each this.products}}
+    {{#each this.product.thumbnails}}
+        <img src="{{this}}" class="card-img-top" alt="{{../../product.title}}">
+    {{/each}}
+    <div class="card-body" id="cart">
+        <h5 class="card-title">{{this.product.title}}</h5>
+        <p class="card-text">Precio: ${{this.product.price}}</p>
+        <p class="card-text">Cantidad: {{this.quantity}}</p>
+       
+        <button onclick="decreaseQuantity('{{this.product._id}}')">-</button>
+        <button onclick="increaseQuantity('{{this.product._id}}')">+</button>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+        {{else}}
+        <p class="mt-4">El carrito está vacío.</p>
+        {{/if}}
+        {{/each}}
+
+        <!-- Botón para finalizar la compra -->
+        <button onclick="checkout()">Finalizar Compra</button>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Agregar scripts para manejar eventos de los botones -->
+    <script>
+        function decreaseQuantity(productId) {
+            // Lógica para disminuir la cantidad del producto con el ID productId
+        }
+
+        function increaseQuantity(productId) {
+            // Lógica para aumentar la cantidad del producto con el ID productId
+        }
+
+        function checkout() {
+            // Lógica para finalizar la compra
+        }
+    </script>
+</body>
+
+</html>
