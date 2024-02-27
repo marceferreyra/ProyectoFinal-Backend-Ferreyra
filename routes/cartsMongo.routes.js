@@ -17,7 +17,7 @@ cartRouter.get('/', async (req, res) => {
     }
 });
 
-cartRouter.post('/', async (req, res) => {
+cartRouter.post('/api/carts', async (req, res) => {
     try {
         const newCart = await CartManagerMongo.createCart();
         res.status(201).json(newCart);
@@ -27,7 +27,7 @@ cartRouter.post('/', async (req, res) => {
     }
 });
 
-/*cartRouter.get('/:cid', async (req, res) => {
+cartRouter.get('api/carts', async (req, res) => {
     const cartId = req.params.cid;
 
     try {
@@ -54,7 +54,7 @@ cartRouter.post('/', async (req, res) => {
 
         res.status(500).json(errorResponse);
     }
-});*/
+});
 
 cartRouter.post('/:cid/products/:pid', async (req, res) => {
     const cartId = '65c54d2ac9a7e78958d529e9';
