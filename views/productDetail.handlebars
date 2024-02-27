@@ -21,9 +21,9 @@
                 <p class="card-text">Precio: ${{product.price}}</p>
                 <p class="card-text">Categoría: {{product.category}}</p>
                 <p class="card-text">Estado: {{#if product.status}}Disponible{{else}}No disponible{{/if}}</p>
-                             
 
-                <form action="/carts/65c54d2ac9a7e78958d529e9" method="POST">
+
+                <form action="/carts/65c54d2ac9a7e78958d529e9/products/{{product._id}}" method="POST">
                     <button type="submit" class="btn btn-primary">Agregar al carrito</button>
                 </form>
             </div>

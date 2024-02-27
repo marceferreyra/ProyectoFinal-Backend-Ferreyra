@@ -57,6 +57,23 @@ cartRouter.post('/', async (req, res) => {
 });*/
 
 cartRouter.post('/:cid/products/:pid', async (req, res) => {
+    const cartId = '65c54d2ac9a7e78958d529e9';
+    const productId = req.params.pid;
+
+    try {
+        const result = await CartManagerMongo.addProductToCart(cartId, productId);
+        if (result.error) {
+            res.status(404).json({ error: result.error });
+        } else {
+            res.redirect(`/carts/${cartId}`);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Error interno del servidor al agregar un producto al carrito en MongoDB.' });
+    }
+});
+
+cartRouter.post('/:cid/products/:pid', async (req, res) => {
     const cartId = req.params.cid;
     const productId = req.params.pid;
 
@@ -113,7 +130,7 @@ cartRouter.get('/:id', async (req, res) => {
 
     try {
         const cart = await Cart.findById(cartId).populate('products.product');
-        
+
         if (cart) {
             const plainCart = cart.toObject({ getters: true });
             res.render('carts', { carts: [plainCart] });
