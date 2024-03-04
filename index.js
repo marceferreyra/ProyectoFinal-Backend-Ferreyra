@@ -17,22 +17,15 @@ const ChatManager = require('./src/dao/db/chatManager.js');
 const cookiesRouter = require('./routes/cookies.routes.js');
 const session = require ('express-session')
 const MongoStore = require ('connect-mongo')
-const sessionRouter = require('./routes/session.routes.js')
+const sessionRouter = require('./routes/sessions.routes.js')
 const bodyParser = require('body-parser');
+
 
 
 app.use(express.static(__dirname + "/public"))
 app.use(express.json());
 
-/*function isAuthenticated(req, res, next) {
-    if (req.session && req.session.user) {
-        // El usuario está autenticado, continúa con la siguiente función en la ruta
-        return next();
-    } else {
-        // El usuario no está autenticado, redirige a la página de inicio de sesión
-        return res.redirect('/sessions/login');
-    }
-}*/
+
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -54,7 +47,7 @@ app.use('/chat', chatRouter);
 app.use('/realtimeproducts', realTimeProductsRouter);
 app.use('/cookies', cookiesRouter)
 app.use('/carts', cartRouter)
-app.use('/session', sessionRouter);
+app.use('/api/sessions', sessionRouter);
 
 
 app.engine(`handlebars`, handlebars.engine())
