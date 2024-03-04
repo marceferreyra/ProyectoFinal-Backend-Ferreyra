@@ -63,6 +63,10 @@ sessionRouter.post('/register', async (req, res) => {
 
 sessionRouter.post('/login', async (req, res) => {
     try {
+        if (req.session.user) {
+            return res.status(400).json({ error: 'Ya has iniciado sesión' });
+        }
+
         const { email, password } = req.body;
         const user = await User.findOne({ email });
 
