@@ -9,25 +9,35 @@
 
 <body>
     <div class="container">
+        {{#if user}}
+            <h2 class="mt-4">¡Bienvenido, {{user.first_name}}!</h2>
+            <a href="/session/logout" class="btn btn-danger">Cerrar sesión</a>
+        {{else}}
+            <div class="mt-4">
+                <a href="/session/login" class="btn btn-primary mr-2">Iniciar sesión</a>
+                <a href="/session/register" class="btn btn-success">Registrarse</a>
+            </div>
+        {{/if}}
+
         <h2 class="mt-4">Lista de productos</h2>
 
         {{#if products.length}}
-        <div class="card-deck">
-            {{#each products}}
-            <div class="card" id="{{this.id}}">
-                {{#each this.thumbnails}}
-                <img src="{{this}}" class="card-img-top" alt="{{../title}}">
+            <div class="card-deck">
+                {{#each products}}
+                    <div class="card" id="{{this.id}}">
+                        {{#each this.thumbnails}}
+                            <img src="{{this}}" class="card-img-top" alt="{{../title}}">
+                        {{/each}}
+                        <div class="card-body">
+                            <h5 class="card-title">{{this.title}}</h5>
+                            <p class="card-text">Precio: ${{this.price}}</p>
+                            <a href="/products/{{this._id}}" class="btn btn-primary">Ver detalles</a>
+                        </div>
+                    </div>
                 {{/each}}
-                <div class="card-body">
-                    <h5 class="card-title">{{this.title}}</h5>
-                    <p class="card-text">Precio: ${{this.price}}</p>
-                    <a href="/products/{{this._id}}" class="btn btn-primary">Ver detalles</a>
-                </div>
             </div>
-            {{/each}}
-        </div>
         {{else}}
-        <p class="mt-4">No hay productos disponibles.</p>
+            <p class="mt-4">No hay productos disponibles.</p>
         {{/if}}
     </div>
 

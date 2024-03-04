@@ -15,11 +15,37 @@ const server = http.createServer(app);
 const DataBase = require('./src/dao/db/db.js')
 const ChatManager = require('./src/dao/db/chatManager.js');
 const cookiesRouter = require('./routes/cookies.routes.js');
-
+const session = require ('express-session')
+const MongoStore = require ('connect-mongo')
+const sessionRouter = require('./routes/session.routes.js')
+const bodyParser = require('body-parser');
 
 
 app.use(express.static(__dirname + "/public"))
 app.use(express.json());
+
+/*function isAuthenticated(req, res, next) {
+    if (req.session && req.session.user) {
+        // El usuario está autenticado, continúa con la siguiente función en la ruta
+        return next();
+    } else {
+        // El usuario no está autenticado, redirige a la página de inicio de sesión
+        return res.redirect('/sessions/login');
+    }
+}*/
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+app.use(session({
+    store: MongoStore.create({
+        mongoUrl: 'mongodb+srv://marceeferreyra:Marce507@coder-backend.osbdrri.mongodb.net/ecommerce'
+    }),
+    secret: 'secretCoder',
+    resave: true,
+    saveUninitialized: true
+}))
+
 
 app.use(productRouter);
 app.use('/api/carts', cartRouter);
@@ -28,6 +54,8 @@ app.use('/chat', chatRouter);
 app.use('/realtimeproducts', realTimeProductsRouter);
 app.use('/cookies', cookiesRouter)
 app.use('/carts', cartRouter)
+app.use('/session', sessionRouter);
+
 
 app.engine(`handlebars`, handlebars.engine())
 app.set(`view engine`, `handlebars`)
@@ -58,8 +86,8 @@ const chatManager = new ChatManager(io);
 chatManager.init();
 
 
-
 server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
     DataBase.connect()
 });
+

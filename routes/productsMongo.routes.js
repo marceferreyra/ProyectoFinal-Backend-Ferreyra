@@ -151,7 +151,9 @@ productRouter.get('/products', async (req, res) => {
     try {
         const products = await productManagerMongo.getProducts();
         const plainProducts = products.map(product => product.toObject({ getters: true }));
-        res.render('products', { products: plainProducts });
+        const user = req.session.user;
+        
+        res.render('products', { products: plainProducts, user });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error al obtener productos desde MongoDB.' });
