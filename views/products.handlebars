@@ -10,7 +10,7 @@
 <body>
     <div class="container">
         {{#if user}}
-            <h2 class="mt-4">¡Bienvenido, {{user.first_name}}!</h2>
+            <h2 class="mt-4">¡Bienvenido, {{user.first_name}}!. Estas conectado como {{user.role}}</h2>
             <a href="/api/sessions/logout" class="btn btn-danger">Cerrar sesión</a>
             <a href="/api/sessions/profile" class="btn btn-info mr-2">Ir al perfil</a>
         {{else}}
