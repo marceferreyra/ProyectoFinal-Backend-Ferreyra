@@ -70,7 +70,11 @@ sessionRouter.post('/login', async (req, res) => {
         const { email, password } = req.body;
         const user = await User.findOne({ email });
 
-        if (!user || !await bcrypt.compare(password, user.password)) {
+        if (!user) {
+            return res.status(401).json({ error: 'El usuario no existe' });
+        }
+
+        if (!await bcrypt.compare(password, user.password)) {
             return res.status(401).json({ error: 'Credenciales inválidas' });
         }
 
