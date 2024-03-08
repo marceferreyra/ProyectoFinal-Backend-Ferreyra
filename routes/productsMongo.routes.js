@@ -6,7 +6,7 @@ const Product = require('../src/dao/db/models/productModel');
 const productRouter = express.Router();
 
 productRouter.get(`/`, (req, res) => {
-    res.send(`Bienvenidos a nuestro e-commerce`);
+    res.redirect('/api/sessions/login') 
 });
 
 productRouter.get('/api/products', async (req, res) => {
