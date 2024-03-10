@@ -9,9 +9,9 @@
 
 <body>
     <h1>Perfil</h1>
-    <p>Hola, {{user.first_name}}!</p>
+    <p>Hola, {{#if user.first_name}}{{user.first_name}}{{else}}{{user.name}}{{/if}}!</p>
     <h2>Tus datos</h2>
-    <p>Nombre: {{user.first_name}}</p>
+    <p>Nombre: {{#if user.first_name}}{{user.first_name}}{{else}}{{user.name}}{{/if}}</p>
     <p>Apellido: {{user.last_name}}</p>
     <p>Edad: {{user.age}}</p>
     <p>email: {{user.email}}</p>
