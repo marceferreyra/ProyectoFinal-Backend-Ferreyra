@@ -56,7 +56,7 @@ cartRouter.get('api/carts', async (req, res) => {
     }
 });
 
-cartRouter.post('/:cid/products/:pid', async (req, res) => {
+/*cartRouter.post('/:cid/products/:pid', async (req, res) => {
     const cartId = '65c54d2ac9a7e78958d529e9';
     const productId = req.params.pid;
 
@@ -71,7 +71,7 @@ cartRouter.post('/:cid/products/:pid', async (req, res) => {
         console.error('Error:', error);
         res.status(500).json({ error: 'Error interno del servidor al agregar un producto al carrito en MongoDB.' });
     }
-});
+});*/
 
 cartRouter.post('/:cid/products/:pid', async (req, res) => {
     const cartId = req.params.cid;

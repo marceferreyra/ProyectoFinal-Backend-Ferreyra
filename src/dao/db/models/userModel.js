@@ -4,33 +4,47 @@ const bcrypt = require('bcrypt');
 const userSchema = new mongoose.Schema({
     first_name: {
         type: String,
-        required: true,
+        required: function () {
+            return !this.github; // Requerido solo si no viene de GitHub
+        }
     },
     last_name: {
         type: String,
-        required: true,
+        required: function () {
+            return !this.github; // Requerido solo si no viene de GitHub
+        }
     },
     email: {
         type: String,
-        required: true,
-        unique: true, 
+        required: true, // Siempre requerido
+        unique: true,
     },
     age: {
         type: Number,
-        required: true,
+        required: function () {
+            return !this.github; // Requerido solo si no viene de GitHub
+        }
     },
     password: {
         type: String,
-        required: true,
+        required: function () {
+            return !this.github; // Requerido solo si no viene de GitHub
+        }
     },
     role: {
         type: String,
         default: 'user'
     }
+}, {
+    timestamps: true,
+    strict: false
 });
 
 userSchema.pre('save', async function (next) {
     try {
+        if (!this.isModified('password')) {
+            return next();
+        }
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(this.password, salt);
         this.password = hashedPassword;

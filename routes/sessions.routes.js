@@ -2,6 +2,7 @@ const express = require('express');
 const sessionRouter = express.Router();
 const User = require('../src/dao/db/models/userModel');
 const bcrypt = require('bcrypt');
+const passport = require('passport')
 
 function isAuthenticated(req, res, next) {
     if (req.session && req.session.user) {
@@ -10,6 +11,39 @@ function isAuthenticated(req, res, next) {
         return res.redirect('/api/sessions/login');
     }
 }
+
+sessionRouter.get('/github', passport.authenticate("githubAuth", {}), (req, res) => {
+
+})
+
+sessionRouter.get('/callbackGithub', passport.authenticate("githubAuth", {}), async (req, res) => {
+    try {
+        req.session.user = req.user;
+
+        const existingUser = await User.findOne({ email: req.user.email });
+
+        if (existingUser) {
+            console.log('Usuario existente:', existingUser);
+            await existingUser.save();
+        } else {
+            const { username, email } = req.user;
+
+            const newUser = new User({
+                first_name: username,
+                email: email,
+            });
+
+            await newUser.save();
+            console.log('Nuevo usuario creado:', newUser);
+        }
+
+        res.redirect('/products');
+    } catch (error) {
+        console.error('Error en /callbackGithub:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
+
 
 sessionRouter.get('/register', (req, res) => {
     res.render('register');
@@ -23,6 +57,11 @@ sessionRouter.get('/profile', isAuthenticated, async (req, res) => {
     try {
         const userId = req.session.user._id;
         const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ error: 'Usuario no encontrado' });
+        }
+
         const userObject = user.toObject();
         res.render('profile', { user: userObject });
     } catch (error) {
@@ -40,7 +79,7 @@ sessionRouter.post('/register', async (req, res) => {
             return res.status(400).json({ error: 'El usuario ya existe' });
         }
 
-        const role = email === 'adminCoder@coder.com' ? 'admin' : 'usuario';
+        const role = email === 'adminCoder@coder.com' ? 'admin' : 'user';
 
         const newUser = new User({
             first_name,

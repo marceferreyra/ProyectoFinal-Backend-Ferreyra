@@ -19,6 +19,8 @@ const session = require ('express-session')
 const MongoStore = require ('connect-mongo')
 const sessionRouter = require('./routes/sessions.routes.js')
 const bodyParser = require('body-parser');
+const {initPassport} = require('./src/config/passport.config.js')
+const passport = require('passport')
 
 
 
@@ -39,6 +41,11 @@ app.use(session({
     saveUninitialized: true
 }))
 
+initPassport()
+app.use(passport.initialize())
+app.use(passport.session())
+
+ 
 
 app.use(productRouter);
 app.use('/api/carts', cartRouter);
