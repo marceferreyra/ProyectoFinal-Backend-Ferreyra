@@ -36,13 +36,14 @@ sessionRouter.get('/callbackGithub', passport.authenticate("githubAuth", {}), as
             await newUser.save();
             console.log('Nuevo usuario creado:', newUser);
         }
-
+       
         res.redirect('/products');
     } catch (error) {
         console.error('Error en /callbackGithub:', error);
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 });
+
 
 
 sessionRouter.get('/register', (req, res) => {
@@ -76,7 +77,7 @@ sessionRouter.post('/register', async (req, res) => {
         const existingUser = await User.findOne({ email });
 
         if (existingUser) {
-            return res.status(400).json({ error: 'El usuario ya existe' });
+            return res.status(400).json({ error: 'El usuario ya existe. Inicia sesión.' });
         }
 
         const role = email === 'adminCoder@coder.com' ? 'admin' : 'user';
@@ -90,12 +91,9 @@ sessionRouter.post('/register', async (req, res) => {
             role,
         });
         await newUser.save();
-
-        req.session.user = newUser;
-
+        
         res.redirect('/api/sessions/login');
-    } catch (error) {
-        console.error('Error al registrar usuario:', error);
+    } catch (error) {      
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 });
@@ -110,7 +108,7 @@ sessionRouter.post('/login', async (req, res) => {
         const user = await User.findOne({ email });
 
         if (!user) {
-            return res.status(401).json({ error: 'El usuario no existe' });
+            return res.status(401).json({ error: 'El usuario no existe. Registrate para iniciar sesión' });
         }
 
         if (!await bcrypt.compare(password, user.password)) {
@@ -126,7 +124,7 @@ sessionRouter.post('/login', async (req, res) => {
 });
 
 sessionRouter.get('/logout', (req, res) => {
-    req.session.destroy((err) => {
+    req.logout((err) => {
         if (err) {
             console.error('Error al cerrar la sesión:', err);
             res.status(500).json({ error: 'Error interno del servidor' });
