@@ -23,7 +23,6 @@ sessionRouter.get('/callbackGithub', passport.authenticate("githubAuth", {}), as
         const existingUser = await User.findOne({ email: req.user.email });
 
         if (existingUser) {
-            console.log('Usuario existente:', existingUser);
             await existingUser.save();
         } else {
             const { username, email } = req.user;
@@ -34,12 +33,10 @@ sessionRouter.get('/callbackGithub', passport.authenticate("githubAuth", {}), as
             });
 
             await newUser.save();
-            console.log('Nuevo usuario creado:', newUser);
         }
        
         res.redirect('/products');
     } catch (error) {
-        console.error('Error en /callbackGithub:', error);
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 });
@@ -66,7 +63,6 @@ sessionRouter.get('/profile', isAuthenticated, async (req, res) => {
         const userObject = user.toObject();
         res.render('profile', { user: userObject });
     } catch (error) {
-        console.error('Error al obtener datos del usuario:', error);
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 });
@@ -118,7 +114,6 @@ sessionRouter.post('/login', async (req, res) => {
         req.session.user = user;
         res.redirect('/products');
     } catch (error) {
-        console.error('Error al iniciar sesión:', error);
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 });
@@ -126,7 +121,6 @@ sessionRouter.post('/login', async (req, res) => {
 sessionRouter.get('/logout', (req, res) => {
     req.logout((err) => {
         if (err) {
-            console.error('Error al cerrar la sesión:', err);
             res.status(500).json({ error: 'Error interno del servidor' });
         } else {
             res.redirect('/api/sessions/login');
