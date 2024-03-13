@@ -34,7 +34,7 @@ sessionRouter.get('/callbackGithub', passport.authenticate("githubAuth", {}), as
 
             await newUser.save();
         }
-       
+
         res.redirect('/products');
     } catch (error) {
         res.status(500).json({ error: 'Error interno del servidor' });
@@ -87,9 +87,9 @@ sessionRouter.post('/register', async (req, res) => {
             role,
         });
         await newUser.save();
-        
+
         res.redirect('/api/sessions/login');
-    } catch (error) {      
+    } catch (error) {
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 });
@@ -127,5 +127,9 @@ sessionRouter.get('/logout', (req, res) => {
         }
     });
 });
+
+sessionRouter.get('*', async (req, res) => {
+    res.status(404).render('404')
+})
 
 module.exports = sessionRouter;
