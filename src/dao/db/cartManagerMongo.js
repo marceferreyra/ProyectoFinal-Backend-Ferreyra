@@ -137,7 +137,36 @@ class CartManagerMongo {
             throw error;
         }
     }
+
+    async updateProductQuantityInCart(cartId, productId, quantity) {
+        try {
+            const cart = await Cart.findById(cartId);
+    
+            if (cart) {
+                const existingProduct = cart.products.find((product) => product.product.equals(productId));
+    
+                if (existingProduct) {
+                    existingProduct.quantity = quantity; 
+    
+                    await cart.save();
+                    console.log(`Cantidad del producto ${productId} actualizada en el carrito ${cartId} correctamente.`);
+                    return { message: `Cantidad del ${productId} actualizada en el carrito ${cartId} correctamente.` };
+                } else {
+                    console.log(`No se encontró el producto con el ID ${productId} en el carrito ${cartId}`);
+                    return { error: `No se encontró el producto con el ID ${productId} en el carrito ${cartId}` };
+                }
+            } else {
+                console.log(`No se encontró ningún carrito con el ID ${cartId}`);
+                return { error: `No se encontró ningún carrito con el ID ${cartId}` };
+            }
+        } catch (error) {
+            console.error('Error al actualizar la cantidad del producto en el carrito:', error);
+            throw error;
+        }
+    }
 }
+
+
 
 const cartManagerMongo = new CartManagerMongo();
 
