@@ -48,12 +48,11 @@ app.use(passport.session())
  
 
 app.use(productRouter);
-app.use('/api/carts', cartRouter);
+app.use(cartRouter)
 app.use(`/home`, homeRouter);
 app.use('/chat', chatRouter);
 app.use('/realtimeproducts', realTimeProductsRouter);
 app.use('/cookies', cookiesRouter)
-app.use('/carts', cartRouter)
 app.use('/api/sessions', sessionRouter);
 
 
