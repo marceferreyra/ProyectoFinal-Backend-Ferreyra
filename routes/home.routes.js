@@ -1,5 +1,5 @@
 const express = require('express');
-const productManagerMongo = require('../src/dao/db/productManagerMongo');
+const productManagerMongo = require('../src/dao/db/managers/productManagerMongo');
 const homeRouter = express.Router();
 
 

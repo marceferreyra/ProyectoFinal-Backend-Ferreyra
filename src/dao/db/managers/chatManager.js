@@ -1,4 +1,4 @@
-const Message = require('./models/chatModel');
+const Message = require('../models/chatModel');
 
 class ChatManager {
     constructor(io) {

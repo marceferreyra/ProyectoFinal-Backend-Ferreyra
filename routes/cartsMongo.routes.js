@@ -1,5 +1,5 @@
 const express = require('express');
-const CartManagerMongo = require('../src/dao/db/cartManagerMongo');
+const CartManagerMongo = require('../src/dao/db/managers/cartManagerMongo');
 const mongoose = require('mongoose');
 const Cart = require('../src/dao/db/models/cartModel')
 
