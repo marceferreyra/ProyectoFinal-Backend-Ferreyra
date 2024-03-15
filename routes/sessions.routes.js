@@ -1,6 +1,7 @@
 const express = require('express');
 const sessionRouter = express.Router();
 const User = require('../src/dao/db/models/userModel');
+const cartManagerMongo = require('../src/dao/db/managers/cartManagerMongo')
 const bcrypt = require('bcrypt');
 const passport = require('passport')
 
@@ -78,6 +79,8 @@ sessionRouter.post('/register', async (req, res) => {
 
         const role = email === 'adminCoder@coder.com' ? 'admin' : 'user';
 
+        const newCart = await cartManagerMongo.createCart();
+
         const newUser = new User({
             first_name,
             last_name,
@@ -85,14 +88,18 @@ sessionRouter.post('/register', async (req, res) => {
             age,
             password,
             role,
+            cartId: newCart._id 
         });
+               
         await newUser.save();
-
+        console.log(newUser);
         res.redirect('/api/sessions/login');
     } catch (error) {
+        console.error('Error al registrar usuario:', error);
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 });
+
 
 sessionRouter.post('/login', async (req, res) => {
     try {
@@ -112,6 +119,7 @@ sessionRouter.post('/login', async (req, res) => {
         }
 
         req.session.user = user;
+        console.log('CartId del usuario al iniciar sesión:', req.session.user.cartId);
         res.redirect('/products');
     } catch (error) {
         res.status(500).json({ error: 'Error interno del servidor' });

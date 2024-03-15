@@ -152,8 +152,9 @@ productRouter.get('/products', async (req, res) => {
         const products = await productManagerMongo.getProducts();
         const plainProducts = products.map(product => product.toObject({ getters: true }));
         const user = req.session.user;
+        const cartId = user ? user.cartId : null; 
         
-        res.render('products', { products: plainProducts, user });
+        res.render('products', { products: plainProducts, user, cartId }); 
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error al obtener productos desde MongoDB.' });
@@ -166,9 +167,13 @@ productRouter.get('/products/:id', async (req, res) => {
 
     try {
         const product = await productManagerMongo.getProductById(productId);
-        const plainProduct = product.toObject({ getters: true }); 
-        if (product) {           
-            res.render('productDetail', { product: plainProduct }); 
+        
+        if (product) {    
+            const user = req.session.user;
+           
+            const plainProduct = product.toObject({ getters: true }); 
+          
+            res.render('productDetail', { product: plainProduct, user }); 
         } else {
             const errorResponse = {
                 status: 'error',

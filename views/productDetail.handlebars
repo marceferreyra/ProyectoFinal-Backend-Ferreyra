@@ -23,7 +23,8 @@
                 <p class="card-text">Estado: {{#if product.status}}Disponible{{else}}No disponible{{/if}}</p>
 
 
-                <form action="/api/carts/65f1bb8033609cdffd1cbe5e/products/{{product._id}}" method="POST">
+                <p>Cart ID: {{user.cartId}}</p>
+                <form action="/api/carts/{{user.cartId}}/products/{{product._id}}" method="POST">
                     <button type="submit" class="btn btn-primary">Agregar al carrito</button>
                 </form>
             </div>

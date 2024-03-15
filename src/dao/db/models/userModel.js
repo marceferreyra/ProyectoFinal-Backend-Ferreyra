@@ -22,18 +22,22 @@ const userSchema = new mongoose.Schema({
     age: {
         type: Number,
         required: function () {
-            return !this.github; // Requerido solo si no viene de GitHub
+            return !this.github; 
         }
     },
     password: {
         type: String,
         required: function () {
-            return !this.github; // Requerido solo si no viene de GitHub
+            return !this.github;
         }
     },
     role: {
         type: String,
         default: 'user'
+    },
+    cartId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Cart'
     }
 }, {
     timestamps: true,
