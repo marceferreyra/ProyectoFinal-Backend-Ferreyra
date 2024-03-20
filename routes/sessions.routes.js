@@ -103,7 +103,6 @@ sessionRouter.post('/register', async (req, res) => {
     }
 });
 
-
 sessionRouter.post('/login', async (req, res) => {
     try {
         if (req.session.user) {
@@ -122,8 +121,7 @@ sessionRouter.post('/login', async (req, res) => {
         }
 
         req.session.user = user;
-        console.log('CartId del usuario al iniciar sesión:', req.session.user.cartId);
-        res.redirect('/products');
+        res.redirect('/api/sessions/current');
     } catch (error) {
         res.status(500).json({ error: 'Error interno del servidor' });
     }
@@ -138,6 +136,25 @@ sessionRouter.get('/logout', (req, res) => {
         }
     });
 });
+
+sessionRouter.get('/current', isAuthenticated, async (req, res) => {
+    try {
+        const userId = req.session.user._id;
+
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ error: 'Usuario no encontrado' });
+        }
+
+        const userObject = user.toObject();
+
+        res.render('current', { user: userObject });
+    } catch (error) {
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
+
 
 sessionRouter.get('*', async (req, res) => {
     res.status(404).render('404')
