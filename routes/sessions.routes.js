@@ -18,31 +18,34 @@ sessionRouter.get('/github', passport.authenticate("githubAuth", {}), (req, res)
 })
 
 sessionRouter.get('/callbackGithub', passport.authenticate("githubAuth", {}), async (req, res) => {
-    try {
+    try {        
         req.session.user = req.user;
 
-        const existingUser = await User.findOne({ email: req.user.email });
+        let user = await User.findOne({ email: req.user.email });
 
-        if (existingUser) {
-            await existingUser.save();
-        } else {
+        if (!user) {
             const { username, email } = req.user;
-
-            const newUser = new User({
+           
+            const newCart = await cartManagerMongo.createCart();
+           
+            user = new User({
                 first_name: username,
                 email: email,
+                cartId: newCart._id 
             });
-
-            await newUser.save();
+        } else if (!user.cartId) {
+            const newCart = await cartManagerMongo.createCart(); 
+           
+            user.cartId = newCart._id;
         }
+
+        await user.save();
 
         res.redirect('/products');
     } catch (error) {
-        res.status(500).json({ error: 'Error interno del servidor' });
+              res.status(500).json({ error: 'Error interno del servidor' });
     }
 });
-
-
 
 sessionRouter.get('/register', (req, res) => {
     res.render('register');
@@ -88,9 +91,9 @@ sessionRouter.post('/register', async (req, res) => {
             age,
             password,
             role,
-            cartId: newCart._id 
+            cartId: newCart._id
         });
-               
+
         await newUser.save();
         console.log(newUser);
         res.redirect('/api/sessions/login');

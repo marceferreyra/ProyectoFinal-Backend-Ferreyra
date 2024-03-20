@@ -13,10 +13,11 @@
            <h2 class="mt-4">¡Bienvenido, {{#if user.first_name}}{{user.first_name}}{{else}}{{user.name}}{{/if}}!. Estás conectado como {{user.role}}</h2>
             <a href="/api/sessions/logout" class="btn btn-danger">Cerrar sesión</a>
             <a href="/api/sessions/profile" class="btn btn-info mr-2">Ir al perfil</a>
+            <a href="/carts/{{user.cartId}}" class="btn btn-dark mr-2">Ir al carrito</a>
         {{else}}
             <div class="mt-4">
                 <a href="/api/sessions/login" class="btn btn-primary mr-2">Iniciar sesión</a>
-                <a href="/api/sessions/register" class="btn btn-success">Registrarse</a>
+                <a href="/api/sessions/register" class="btn btn-success">Registrarse</a>                
             </div>
         {{/if}}
 
