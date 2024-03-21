@@ -18,32 +18,32 @@ sessionRouter.get('/github', passport.authenticate("githubAuth", {}), (req, res)
 })
 
 sessionRouter.get('/callbackGithub', passport.authenticate("githubAuth", {}), async (req, res) => {
-    try {        
+    try {
         req.session.user = req.user;
 
         let user = await User.findOne({ email: req.user.email });
 
         if (!user) {
             const { username, email } = req.user;
-           
+
             const newCart = await cartManagerMongo.createCart();
-           
+
             user = new User({
                 first_name: username,
                 email: email,
-                cartId: newCart._id 
+                cartId: newCart._id
             });
         } else if (!user.cartId) {
-            const newCart = await cartManagerMongo.createCart(); 
-           
+            const newCart = await cartManagerMongo.createCart();
+
             user.cartId = newCart._id;
         }
 
         await user.save();
 
-        res.redirect('/products');
+        res.redirect('/api/sessions/current');
     } catch (error) {
-              res.status(500).json({ error: 'Error interno del servidor' });
+        res.status(500).json({ error: 'Error interno del servidor' });
     }
 });
 
@@ -140,7 +140,6 @@ sessionRouter.get('/logout', (req, res) => {
 sessionRouter.get('/current', isAuthenticated, async (req, res) => {
     try {
         const userId = req.session.user._id;
-
         const user = await User.findById(userId);
 
         if (!user) {
@@ -148,13 +147,19 @@ sessionRouter.get('/current', isAuthenticated, async (req, res) => {
         }
 
         const userObject = user.toObject();
+        const isAdmin = userObject.role === 'admin';
 
-        res.render('current', { user: userObject });
+        if (isAdmin) {
+            const users = await User.find({}, { email: 1, _id: 0 });
+            res.render('current', { user: userObject, isAdmin, users });
+        } else {
+
+            res.render('current', { user: userObject, isAdmin });
+        }
     } catch (error) {
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 });
-
 
 sessionRouter.get('*', async (req, res) => {
     res.status(404).render('404')

@@ -13,19 +13,27 @@
     <h3>Estos son tus datos:</h3>
     <p>Nombre: {{#if user.first_name}}{{user.first_name}}{{else}}{{user.name}}{{/if}}</p>
     <p>Apellido: {{user.last_name}}</p>
-    <p>Edad: {{user.age}}</p>   
+    <p>Edad: {{user.age}}</p>
     <p>email: {{user.email}}</p>
 
     <h3>Estos son tus accesos:</h3>
-    
-    
 
+    {{#if isAdmin}}
+    <p>Eres un administrador. Aquí puedes ver la lista de usuarios:</p>
+    <ul>
+        {{#each users}}
+        <li>{{this}}</li>
+        {{/each}}
+        <a href="/api/sessions/logout" class="btn btn-danger">Cerrar sesión</a>
+        <a href="/api/sessions/profile" class="btn btn-primary">Ir al perfil</a>
+    </ul>
+    {{else}}   
     <a href="/products" class="btn btn-info">Ver productos</a>
     <a href="/api/sessions/logout" class="btn btn-danger">Cerrar sesión</a>
     <a href="/carts/{{user.cartId}}" class="btn btn-secondary">Ver carrito</a>
     <a href="/api/sessions/profile" class="btn btn-primary">Ir al perfil</a>
+    {{/if}}
 
-   
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
