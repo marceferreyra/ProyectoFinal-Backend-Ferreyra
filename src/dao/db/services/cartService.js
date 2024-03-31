@@ -1,6 +1,6 @@
 const Cart = require('../models/cartModel');
 
-class CartManagerMongo {
+class Carts {
     constructor() { }
 
     async getCarts() {
@@ -168,6 +168,6 @@ class CartManagerMongo {
 
 
 
-const cartManagerMongo = new CartManagerMongo();
+const cartService = new Carts();
 
-module.exports = cartManagerMongo;
+module.exports = cartService;
