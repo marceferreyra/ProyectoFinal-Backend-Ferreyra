@@ -1,5 +1,5 @@
 const express = require('express');
-const CartManagerMongo = require('../src/dao/db/managers/cartManagerMongo');
+const CartService = require('../src/dao/db/services/cartService');
 const mongoose = require('mongoose');
 const Cart = require('../src/dao/db/models/cartModel')
 
@@ -34,7 +34,7 @@ cartRouter.get('/api/carts', async (req, res) => {
 
 cartRouter.post('/api/carts', async (req, res) => {
     try {
-        const newCart = await CartManagerMongo.createCart();
+        const newCart = await CartService.createCart();
         res.status(201).json(newCart);
     } catch (error) {
         console.error('Error:', error);
@@ -84,7 +84,7 @@ cartRouter.delete('/api/carts/:cid', async (req, res) => {
     const cartId = req.params.cid;
 
     try {
-        const result = await CartManagerMongo.deleteCart(cartId);
+        const result = await CartService.deleteCart(cartId);
 
         if (result.error) {
             res.status(404).json({ error: result.error });
@@ -103,7 +103,7 @@ cartRouter.post('/api/carts/:cid/products/:pid', async (req, res) => {
     const productId = req.params.pid;
 
     try {
-        const result = await CartManagerMongo.addProductToCart(cartId, productId);
+        const result = await CartService.addProductToCart(cartId, productId);
         if (result.error) {
             res.status(404).json({ error: result.error });
         } else {
@@ -121,7 +121,7 @@ cartRouter.put('/api/carts/:cid/products/:pid', async (req, res) => {
     const { quantity } = req.body;
 
     try {
-        const result = await CartManagerMongo.updateProductQuantityInCart(cartId, productId, quantity);
+        const result = await CartService.updateProductQuantityInCart(cartId, productId, quantity);
         if (result.error) {
             res.status(404).json({ error: result.error });
         } else {
@@ -138,7 +138,7 @@ cartRouter.delete('api/carts/:cid/products/:pid', async (req, res) => {
     const productId = req.params.pid;
 
     try {
-        const result = await CartManagerMongo.deleteProductFromCart(cartId, productId);
+        const result = await CartService.deleteProductFromCart(cartId, productId);
 
         if (result.error) {
             res.status(404).json({ error: result.error });

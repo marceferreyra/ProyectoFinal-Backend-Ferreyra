@@ -1,6 +1,6 @@
 const express = require('express');
-const productRouter = require('./routes/productsMongo.routes.js');
-const cartRouter = require('./routes/cartsMongo.routes.js');
+const productRouter = require('./routes/products.routes.js');
+const cartRouter = require('./routes/carts.routes.js');
 const homeRouter = require(`./routes/home.routes.js`)
 const chatRouter = require('./routes/chat.routes.js');
 const cokkiesRouter = require('./routes/cookies.routes.js')
@@ -13,7 +13,7 @@ const app = express();
 const PORT = 8080;
 const server = http.createServer(app);
 const DataBase = require('./src/dao/db/db.js')
-const ChatManager = require('./src/dao/db/managers/chatManager.js');
+const ChatManager = require('./src/dao/db/services/chatService.js');
 const cookiesRouter = require('./routes/cookies.routes.js');
 const session = require ('express-session')
 const MongoStore = require ('connect-mongo')

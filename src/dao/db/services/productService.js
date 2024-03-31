@@ -1,6 +1,6 @@
 const Product = require('../models/productModel');
 
-class ProductManagerMongo {
+class Products {
     constructor() {
     }
 
@@ -30,16 +30,6 @@ class ProductManagerMongo {
         }
     }
     
-    async getProducts(limit) {
-        try {
-            const products = await Product.find().limit(limit);
-            return products || [];
-        } catch (error) {
-            console.error('Error al obtener los productos:', error);
-            throw error;
-        }
-    }
-
     async addProduct(title, description, price, thumbnail, code, stock, status, category) {
         try {
 
@@ -100,10 +90,8 @@ class ProductManagerMongo {
             return { error };
         }
     }
-
-
 }
 
-const productManagerMongo = new ProductManagerMongo();
+const productService = new Products();
 
-module.exports = productManagerMongo;
+module.exports = productService;
