@@ -48,7 +48,7 @@ app.use(passport.session())
  
 
 app.use(productRouter);
-app.use(cartRouter)
+app.use('/api/carts',cartRouter)
 app.use(`/home`, homeRouter);
 app.use('/chat', chatRouter);
 app.use('/realtimeproducts', realTimeProductsRouter);

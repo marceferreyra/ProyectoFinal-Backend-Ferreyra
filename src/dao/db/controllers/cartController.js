@@ -1,12 +1,7 @@
-const express = require('express');
-const CartService = require('../src/dao/db/services/cartService');
-const mongoose = require('mongoose');
-const Cart = require('../src/dao/db/models/cartModel');
+const CartService = require('../services/cartService');
+const Cart = require('../dao/db/models/cartModel');
 
-const cartRouter = express.Router();
-
-// Obtener todos los carritos
-cartRouter.get('/', async (req, res) => {
+exports.getAllCarts = async (req, res) => {
     try {
         const carts = await Cart.find().populate('products.product');
 
@@ -30,10 +25,9 @@ cartRouter.get('/', async (req, res) => {
 
         res.status(500).json(errorResponse);
     }
-});
+};
 
-// Crear un nuevo carrito
-cartRouter.post('/', async (req, res) => {
+exports.createCart = async (req, res) => {
     try {
         const newCart = await CartService.createCart();
         res.status(201).json(newCart);
@@ -41,10 +35,9 @@ cartRouter.post('/', async (req, res) => {
         console.error('Error:', error);
         res.status(500).json({ error: 'Error interno del servidor al crear un carrito en MongoDB.' });
     }
-});
+};
 
-// Obtener un carrito por su ID
-cartRouter.get('/:cid', async (req, res) => {
+exports.getCartById = async (req, res) => {
     const cartId = req.params.cid;
 
     try {
@@ -68,24 +61,21 @@ cartRouter.get('/:cid', async (req, res) => {
         };
         res.status(500).json(errorResponse);
     }
-});
+};
 
-// Actualizar un carrito por su ID
-cartRouter.put('/:cid', async (req, res) => {
+exports.updateCartById = async (req, res) => {
     const cartId = req.params.cid;
 
     try {
         const updatedCart = await Cart.findByIdAndUpdate(cartId, req.body, { new: true });
         res.status(200).json(updatedCart);
-        res.status(501).json({ error: 'Este método aún no ha sido implementado.' });
     } catch (error) {
         console.error('Error:', error);
         res.status(500).json({ error: 'Error interno del servidor al actualizar un carrito en MongoDB.' });
     }
-});
+};
 
-// Eliminar un carrito por su ID
-cartRouter.delete('/:cid', async (req, res) => {
+exports.deleteCartById = async (req, res) => {
     const cartId = req.params.cid;
 
     try {
@@ -100,10 +90,9 @@ cartRouter.delete('/:cid', async (req, res) => {
         console.error('Error:', error);
         res.status(500).json({ error: 'Error interno del servidor al eliminar un carrito desde MongoDB.' });
     }
-});
+};
 
-// Agregar un producto a un carrito por su ID
-cartRouter.post('/:cid/products/:pid', async (req, res) => {
+exports.addProductToCart = async (req, res) => {
     const cartId = req.params.cid;
     const productId = req.params.pid;
 
@@ -118,10 +107,9 @@ cartRouter.post('/:cid/products/:pid', async (req, res) => {
         console.error('Error:', error);
         res.status(500).json({ error: 'Error interno del servidor al agregar un producto al carrito en MongoDB.' });
     }
-});
+};
 
-// Actualizar la cantidad de un producto en un carrito por su ID
-cartRouter.put('/:cid/products/:pid', async (req, res) => {
+exports.updateProductQuantityInCart = async (req, res) => {
     const cartId = req.params.cid;
     const productId = req.params.pid;
     const { quantity } = req.body;
@@ -137,10 +125,9 @@ cartRouter.put('/:cid/products/:pid', async (req, res) => {
         console.error('Error:', error);
         res.status(500).json({ error: 'Error interno del servidor al actualizar la cantidad de un producto en el carrito en MongoDB.' });
     }
-});
+};
 
-// Eliminar un producto de un carrito por su ID
-cartRouter.delete('/:cid/products/:pid', async (req, res) => {
+exports.deleteProductFromCart = async (req, res) => {
     const cartId = req.params.cid;
     const productId = req.params.pid;
 
@@ -156,6 +143,4 @@ cartRouter.delete('/:cid/products/:pid', async (req, res) => {
         console.error('Error:', error);
         res.status(500).json({ error: 'Error interno del servidor al eliminar un producto del carrito desde MongoDB.' });
     }
-});
-
-module.exports = cartRouter;
+};
