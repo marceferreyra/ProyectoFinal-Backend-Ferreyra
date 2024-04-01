@@ -1,5 +1,5 @@
 const CartService = require('../services/cartService');
-const Cart = require('../dao/db/models/cartModel');
+const Cart = require('../models/cartModel');
 
 exports.getAllCarts = async (req, res) => {
     try {
