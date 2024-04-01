@@ -1,10 +1,9 @@
 const express = require('express');
-const chatManager = require('../src/dao/db/services/chatService');
+const chatController = require('../src/dao/db/controllers/chatController');
+
 const router = express.Router();
 
-router.get('/', (req, res) => {
-   
-    res.render('chat');
-});
+router.get('/', chatController.getAllMessages);
+router.post('/', chatController.createMessage);
 
 module.exports = router;

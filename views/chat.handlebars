@@ -10,7 +10,11 @@
 <body>
     <h2 class="mt-4">Chat</h2>
     <div id="chat">
-        <ul id="messages"></ul>
+        <ul id="messages">
+            {{#each messages}}
+            <li>{{user}}: {{message}}</li>
+            {{/each}}
+        </ul>
         <form id="messageForm">
             <input id="usernameInput" autocomplete="off" placeholder="Ingresa tu nombre" />
             <button id="usernameButton" type="button">Ingresar</button><br>
@@ -26,7 +30,7 @@
 
         document.getElementById('usernameButton').addEventListener('click', () => {
             const inputUsername = document.getElementById('usernameInput');
-            
+
             if (inputUsername.value.trim() !== '') {
                 username = inputUsername.value;
                 inputUsername.disabled = true;
@@ -36,7 +40,7 @@
         document.getElementById('messageForm').addEventListener('submit', (event) => {
             event.preventDefault();
             const inputMessage = document.getElementById('messageInput');
-            
+
             if (!username) {
                 alert('Por favor, ingresa tu nombre antes de enviar un mensaje.');
                 return;
