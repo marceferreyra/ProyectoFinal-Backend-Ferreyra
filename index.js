@@ -13,7 +13,7 @@ const app = express();
 const PORT = 8080;
 const server = http.createServer(app);
 const DataBase = require('./src/dao/db/db.js')
-const ChatManager = require('./src/dao/db/services/chatService.js');
+const ChatService = require('./src/dao/db/services/chatService.js');
 const cookiesRouter = require('./routes/cookies.routes.js');
 const session = require ('express-session')
 const MongoStore = require ('connect-mongo')
@@ -81,8 +81,8 @@ io.on('connection', (socket) => {
     });
 });
 
-const chatManager = new ChatManager(io);
-chatManager.init();
+const chatService = new ChatService(io);
+chatService.init();
 
 
 server.listen(PORT, () => {

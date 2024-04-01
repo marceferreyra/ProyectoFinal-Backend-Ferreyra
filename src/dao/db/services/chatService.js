@@ -1,6 +1,6 @@
 const Message = require('../models/chatModel');
 
-class ChatManager {
+class ChatService {
     constructor(io) {
         this.io = io;
     }
@@ -24,4 +24,4 @@ class ChatManager {
     }
 }
 
-module.exports = ChatManager;
+module.exports = ChatService;

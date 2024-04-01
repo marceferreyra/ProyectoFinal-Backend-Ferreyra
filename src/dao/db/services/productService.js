@@ -1,6 +1,6 @@
 const Product = require('../models/productModel');
 
-class Products {
+class ProductService {
     constructor() {
     }
 
@@ -92,6 +92,6 @@ class Products {
     }
 }
 
-const productService = new Products();
+const productService = new ProductService();
 
 module.exports = productService;
