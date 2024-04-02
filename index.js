@@ -1,10 +1,9 @@
 const express = require('express');
-const productRouter = require('./routes/products.routes.js');
-const cartRouter = require('./routes/carts.routes.js');
-const homeRouter = require(`./routes/home.routes.js`)
-const chatRouter = require('./routes/chat.routes.js');
-const cokkiesRouter = require('./routes/cookies.routes.js')
-const realTimeProductsRouter = require('./routes/realTimeProducts.routes.js')
+const productRouter = require('./src/routes/products.routes.js');
+const cartRouter = require('./src/routes/carts.routes.js');
+const homeRouter = require(`./src/routes/home.routes.js`)
+const chatRouter = require('./src/routes/chat.routes.js');
+const realTimeProductsRouter = require('./src/routes/realTimeProducts.routes.js')
 const handlebars = require(`express-handlebars`)
 const path = require('path');
 const http = require(`http`)
@@ -14,10 +13,10 @@ const PORT = 8080;
 const server = http.createServer(app);
 const DataBase = require('./src/dao/db/db.js')
 const ChatService = require('./src/dao/db/services/chatService.js');
-const cookiesRouter = require('./routes/cookies.routes.js');
+const cookiesRouter = require('./src/routes/cookies.routes.js');
 const session = require ('express-session')
 const MongoStore = require ('connect-mongo')
-const sessionRouter = require('./routes/sessions.routes.js')
+const sessionRouter = require('./src/routes/sessions.routes.js')
 const bodyParser = require('body-parser');
 const {initPassport} = require('./src/config/passport.config.js')
 const passport = require('passport');
@@ -25,7 +24,7 @@ const passport = require('passport');
 
 
 
-app.use(express.static(__dirname + "/public"))
+app.use(express.static(__dirname + "/src/public"))
 app.use(express.json());
 
 
@@ -59,7 +58,7 @@ app.use('/api/sessions', sessionRouter);
 
 app.engine(`handlebars`, handlebars.engine())
 app.set(`view engine`, `handlebars`)
-app.set('views', __dirname + '/views')
+app.set('views', __dirname + '/src/views')
 
 const io = new Server(server, {
     cors: {

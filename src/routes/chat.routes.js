@@ -1,5 +1,5 @@
 const express = require('express');
-const chatController = require('../src/dao/db/controllers/chatController');
+const chatController = require('../dao/db/controllers/chatController');
 
 const router = express.Router();
 

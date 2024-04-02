@@ -32,9 +32,7 @@
         {{else}}
         <p class="mt-4">El carrito está vacío.</p>
         {{/if}}
-        {{/each}}
-
-        <!-- Botón para finalizar la compra -->
+        {{/each}}      
         <button onclick="checkout()">Finalizar Compra</button>
     </div>
 
@@ -42,18 +40,14 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-    <!-- Agregar scripts para manejar eventos de los botones -->
     <script>
         function decreaseQuantity(productId) {
-            // Lógica para disminuir la cantidad del producto con el ID productId
         }
 
         function increaseQuantity(productId) {
-            // Lógica para aumentar la cantidad del producto con el ID productId
         }
 
         function checkout() {
-            // Lógica para finalizar la compra
         }
     </script>
 </body>

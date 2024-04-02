@@ -1,5 +1,5 @@
 const express = require('express');
-const cartController = require('../src/dao/db/controllers/cartController');
+const cartController = require('../dao/db/controllers/cartController');
 
 const cartRouter = express.Router();
 

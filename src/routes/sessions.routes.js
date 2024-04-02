@@ -1,7 +1,7 @@
 const express = require('express');
 const sessionRouter = express.Router();
-const User = require('../src/dao/db/models/userModel');
-const cartManagerMongo = require('../src/dao/db/services/cartService')
+const User = require('../dao/db/models/userModel');
+const cartManagerMongo = require('../dao/db/services/cartService')
 const bcrypt = require('bcrypt');
 const passport = require('passport')
 
