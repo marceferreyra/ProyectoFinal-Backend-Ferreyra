@@ -1,15 +1,19 @@
+const dotenv = require('dotenv');
+dotenv.config();
+
 const passport = require('passport');
 const github = require('passport-github2');
 const LocalStrategy = require('passport-local').Strategy;
 const User = require('../dao/db/models/userModel');
 const bcrypt = require('bcrypt');
+const config = require('./config')
 
 const initPassport = () => {  
     passport.use("githubAuth", new github.Strategy(
         {
-            clientID: "Iv1.40b1e8ea837556dc",
-            clientSecret: "f92e5f68d5e28615352d7e4cc767a3f403d4fa52",
-            callbackURL: "http://localhost:8080/api/sessions/callbackGithub",
+            clientID: config.githubClientId,
+            clientSecret: config.githubClientSecret,
+            callbackURL: `http://${config.host}:${config.port}/api/sessions/callbackGithub`,
         },
         async (accessToken, refreshToken, profile, done) => {
             try {               

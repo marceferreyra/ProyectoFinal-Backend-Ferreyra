@@ -2,7 +2,7 @@ const Message = require('../models/chatModel');
 
 exports.getAllMessages = async (req, res) => {
     try {
-        const messages = await Message.find().lean(); // Utiliza el método lean() para obtener objetos planos
+        const messages = await Message.find().lean(); 
         res.render('chat', { messages });
     } catch (error) {
         console.error(error);
@@ -22,4 +22,4 @@ exports.createMessage = async (req, res) => {
     }
 };
 
-// Puedes agregar otras funciones según las necesidades de tu aplicación
+
