@@ -1,9 +1,9 @@
 const express = require('express');
 const productRouter = require('./src/routes/products.routes.js');
 const cartRouter = require('./src/routes/carts.routes.js');
-const homeRouter = require(`./src/routes/home.routes.js`)
 const chatRouter = require('./src/routes/chat.routes.js');
 const realTimeProductsRouter = require('./src/routes/realTimeProducts.routes.js')
+const sessionRouter = require('./src/routes/sessions.routes.js')
 const handlebars = require(`express-handlebars`)
 const path = require('path');
 const http = require(`http`)
@@ -13,10 +13,8 @@ const PORT = 8080;
 const server = http.createServer(app);
 const DataBase = require('./src/dao/db/db.js')
 const ChatService = require('./src/dao/db/services/chatService.js');
-const cookiesRouter = require('./src/routes/cookies.routes.js');
 const session = require ('express-session')
 const MongoStore = require ('connect-mongo')
-const sessionRouter = require('./src/routes/sessions.routes.js')
 const bodyParser = require('body-parser');
 const {initPassport} = require('./src/config/passport.config.js')
 const passport = require('passport');
@@ -49,10 +47,8 @@ app.use(passport.session())
 
 app.use(productRouter);
 app.use('/api/carts',cartRouter)
-app.use(`/home`, homeRouter);
 app.use('/chat', chatRouter);
 app.use('/realtimeproducts', realTimeProductsRouter);
-app.use('/cookies', cookiesRouter)
 app.use('/api/sessions', sessionRouter);
 
 
