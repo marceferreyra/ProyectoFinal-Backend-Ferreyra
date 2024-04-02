@@ -1,11 +1,11 @@
 const express = require('express');
-const productManagerMongo = require('../dao/db/services/productService');
+const productService = require('../dao/db/services/productService');
 const homeRouter = express.Router();
 
 
 homeRouter.get('/', async (req, res) => {
     try {
-        const products = await productManagerMongo.getProducts();
+        const products = await productService.getProducts();
         const plainProducts = products.map(product => product.toObject({ getters: true }));
         res.render('home', { products: plainProducts });
     } catch (error) {
