@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
+const config = require('../../config/config')
 
 module.exports = {
   connect: () =>{
-    return mongoose.connect("mongodb+srv://marceeferreyra:Marce507@coder-backend.osbdrri.mongodb.net/ecommerce")
+    return mongoose.connect(config.dbUrl)
     .then (()=>{
       console.log (`Conexión a DB exitosa`)
     }).catch((error)=> {
