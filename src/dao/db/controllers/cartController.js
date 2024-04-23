@@ -45,7 +45,7 @@ exports.getCartById = async (req, res) => {
 
         if (cart) {
             const plainCart = cart.toObject({ getters: true });
-            res.render('carts', { carts: [plainCart] });
+            res.render('carts', { carts: [plainCart], cartId: cartId });
         } else {
             const errorResponse = {
                 status: 'error',

@@ -15,24 +15,27 @@
         {{#if this.products.length}}
         <div class="card-deck">
             {{#each this.products}}
-    {{#each this.product.thumbnails}}
-        <img src="{{this}}" class="card-img-top" alt="{{../../product.title}}">
-    {{/each}}
-    <div class="card-body" id="cart">
-        <h5 class="card-title">{{this.product.title}}</h5>
-        <p class="card-text">Precio: ${{this.product.price}}</p>
-        <p class="card-text">Cantidad: {{this.quantity}}</p>
-       
-        <button onclick="decreaseQuantity('{{this.product._id}}')">-</button>
-        <button onclick="increaseQuantity('{{this.product._id}}')">+</button>
-                </div>
+            {{#each this.product.thumbnails}}
+            <img src="{{this}}" class="card-img-top" alt="{{../../product.title}}">
+            {{/each}}
+            <div class="card-body" id="cart">
+                <h5 class="card-title">{{this.product.title}}</h5>
+                <p class="card-text">Precio: ${{this.product.price}}</p>
+                <p class="card-text">Cantidad: {{this.quantity}}</p>
+
+                <form action="/api/carts/{{../_id}}/products/{{this.product._id}}" method="DELETE" onsubmit="decreaseQuantity('{{this.product._id}}', '{{../_id}}')">
+                    <button type="submit">-</button>
+                </form>
+                <form action="/api/carts/{{../_id}}/products/{{this.product._id}}" method="POST" onsubmit="increaseQuantity('{{this.product._id}}', '{{../_id}}')">
+                    <button type="submit">+</button>
+                </form>
             </div>
             {{/each}}
         </div>
         {{else}}
         <p class="mt-4">El carrito está vacío.</p>
         {{/if}}
-        {{/each}}      
+        {{/each}}
         <button onclick="checkout()">Finalizar Compra</button>
     </div>
 
@@ -41,13 +44,36 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script>
-        function decreaseQuantity(productId) {
+        function decreaseQuantity(productId, cartId) {
+            fetch(`/api/carts/${cartId}/products/${productId}`, {
+                method: 'DELETE'
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Actualizar la interfaz de usuario (si es necesario)
+                } else {
+                    console.error('Error al disminuir la cantidad del producto en el carrito');
+                }
+            })
+            .catch(error => console.error('Error:', error));
         }
 
-        function increaseQuantity(productId) {
+        function increaseQuantity(productId, cartId) {
+            fetch(`/api/carts/${cartId}/products/${productId}`, {
+                method: 'POST'
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Actualizar la interfaz de usuario (si es necesario)
+                } else {
+                    console.error('Error al aumentar la cantidad del producto en el carrito');
+                }
+            })
+            .catch(error => console.error('Error:', error));
         }
 
         function checkout() {
+            // Implementar la función para finalizar la compra
         }
     </script>
 </body>
