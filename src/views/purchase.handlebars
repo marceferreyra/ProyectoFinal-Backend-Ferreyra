@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compra Finalizada</title>
+</head>
+<body>
+    <h1>Compra Finalizada</h1>
+    <h2>Detalle de la Compra</h2>
+    <ul>
+        {{#each purchasedProducts}}
+            <li>{{this.quantity}}x {{this.product.name}} - {{this.product.price}}$</li>
+        {{/each}}
+    </ul>
+    <p>Total: {{total}}$</p>
+    <h2>Información del Comprador</h2>
+    <p>Nombre: {{purchaser.firstname}} {{purchaser.lastname}}</p>
+</body>
+</html>

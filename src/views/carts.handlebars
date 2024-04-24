@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carrito de Compras</title>
 </head>
-
 <body>
-    <div class="container">
+     <div class="container">
         <h2 class="mt-4">Carrito de Compras</h2>
 
         {{#each carts}}
@@ -22,13 +20,8 @@
                 <h5 class="card-title">{{this.product.title}}</h5>
                 <p class="card-text">Precio: ${{this.product.price}}</p>
                 <p class="card-text">Cantidad: {{this.quantity}}</p>
-
-                <form action="/api/carts/{{../_id}}/products/{{this.product._id}}" method="DELETE" onsubmit="decreaseQuantity('{{this.product._id}}', '{{../_id}}')">
-                    <button type="submit">-</button>
-                </form>
-                <form action="/api/carts/{{../_id}}/products/{{this.product._id}}" method="POST" onsubmit="increaseQuantity('{{this.product._id}}', '{{../_id}}')">
-                    <button type="submit">+</button>
-                </form>
+                <button onclick="decreaseQuantity('{{this.product._id}}', '{{../_id}}')">-</button>
+                <button onclick="increaseQuantity('{{this.product._id}}', '{{../_id}}')">+</button>
             </div>
             {{/each}}
         </div>
@@ -38,11 +31,6 @@
         {{/each}}
         <button onclick="checkout()">Finalizar Compra</button>
     </div>
-
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
     <script>
         function decreaseQuantity(productId, cartId) {
             fetch(`/api/carts/${cartId}/products/${productId}`, {
@@ -51,6 +39,7 @@
             .then(response => {
                 if (response.ok) {
                     // Actualizar la interfaz de usuario (si es necesario)
+                    window.location.reload(); // Recargar la página para reflejar los cambios
                 } else {
                     console.error('Error al disminuir la cantidad del producto en el carrito');
                 }
@@ -65,6 +54,7 @@
             .then(response => {
                 if (response.ok) {
                     // Actualizar la interfaz de usuario (si es necesario)
+                    window.location.reload(); // Recargar la página para reflejar los cambios
                 } else {
                     console.error('Error al aumentar la cantidad del producto en el carrito');
                 }
@@ -77,5 +67,4 @@
         }
     </script>
 </body>
-
 </html>

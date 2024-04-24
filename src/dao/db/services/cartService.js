@@ -99,7 +99,7 @@ class CartService {
                 if (existingProduct) {                
                     if (existingProduct.quantity > 1) {
                         existingProduct.quantity -= 1;
-                    } else {                       
+                    } else {
                         cart.products = cart.products.filter((product) => !product.product.equals(productId));
                     }
     
@@ -118,6 +118,7 @@ class CartService {
             throw error;
         }
     }
+    
     
 
     async deleteCart(cartId) {
