@@ -29,7 +29,10 @@
         <p class="mt-4">El carrito está vacío.</p>
         {{/if}}
         {{/each}}
-        <button onclick="checkout()">Finalizar Compra</button>
+
+    <a href="/api/carts/{{cartId}}/clear" class="btn btn-danger">Vaciar carrito</a>
+        
+        <button>Finalizar Compra</button>
     </div>
     <script>
         function decreaseQuantity(productId, cartId) {
@@ -62,16 +65,19 @@
             .catch(error => console.error('Error:', error));
         }
 
-        function checkout() {
-            fetch(`/api/carts/checkout`, {
-                method: 'POST'
+        function clearCart(cartId) {
+            console.log('Clearing cart:', cartId);
+            fetch(`/api/carts/${cartId}/clear`, {
+                method: 'DELETE'
             })
             .then(response => {
+                console.log('Response:', response);
                 if (response.ok) {
-                    // Procesamiento adicional si es necesario
-                    window.alert('¡Compra realizada con éxito!');
+                    console.log('Cart cleared successfully');
+                    // Actualizar la interfaz de usuario (si es necesario)
+                    window.location.reload(); // Recargar la página para reflejar los cambios
                 } else {
-                    console.error('Error al finalizar la compra');
+                    console.error('Error al vaciar el carrito');
                 }
             })
             .catch(error => console.error('Error:', error));

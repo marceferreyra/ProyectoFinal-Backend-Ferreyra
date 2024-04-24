@@ -166,25 +166,24 @@ class CartService {
         }
     }
 
-    async checkoutCart(cartId) {
+    async clearCart(cartId) {
         try {
             const cart = await Cart.findById(cartId);
     
             if (cart) {
-                cart.completed = true;
-                cart.products = []; 
+                cart.products = []; // Vaciar el array de productos del carrito
                 await cart.save();
-    
-                console.log(`Compra finalizada para el carrito ${cartId}.`);
-                return { message: `Compra finalizada para el carrito ${cartId}.` };
+                console.log(`Carrito con ID ${cartId} vaciado correctamente.`);
+                return { message: `Carrito con ID ${cartId} vaciado correctamente.` };
             } else {
                 return { error: `No se encontró ningún carrito con el ID ${cartId}` };
             }
         } catch (error) {
-            console.error('Error al finalizar la compra:', error);
+            console.error('Error al vaciar el carrito:', error);
             throw error;
         }
     }
+    
 }
 
 
