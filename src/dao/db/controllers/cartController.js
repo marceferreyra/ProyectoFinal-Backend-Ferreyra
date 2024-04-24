@@ -144,3 +144,20 @@ exports.deleteProductFromCart = async (req, res) => {
         res.status(500).json({ error: 'Error interno del servidor al eliminar un producto del carrito desde MongoDB.' });
     }
 };
+
+exports.checkout = async (req, res) => {
+    const cartId = req.params.cid;
+
+    try {
+        const result = await CartService.checkoutCart(cartId);
+
+        if (result.error) {
+            res.status(404).json({ error: result.error });
+        } else {
+            res.status(200).json({ message: 'Compra finalizada exitosamente.' });
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Error interno del servidor al finalizar la compra.' });
+    }
+};

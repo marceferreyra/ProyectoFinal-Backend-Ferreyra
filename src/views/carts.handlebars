@@ -63,7 +63,18 @@
         }
 
         function checkout() {
-            // Implementar la función para finalizar la compra
+            fetch(`/api/carts/checkout`, {
+                method: 'POST'
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Procesamiento adicional si es necesario
+                    window.alert('¡Compra realizada con éxito!');
+                } else {
+                    console.error('Error al finalizar la compra');
+                }
+            })
+            .catch(error => console.error('Error:', error));
         }
     </script>
 </body>

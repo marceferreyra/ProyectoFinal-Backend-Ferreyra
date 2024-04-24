@@ -165,6 +165,26 @@ class CartService {
             throw error;
         }
     }
+
+    async checkoutCart(cartId) {
+        try {
+            const cart = await Cart.findById(cartId);
+    
+            if (cart) {
+                cart.completed = true;
+                cart.products = []; 
+                await cart.save();
+    
+                console.log(`Compra finalizada para el carrito ${cartId}.`);
+                return { message: `Compra finalizada para el carrito ${cartId}.` };
+            } else {
+                return { error: `No se encontró ningún carrito con el ID ${cartId}` };
+            }
+        } catch (error) {
+            console.error('Error al finalizar la compra:', error);
+            throw error;
+        }
+    }
 }
 
 
