@@ -5,18 +5,18 @@ const userSchema = new mongoose.Schema({
     first_name: {
         type: String,
         required: function () {
-            return !this.github; // Requerido solo si no viene de GitHub
+            return !this.github;
         }
     },
     last_name: {
         type: String,
         required: function () {
-            return !this.github; // Requerido solo si no viene de GitHub
+            return !this.github; 
         }
     },
     email: {
         type: String,
-        required: true, // Siempre requerido
+        required: true, 
         unique: true,
     },
     age: {

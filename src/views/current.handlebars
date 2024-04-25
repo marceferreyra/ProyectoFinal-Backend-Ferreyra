@@ -24,14 +24,18 @@
         {{#each users}}
         <li>{{this}}</li>
         {{/each}}
+        <a href="/products" class="btn btn-info">Ver productos</a>
         <a href="/api/sessions/logout" class="btn btn-danger">Cerrar sesión</a>
+        <a href="/api/carts/{{user.cartId}}" class="btn btn-secondary">Ver carrito</a>
         <a href="/api/sessions/profile" class="btn btn-primary">Ir al perfil</a>
+        <a href="/realtimeproducts" class="btn btn-dark">Modificar productos</a>
     </ul>
     {{else}}   
     <a href="/products" class="btn btn-info">Ver productos</a>
     <a href="/api/sessions/logout" class="btn btn-danger">Cerrar sesión</a>
     <a href="/api/carts/{{user.cartId}}" class="btn btn-secondary">Ver carrito</a>
     <a href="/api/sessions/profile" class="btn btn-primary">Ir al perfil</a>
+     <a href="/realtimeproducts" class="btn btn-dark">Modificar productos</a>
     {{/if}}
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

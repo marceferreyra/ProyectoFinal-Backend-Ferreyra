@@ -3,6 +3,7 @@ const sessionRouter = express.Router();
 const sessionController = require('../dao/db/controllers/sessionController');
 const passport = require('passport');
 
+
 sessionRouter.get('/github', passport.authenticate("githubAuth", {}));
 sessionRouter.get('/callbackGithub', passport.authenticate("githubAuth", {}), sessionController.githubAuthCallback);
 
