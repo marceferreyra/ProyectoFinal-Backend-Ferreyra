@@ -34,7 +34,7 @@
 
     <a href="/products" class="btn btn-info">Ver productos</a>
         
-        <button class="btn btn-dark">Finalizar Compra</button>
+    <a href="/api/carts/{{cartId}}/purchase" class="btn btn-dark">Finalizar compra</a>    
     </div>
     <script>
         function decreaseQuantity(productId, cartId) {
@@ -84,6 +84,21 @@
             })
             .catch(error => console.error('Error:', error));
         }
+
+        function purchaseCart(cartId) {
+    fetch(`/api/carts/${cartId}/purchase`, {
+        method: 'POST'
+    })
+    .then(response => {
+        if (response.ok) {
+            // Actualizar la interfaz de usuario (si es necesario)
+            window.location.reload(); // Recargar la página para reflejar los cambios
+        } else {
+            console.error('Error al finalizar la compra');
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
     </script>
 </body>
 </html>

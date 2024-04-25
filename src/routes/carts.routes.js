@@ -12,5 +12,6 @@ cartRouter.post('/:cid/products/:pid', cartController.addProductToCart);
 cartRouter.put('/:cid/products/:pid', cartController.updateProductQuantityInCart);
 cartRouter.delete('/:cid/products/:pid', cartController.deleteProductFromCart);
 cartRouter.get('/:cid/clear', cartController.clearCart);
+cartRouter.get('/:cid/purchase', cartController.purchaseCart);
 
 module.exports = cartRouter;

@@ -1,6 +1,5 @@
 const CartService = require('../services/cartService');
 const Cart = require('../models/cartModel');
-const Ticket = require('../models/ticketModel');
 
 exports.getAllCarts = async (req, res) => {
     try {
@@ -160,5 +159,23 @@ exports.clearCart = async (req, res) => {
     } catch (error) {
         console.error('Error:', error);
         res.status(500).json({ error: 'Error interno del servidor al vaciar el carrito desde MongoDB.' });
+    }
+};
+
+exports.purchaseCart = async (req, res) => {
+    const cartId = req.params.cid;
+    const purchaserId = req.session.user; 
+
+    try {
+        const { ticket, productsNotPurchased } = await CartService.purchaseCart(cartId, purchaserId);
+
+        if (productsNotPurchased.length > 0) {
+            res.status(200).json({ ticket, productsNotPurchased });
+        } else {
+            res.status(200).json({ ticket });
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Error interno del servidor al finalizar la compra.' });
     }
 };

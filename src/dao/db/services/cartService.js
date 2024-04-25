@@ -1,4 +1,6 @@
 const Cart = require('../models/cartModel');
+const Product = require(`../models/productModel`)
+const Ticket = require(`../models/ticketModel`)
 
 class CartService {
     constructor() { }
@@ -183,6 +185,57 @@ class CartService {
             throw error;
         }
     }
+
+    async purchaseCart(cartId, purchaserId) {
+        // Define la función generateUniqueCode dentro de purchaseCart
+        function generateUniqueCode() {
+            // Implementa la lógica para generar un código único
+            const randomString = Math.random().toString(36).substring(2, 8).toUpperCase();
+            const timestamp = Date.now();
+            const uniqueCode = `${timestamp}-${randomString}`;
+            return uniqueCode;
+        }
+
+        try {
+            const cart = await Cart.findById(cartId).populate('products.product');
+            const productsToPurchase = [];
+            const productsNotPurchased = [];
+    
+            for (const cartProduct of cart.products) {
+                const product = await Product.findById(cartProduct.product);
+    
+                if (product.stock >= cartProduct.quantity) {
+                    productsToPurchase.push({
+                        product: cartProduct.product,
+                        quantity: cartProduct.quantity
+                    });
+                    product.stock -= cartProduct.quantity;
+                    await product.save();
+                } else {
+                    productsNotPurchased.push(cartProduct.product);
+                }
+            }
+    
+            const totalPrice = productsToPurchase.reduce((total, p) => total + (p.quantity * p.product.price), 0);
+    
+            const ticket = await Ticket.create({
+                code: generateUniqueCode(), // Utiliza la función para generar el código único
+                purchase_datetime: new Date(),
+                amount: totalPrice,
+                purchaser: purchaserId
+            });
+    
+            cart.products = cart.products.filter(cp => !productsToPurchase.map(p => p.product.toString()).includes(cp.product.toString()));
+            await cart.save();
+    
+            return { ticket, productsNotPurchased };
+        } catch (error) {
+            console.error('Error al finalizar la compra:', error);
+            throw error;
+        }
+    }
+       
+    
     
 }
 
