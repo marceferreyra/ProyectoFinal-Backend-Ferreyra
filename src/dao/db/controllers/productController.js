@@ -1,3 +1,6 @@
+const CustomError = require('../services/errors/customErrors');
+const EErrors = require('../services/errors/enumErrors');
+
 const productService = require('../services/productService');
 
 exports.getProducts = async (req, res) => {
@@ -10,7 +13,12 @@ exports.getProducts = async (req, res) => {
         res.render('products', { products: plainProducts, user, cartId }); 
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Error al obtener productos desde MongoDB.' });
+        CustomError.createError({
+            name: "GetProductsError",
+            cause: "Error al obtener productos desde MongoDB",
+            message: "Error al obtener productos",
+            code: EErrors.GET_PRODUCTS_ERROR
+        });
     }
 };
 
@@ -35,11 +43,12 @@ exports.getProductById = async (req, res) => {
         }
     } catch (error) {
         console.error(error);
-        const errorResponse = {
-            status: 'error',
-            error: 'Error al obtener el producto desde MongoDB.',
-        };
-        res.status(500).json(errorResponse);
+        CustomError.createError({
+            name: "GetProductByIdError",
+            cause: "Error al obtener un producto por su ID desde MongoDB",
+            message: "Error al obtener un producto por su ID",
+            code: EErrors.GET_PRODUCT_BY_ID_ERROR
+        });
     }
 };
 
@@ -55,7 +64,12 @@ exports.addProduct = async (req, res) => {
         }
     } catch (error) {
         console.error('Error:', error);
-        res.status(500).json({ error: 'Error interno del servidor al agregar un producto en MongoDB.' });
+        CustomError.createError({
+            name: "AddProductError",
+            cause: "Error al agregar un producto en MongoDB",
+            message: "Error al agregar un producto",
+            code: EErrors.ADD_PRODUCT_ERROR
+        });
     }
 };
 
@@ -72,7 +86,12 @@ exports.deleteProduct = async (req, res) => {
         }
     } catch (error) {
         console.error('Error:', error);
-        res.status(500).json({ error: 'Error interno del servidor al eliminar un producto desde MongoDB.' });
+        CustomError.createError({
+            name: "DeleteProductError",
+            cause: "Error al eliminar un producto desde MongoDB",
+            message: "Error al eliminar un producto",
+            code: EErrors.DELETE_PRODUCT_ERROR
+        });
     }
 };
 
@@ -90,6 +109,11 @@ exports.updateProduct = async (req, res) => {
         }
     } catch (error) {
         console.error('Error:', error);
-        res.status(500).json({ error: 'Error interno del servidor al actualizar un producto en MongoDB.' });
+        CustomError.createError({
+            name: "UpdateProductError",
+            cause: "Error al actualizar un producto en MongoDB",
+            message: "Error al actualizar un producto",
+            code: EErrors.UPDATE_PRODUCT_ERROR
+        });
     }
 };
