@@ -1,0 +1,10 @@
+const EErrors = {
+    CART_NOT_FOUND: 1, 
+    PRODUCT_ADDITION_ERROR: 2, 
+    PRODUCT_QUANTITY_UPDATE_ERROR: 3, 
+    CART_CREATION_ERROR: 4, 
+    CART_DELETION_ERROR: 5, 
+    CART_CLEAR_ERROR: 6, 
+    PURCHASE_ERROR: 7 
+}
+module.exports = EErrors;

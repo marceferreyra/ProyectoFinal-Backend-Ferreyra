@@ -1,3 +1,7 @@
+const CustomError = require('../services/errors/customErrors');
+const EErrors = require('../services/errors/enumErrors');
+const errorInfo = require('../services/errors/info');
+
 const CartService = require('../services/cartService');
 const Cart = require('../models/cartModel');
 
@@ -9,21 +13,15 @@ exports.getAllCarts = async (req, res) => {
             const formattedResponse = JSON.stringify(carts, null, '\t');
             res.type('json').send(formattedResponse);
         } else {
-            const errorResponse = {
-                status: 'error',
-                error: 'No se encontraron carritos.',
-            };
-            res.status(404).json(errorResponse);
+            CustomError.createError({
+                name: 'Cart Not Found Error',
+                message: errorInfo[EErrors.CART_NOT_FOUND],
+                code: EErrors.CART_NOT_FOUND
+            });
         }
     } catch (error) {
         console.error(error);
-
-        const errorResponse = {
-            status: 'error',
-            error: 'Error al obtener los carritos desde MongoDB.',
-        };
-
-        res.status(500).json(errorResponse);
+        res.status(500).json({ error: errorInfo[EErrors.SERVER_ERROR] });
     }
 };
 
@@ -33,7 +31,7 @@ exports.createCart = async (req, res) => {
         res.status(201).json(newCart);
     } catch (error) {
         console.error('Error:', error);
-        res.status(500).json({ error: 'Error interno del servidor al crear un carrito en MongoDB.' });
+        res.status(500).json({ error: errorInfo[EErrors.CART_CREATION_ERROR] });
     }
 };
 
@@ -47,19 +45,15 @@ exports.getCartById = async (req, res) => {
             const plainCart = cart.toObject({ getters: true });
             res.render('carts', { carts: [plainCart], cartId: cartId });
         } else {
-            const errorResponse = {
-                status: 'error',
-                error: `No se encontró ningún carrito con el ID ${cartId}`,
-            };
-            res.status(404).json(errorResponse);
+            CustomError.createError({
+                name: 'Cart Not Found Error',
+                message: errorInfo[EErrors.CART_NOT_FOUND],
+                code: EErrors.CART_NOT_FOUND
+            });
         }
     } catch (error) {
         console.error(error);
-        const errorResponse = {
-            status: 'error',
-            error: 'Error al obtener el carrito desde MongoDB.',
-        };
-        res.status(500).json(errorResponse);
+        res.status(500).json({ error: errorInfo[EErrors.SERVER_ERROR] });
     }
 };
 
@@ -71,7 +65,7 @@ exports.updateCartById = async (req, res) => {
         res.status(200).json(updatedCart);
     } catch (error) {
         console.error('Error:', error);
-        res.status(500).json({ error: 'Error interno del servidor al actualizar un carrito en MongoDB.' });
+        res.status(500).json({ error: errorInfo[EErrors.CART_UPDATE_ERROR] });
     }
 };
 
@@ -88,7 +82,7 @@ exports.deleteCartById = async (req, res) => {
         }
     } catch (error) {
         console.error('Error:', error);
-        res.status(500).json({ error: 'Error interno del servidor al eliminar un carrito desde MongoDB.' });
+        res.status(500).json({ error: errorInfo[EErrors.CART_DELETION_ERROR] });
     }
 };
 
@@ -105,7 +99,7 @@ exports.addProductToCart = async (req, res) => {
         }
     } catch (error) {
         console.error('Error:', error);
-        res.status(500).json({ error: 'Error interno del servidor al agregar un producto al carrito en MongoDB.' });
+        res.status(500).json({ error: errorInfo[EErrors.PRODUCT_ADDITION_ERROR] });
     }
 };
 
@@ -123,7 +117,7 @@ exports.updateProductQuantityInCart = async (req, res) => {
         }
     } catch (error) {
         console.error('Error:', error);
-        res.status(500).json({ error: 'Error interno del servidor al actualizar la cantidad de un producto en el carrito en MongoDB.' });
+        res.status(500).json({ error: errorInfo[EErrors.PRODUCT_QUANTITY_UPDATE_ERROR] });
     }
 };
 
@@ -141,7 +135,7 @@ exports.deleteProductFromCart = async (req, res) => {
         }
     } catch (error) {
         console.error('Error:', error);
-        res.status(500).json({ error: 'Error interno del servidor al eliminar un producto del carrito desde MongoDB.' });
+        res.status(500).json({ error: errorInfo[EErrors.PRODUCT_DELETION_ERROR] });
     }
 };
 
@@ -158,7 +152,8 @@ exports.clearCart = async (req, res) => {
         }
     } catch (error) {
         console.error('Error:', error);
-        res.status(500).json({ error: 'Error interno del servidor al vaciar el carrito desde MongoDB.' });
+        console.log(EErrors)
+        res.status(500).json({ error: errorInfo[EErrors.CART_CLEAR_ERROR] });
     }
 };
 
@@ -176,6 +171,7 @@ exports.purchaseCart = async (req, res) => {
         }
     } catch (error) {
         console.error('Error:', error);
-        res.status(500).json({ error: 'Error interno del servidor al finalizar la compra.' });
+        res.status(500).json({ error: errorInfo[EErrors.PURCHASE_ERROR] });
     }
 };
+
