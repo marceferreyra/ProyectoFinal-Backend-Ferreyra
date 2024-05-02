@@ -1,5 +1,6 @@
 const CustomError = require('../services/errors/customErrors');
 const EErrors = require('../services/errors/enumErrors');
+const errorInfo = require('../services/errors/info');
 
 const productService = require('../services/productService');
 
@@ -14,10 +15,10 @@ exports.getProducts = async (req, res) => {
     } catch (error) {
         console.error(error);
         CustomError.createError({
-            name: "GetProductsError",
-            cause: "Error al obtener productos desde MongoDB",
-            message: "Error al obtener productos",
-            code: EErrors.GET_PRODUCTS_ERROR
+            name: 'GetProductsError',
+            message: errorInfo[EErrors.GET_PRODUCTS_ERROR],
+            code: EErrors.GET_PRODUCTS_ERROR,
+            cause: error.message
         });
     }
 };
@@ -44,10 +45,10 @@ exports.getProductById = async (req, res) => {
     } catch (error) {
         console.error(error);
         CustomError.createError({
-            name: "GetProductByIdError",
-            cause: "Error al obtener un producto por su ID desde MongoDB",
-            message: "Error al obtener un producto por su ID",
-            code: EErrors.GET_PRODUCT_BY_ID_ERROR
+            name: 'GetProductByIdError',
+            message: errorInfo[EErrors.GET_PRODUCT_BY_ID_ERROR],
+            code: EErrors.GET_PRODUCT_BY_ID_ERROR,
+            cause: error.message
         });
     }
 };
@@ -65,10 +66,10 @@ exports.addProduct = async (req, res) => {
     } catch (error) {
         console.error('Error:', error);
         CustomError.createError({
-            name: "AddProductError",
-            cause: "Error al agregar un producto en MongoDB",
-            message: "Error al agregar un producto",
-            code: EErrors.ADD_PRODUCT_ERROR
+            name: 'AddProductError',
+            message: errorInfo[EErrors.ADD_PRODUCT_ERROR],
+            code: EErrors.ADD_PRODUCT_ERROR,
+            cause: error.message
         });
     }
 };
@@ -87,10 +88,10 @@ exports.deleteProduct = async (req, res) => {
     } catch (error) {
         console.error('Error:', error);
         CustomError.createError({
-            name: "DeleteProductError",
-            cause: "Error al eliminar un producto desde MongoDB",
-            message: "Error al eliminar un producto",
-            code: EErrors.DELETE_PRODUCT_ERROR
+            name: 'DeleteProductError',
+            message: errorInfo[EErrors.DELETE_PRODUCT_ERROR],
+            code: EErrors.DELETE_PRODUCT_ERROR,
+            cause: error.message
         });
     }
 };
@@ -110,10 +111,10 @@ exports.updateProduct = async (req, res) => {
     } catch (error) {
         console.error('Error:', error);
         CustomError.createError({
-            name: "UpdateProductError",
-            cause: "Error al actualizar un producto en MongoDB",
-            message: "Error al actualizar un producto",
-            code: EErrors.UPDATE_PRODUCT_ERROR
+            name: 'UpdateProductError',
+            message: errorInfo[EErrors.UPDATE_PRODUCT_ERROR],
+            code: EErrors.UPDATE_PRODUCT_ERROR,
+            cause: error.message
         });
     }
 };

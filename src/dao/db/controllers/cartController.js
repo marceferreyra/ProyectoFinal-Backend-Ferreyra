@@ -14,14 +14,20 @@ exports.getAllCarts = async (req, res) => {
             res.type('json').send(formattedResponse);
         } else {
             CustomError.createError({
-                name: 'Cart Not Found Error',
+                name: 'CartNotFoundError',
                 message: errorInfo[EErrors.CART_NOT_FOUND],
-                code: EErrors.CART_NOT_FOUND
+                code: EErrors.CART_NOT_FOUND,
+                cause: 'No se encontraron carritos en la base de datos'
             });
         }
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: errorInfo[EErrors.SERVER_ERROR] });
+        CustomError.createError({
+            name: 'ServerInternalError',
+            message: errorInfo[EErrors.SERVER_ERROR],
+            code: EErrors.SERVER_ERROR,
+            cause: error.message
+        });
     }
 };
 
@@ -31,7 +37,12 @@ exports.createCart = async (req, res) => {
         res.status(201).json(newCart);
     } catch (error) {
         console.error('Error:', error);
-        res.status(500).json({ error: errorInfo[EErrors.CART_CREATION_ERROR] });
+        CustomError.createError({
+            name: 'CartCreationError',
+            message: errorInfo[EErrors.CART_CREATION_ERROR],
+            code: EErrors.CART_CREATION_ERROR,
+            cause: error.message
+        });
     }
 };
 
@@ -46,14 +57,20 @@ exports.getCartById = async (req, res) => {
             res.render('carts', { carts: [plainCart], cartId: cartId });
         } else {
             CustomError.createError({
-                name: 'Cart Not Found Error',
+                name: 'CartNotFoundError',
                 message: errorInfo[EErrors.CART_NOT_FOUND],
-                code: EErrors.CART_NOT_FOUND
+                code: EErrors.CART_NOT_FOUND,
+                cause: `No se encontró ningún carrito con el ID ${cartId}`
             });
         }
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: errorInfo[EErrors.SERVER_ERROR] });
+        CustomError.createError({
+            name: 'ServerInternalError',
+            message: errorInfo[EErrors.SERVER_ERROR],
+            code: EErrors.SERVER_ERROR,
+            cause: error.message
+        });
     }
 };
 
@@ -65,7 +82,12 @@ exports.updateCartById = async (req, res) => {
         res.status(200).json(updatedCart);
     } catch (error) {
         console.error('Error:', error);
-        res.status(500).json({ error: errorInfo[EErrors.CART_UPDATE_ERROR] });
+        CustomError.createError({
+            name: 'CartUpdateError',
+            message: errorInfo[EErrors.CART_UPDATE_ERROR],
+            code: EErrors.CART_UPDATE_ERROR,
+            cause: error.message
+        });
     }
 };
 
@@ -82,7 +104,12 @@ exports.deleteCartById = async (req, res) => {
         }
     } catch (error) {
         console.error('Error:', error);
-        res.status(500).json({ error: errorInfo[EErrors.CART_DELETION_ERROR] });
+        CustomError.createError({
+            name: 'CartDeletionError',
+            message: errorInfo[EErrors.CART_DELETION_ERROR],
+            code: EErrors.CART_DELETION_ERROR,
+            cause: error.message
+        });
     }
 };
 
@@ -99,7 +126,12 @@ exports.addProductToCart = async (req, res) => {
         }
     } catch (error) {
         console.error('Error:', error);
-        res.status(500).json({ error: errorInfo[EErrors.PRODUCT_ADDITION_ERROR] });
+        CustomError.createError({
+            name: 'ProductAdditionError',
+            message: errorInfo[EErrors.PRODUCT_ADDITION_ERROR],
+            code: EErrors.PRODUCT_ADDITION_ERROR,
+            cause: error.message
+        });
     }
 };
 
@@ -117,7 +149,12 @@ exports.updateProductQuantityInCart = async (req, res) => {
         }
     } catch (error) {
         console.error('Error:', error);
-        res.status(500).json({ error: errorInfo[EErrors.PRODUCT_QUANTITY_UPDATE_ERROR] });
+        CustomError.createError({
+            name: 'ProductQuantityUpdateError',
+            message: errorInfo[EErrors.PRODUCT_QUANTITY_UPDATE_ERROR],
+            code: EErrors.PRODUCT_QUANTITY_UPDATE_ERROR,
+            cause: error.message
+        });
     }
 };
 
@@ -135,7 +172,12 @@ exports.deleteProductFromCart = async (req, res) => {
         }
     } catch (error) {
         console.error('Error:', error);
-        res.status(500).json({ error: errorInfo[EErrors.PRODUCT_DELETION_ERROR] });
+        CustomError.createError({
+            name: 'ProductDeletionError',
+            message: errorInfo[EErrors.PRODUCT_DELETION_ERROR],
+            code: EErrors.PRODUCT_DELETION_ERROR,
+            cause: error.message
+        });
     }
 };
 
@@ -152,8 +194,12 @@ exports.clearCart = async (req, res) => {
         }
     } catch (error) {
         console.error('Error:', error);
-        console.log(EErrors)
-        res.status(500).json({ error: errorInfo[EErrors.CART_CLEAR_ERROR] });
+        CustomError.createError({
+            name: 'CartClearError',
+            message: errorInfo[EErrors.CART_CLEAR_ERROR],
+            code: EErrors.CART_CLEAR_ERROR,
+            cause: error.message
+        });
     }
 };
 
@@ -171,7 +217,11 @@ exports.purchaseCart = async (req, res) => {
         }
     } catch (error) {
         console.error('Error:', error);
-        res.status(500).json({ error: errorInfo[EErrors.PURCHASE_ERROR] });
+        CustomError.createError({
+            name: 'PurchaseError',
+            message: errorInfo[EErrors.PURCHASE_ERROR],
+            code: EErrors.PURCHASE_ERROR,
+            cause: error.message
+        });
     }
 };
-
