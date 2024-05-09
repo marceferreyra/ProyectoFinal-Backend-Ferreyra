@@ -6,14 +6,14 @@ const productService = require('../services/productService');
 
 exports.getProducts = async (req, res) => {
     try {
-        const products = await productService.getProducts();
+        const products = await productService.getProducts(req.logger);
         const plainProducts = products.map(product => product.toObject({ getters: true }));
         const user = req.session.user;
         const cartId = user ? user.cartId : null; 
         
         res.render('products', { products: plainProducts, user, cartId }); 
     } catch (error) {
-        console.error(error);
+        logger.error(error);
         CustomError.createError({
             name: 'GetProductsError',
             message: errorInfo[EErrors.GET_PRODUCTS_ERROR],
@@ -27,7 +27,7 @@ exports.getProductById = async (req, res) => {
     const productId = req.params.id;
 
     try {
-        const product = await productService.getProductById(productId);
+        const product = await productService.getProductById(productId, req.logger);
         
         if (product) {    
             const user = req.session.user;
@@ -43,7 +43,7 @@ exports.getProductById = async (req, res) => {
             res.status(404).json(errorResponse);
         }
     } catch (error) {
-        console.error(error);
+        logger.error(error);
         CustomError.createError({
             name: 'GetProductByIdError',
             message: errorInfo[EErrors.GET_PRODUCT_BY_ID_ERROR],
@@ -56,7 +56,7 @@ exports.getProductById = async (req, res) => {
 exports.addProduct = async (req, res) => {
     const { title, description, price, thumbnail, code, stock, status, category } = req.body;
     try {
-        const result = await productService.addProduct(title, description, price, thumbnail, code, stock, status, category);
+        const result = await productService.addProduct(title, description, price, thumbnail, code, stock, status, category, req.logger);
 
         if (result.error) {
             res.status(400).json({ error: result.error });
@@ -64,7 +64,7 @@ exports.addProduct = async (req, res) => {
             res.status(201).json({ message: result.message });
         }
     } catch (error) {
-        console.error('Error:', error);
+        logger.error('Error:', error);
         CustomError.createError({
             name: 'AddProductError',
             message: errorInfo[EErrors.ADD_PRODUCT_ERROR],
@@ -78,7 +78,7 @@ exports.deleteProduct = async (req, res) => {
     const productId = req.params.id;
 
     try {
-        const result = await productService.deleteProduct(productId);
+        const result = await productService.deleteProduct(productId, req.logger);
 
         if (result.error) {
             res.status(404).json({ error: result.error });
@@ -86,7 +86,7 @@ exports.deleteProduct = async (req, res) => {
             res.status(200).json({ message: result.message });
         }
     } catch (error) {
-        console.error('Error:', error);
+        logger.error('Error:', error);
         CustomError.createError({
             name: 'DeleteProductError',
             message: errorInfo[EErrors.DELETE_PRODUCT_ERROR],
@@ -101,7 +101,7 @@ exports.updateProduct = async (req, res) => {
     const updatedProduct = req.body;
 
     try {
-        const result = await productService.updateProduct(productId, updatedProduct);
+        const result = await productService.updateProduct(productId, updatedProduct, req.logger);
 
         if (result.error) {
             res.status(404).json({ error: result.error });
@@ -109,7 +109,7 @@ exports.updateProduct = async (req, res) => {
             res.status(200).json({ message: result.message });
         }
     } catch (error) {
-        console.error('Error:', error);
+        logger.error('Error:', error);
         CustomError.createError({
             name: 'UpdateProductError',
             message: errorInfo[EErrors.UPDATE_PRODUCT_ERROR],

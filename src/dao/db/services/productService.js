@@ -4,33 +4,34 @@ class ProductService {
     constructor() {
     }
 
-    async getProducts() {
+    async getProducts(logger) {
         try {
             const products = await Product.find();
             return products || [];
         } catch (error) {
-            console.error('Error al obtener los productos:', error);
+            logger.error('Error al obtener los productos:', error);
             throw error;
         }
     }
     
-    async getProductById(id) {
+    async getProductById(id, logger) {
         try {
+            logger.info(`Buscando producto con ID ${id}`);
             const product = await Product.findById(id);
             if (product) {
-                console.log(`Producto encontrado con ID ${id}`);
+                logger.info(`Producto encontrado con ID ${id}`);
                 return product;
             } else {
-                console.log(`No se encontró ningún producto con el ID ${id}`);
+                logger.warning(`No se encontró ningún producto con el ID ${id}`);
                 return null;
             }
         } catch (error) {
-            console.error('Error:', error);
+            logger.error('Error al buscar el producto:', error);
             throw error;
         }
     }
     
-    async addProduct(title, description, price, thumbnail, code, stock, status, category) {
+    async addProduct(title, description, price, thumbnail, code, stock, status, category, logger) {
         try {
 
             await Product.create({
@@ -44,33 +45,35 @@ class ProductService {
                 category,
             });
 
-            console.log(`Producto ${title} agregado correctamente.`);
+            logger.info(`Producto ${title} agregado correctamente.`);
             return { message: `Producto ${title} agregado correctamente.` };
         } catch (error) {
-            console.error('Error:', error);
+            logger.error('Error:', error);
             return { error };
         }
     }
 
-    async deleteProduct(id) {
+    async deleteProduct(id, logger) {
         try {
             const removedProduct = await Product.findByIdAndDelete(id);
 
             if (removedProduct) {
-                return {
+                logger.info(`Producto ${id} eliminado correctamente.`);
+                return {                    
                     message: `Producto con ID ${id} eliminado correctamente.`,
                     removedProduct,
                 };
             } else {
-                return { error: `No se encontró ningún producto con el ID ${id} para eliminar` };
+                logger.warning(`No se encontró ningún producto con el ID ${id} para eliminar.`);
+                return { error: `No se encontró ningún producto con el ID ${id} para eliminar.` };
             }
         } catch (error) {
-            console.error('Error:', error);
+            logger.error('Error:', error);
             return { error };
         }
     }
 
-    async updateProduct(id, updatedProduct) {
+    async updateProduct(id, updatedProduct, logger) {
         try {
 
             const existingProduct = await Product.findById(id);
@@ -80,13 +83,14 @@ class ProductService {
 
                 await existingProduct.save();
 
-                console.log(`Producto con ID ${id} actualizado correctamente.`);
+                logger.info(`Producto con ID ${id} actualizado correctamente.`);
                 return { message: `Producto con ID ${id} actualizado correctamente.` };
             } else {
+                logger.warning(`No se encontró ningún producto con el ID ${id}`);
                 return { error: `No se encontró ningún producto con el ID ${id}` };
             }
         } catch (error) {
-            console.error('Error:', error);
+            logger.error('Error:', error);
             return { error };
         }
     }
@@ -95,3 +99,4 @@ class ProductService {
 const productService = new ProductService();
 
 module.exports = productService;
+

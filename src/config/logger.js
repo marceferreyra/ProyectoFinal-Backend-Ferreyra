@@ -1,18 +1,70 @@
-const winston = require (`winston`)
+const winston = require('winston');
+const config = require(`./config`);
 
-const logger = winston.createLogger({
-    transports:[
-        new winston.transports.Console({level: "http"})
+const levels = {
+    fatal: 0,
+    error: 1,
+    warning: 2,
+    info: 3,
+    http: 4,
+    debug: 5
+};
+
+const colors = {
+    fatal: 'magenta',
+    error: 'red',
+    warning: 'yellow',
+    info: 'cyan',
+    http: 'green',
+    debug: 'blue'
+};
+
+const devLogger = winston.createLogger({
+    levels: levels,
+    format: winston.format.combine(
+        winston.format.colorize({ all: true }),
+        winston.format.simple()
+    ),
+    transports: [
+        new winston.transports.Console({
+            level: 'error'
+        }),
+        new winston.transports.File({
+            filename: 'errors.log',
+            level: 'error'
+        })
     ]
-})
+});
 
+const prodLogger = winston.createLogger({
+    levels: levels,
+    format: winston.format.combine(
+        winston.format.timestamp(),
+        winston.format.simple()
+    ),
+    transports: [
+        new winston.transports.Console({
+            level: 'info'
+        }),
+        new winston.transports.File({
+            filename: 'errors.log',
+            level: 'error'
+        })
+    ]
+});
 
-const addLogger = (req, res, next) => {
-    req.logger = logger
+winston.addColors(colors);
 
-    req.logger.http (`${req.method} en ${req.url} - at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`)
+const loggerMiddleware = (req, res, next) => {
+    if (config.environment === 'production') {
+        req.logger = prodLogger;
+    } else {
+        req.logger = devLogger;
+    }
 
     next();
-} 
+};
 
-module.exports = addLogger
+module.exports = loggerMiddleware;
+
+

@@ -23,7 +23,7 @@ const MongoStore = require ('connect-mongo');
 const bodyParser = require('body-parser');
 const { initPassport } = require('./src/config/passport.config.js');
 const passport = require('passport');
-const addLogger = require ('./src/config/logger.js');
+const loggerMiddleware = require('./src/config/logger.js');
 
 app.use(express.static(__dirname + "/src/public"));
 app.use(express.json());
@@ -44,7 +44,7 @@ initPassport();
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(addLogger);
+app.use(loggerMiddleware);
 
 app.use(productRouter);
 app.use('/api/carts',cartRouter);
