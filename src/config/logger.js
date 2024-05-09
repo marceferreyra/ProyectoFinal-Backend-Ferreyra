@@ -28,10 +28,6 @@ const devLogger = winston.createLogger({
     transports: [
         new winston.transports.Console({
             level: 'error'
-        }),
-        new winston.transports.File({
-            filename: 'errors.log',
-            level: 'error'
         })
     ]
 });
@@ -39,6 +35,7 @@ const devLogger = winston.createLogger({
 const prodLogger = winston.createLogger({
     levels: levels,
     format: winston.format.combine(
+        winston.format.colorize({ all: true }),
         winston.format.timestamp(),
         winston.format.simple()
     ),

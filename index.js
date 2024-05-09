@@ -7,6 +7,7 @@ const realTimeProductsRouter = require('./src/routes/realTimeProducts.routes.js'
 const sessionRouter = require('./src/routes/sessions.routes.js');
 const mailRouter = require('./src/config/mail.js');
 const mockingRouter = require('./src/routes/mocking.routes.js');
+const loggerTestRouter = require('./src/routes/loggerTests.routes.js');
 const handlebars = require(`express-handlebars`);
 const path = require('path');
 const http = require(`http`);
@@ -53,6 +54,7 @@ app.use('/realtimeproducts', realTimeProductsRouter);
 app.use('/api/sessions', sessionRouter);
 app.use('/mail', mailRouter);
 app.use(mockingRouter);
+app.use(loggerTestRouter);
 
 app.engine(`handlebars`, handlebars.engine());
 app.set(`view engine`, `handlebars`);
