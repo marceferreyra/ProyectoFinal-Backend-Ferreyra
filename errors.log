@@ -2,3 +2,5 @@
 [35mfatal[39m: [35mThis is a fatal message[39m {"timestamp":"2024-05-09T16:52:32.227Z"}
 [31merror[39m: [31mThis is an error message[39m {"timestamp":"2024-05-09T16:53:56.607Z"}
 [35mfatal[39m: [35mThis is a fatal message[39m {"timestamp":"2024-05-09T16:53:56.608Z"}
+[31merror[39m: [31mThis is an error message[39m {"timestamp":"2024-05-09T17:03:40.074Z"}
+[35mfatal[39m: [35mThis is a fatal message[39m {"timestamp":"2024-05-09T17:03:40.075Z"}

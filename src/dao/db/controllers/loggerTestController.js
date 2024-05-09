@@ -8,9 +8,9 @@ exports.testLogger = async (req, res) => {
         req.logger.error('This is an error message');
         req.logger.fatal('This is a fatal message');
 
-        res.status(200).json({ message: 'Logs have been tested successfully' });
+        res.status(200).json({ message: 'Todos los logs fueron probados con éxito' });
     } catch (error) {
-        req.logger.error('Error while testing logs:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        req.logger.error('Error al probar los logs:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
     }
 };
