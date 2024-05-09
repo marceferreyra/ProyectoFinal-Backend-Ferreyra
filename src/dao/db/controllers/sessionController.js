@@ -59,7 +59,7 @@ exports.register = async (req, res) => {
 
         const role = email === 'adminCoder@coder.com' ? 'admin' : 'user';
 
-        const newCart = await cartService.createCart();
+        const newCart = await cartService.createCart(req.logger);
 
         const newUser = new User({
             first_name,

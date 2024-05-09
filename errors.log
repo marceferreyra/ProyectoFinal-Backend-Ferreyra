@@ -4,3 +4,6 @@
 [35mfatal[39m: [35mThis is a fatal message[39m {"timestamp":"2024-05-09T16:53:56.608Z"}
 [31merror[39m: [31mThis is an error message[39m {"timestamp":"2024-05-09T17:03:40.074Z"}
 [35mfatal[39m: [35mThis is a fatal message[39m {"timestamp":"2024-05-09T17:03:40.075Z"}
+[31merror[39m: [31mCannot read properties of undefined (reading '$elemMatch')[39m {"timestamp":"2024-05-09T20:09:00.589Z"}
+[31merror[39m: [31mCannot read properties of undefined (reading '$elemMatch')[39m {"timestamp":"2024-05-09T20:15:21.339Z"}
+[31merror[39m: [31mCannot read properties of undefined (reading '$elemMatch')[39m {"timestamp":"2024-05-09T20:18:17.202Z"}
