@@ -186,7 +186,15 @@ exports.sendPasswordResetEmail = async (req, res) => {
             return res.redirect('/api/sessions/forgot-password');
         }
 
-        const resetLink = `${req.protocol}://${req.get('host')}/api/sessions/reset-password`;
+        const resetToken = {
+            email: email,
+            expiration: new Date().getTime() + (1000 * 60 * 60) // Expira después de una hora (en milisegundos)
+        };
+
+        // Guardar el token y su fecha de expiración en la sesión
+        req.session.resetToken = resetToken;
+
+        const resetLink = `${req.protocol}://${req.get('host')}/api/sessions/reset-password?token=${resetToken}&expiration=${resetToken.expiration}`;
 
         const mailOptions = {
             to: email,
@@ -218,6 +226,17 @@ exports.renderResetPasswordForm = async (req, res) => {
 
 exports.resetPassword = async (req, res) => {
     try {
+        const resetToken = req.session.resetToken;
+        if (!resetToken || !resetToken.email || !resetToken.expiration) {
+            return res.status(400).json({ error: 'El enlace de restablecimiento de contraseña ha expirado. Solicita uno nuevo.' });
+        }
+
+        const now = new Date().getTime();
+        if (now > resetToken.expiration) {
+            // Si el token ha expirado, redirigir al usuario a la página de solicitud de restablecimiento
+            return res.redirect('/api/sessions/forgot-password');
+        }
+
         const { email, password, confirmPassword } = req.body;
         if (password !== confirmPassword) {
             return res.status(400).json({ error: 'Las contraseñas no coinciden' });
@@ -243,4 +262,5 @@ exports.resetPassword = async (req, res) => {
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 };
+
 

@@ -6,6 +6,7 @@ const chatRouter = require('./src/routes/chat.routes.js');
 const realTimeProductsRouter = require('./src/routes/realTimeProducts.routes.js');
 const sessionRouter = require('./src/routes/sessions.routes.js');
 const mailRouter = require('./src/config/mail.js');
+const userRouter = require(`./src/routes/users.routes.js`)
 const mockingRouter = require('./src/routes/mocking.routes.js');
 const loggerTestRouter = require('./src/routes/loggerTests.routes.js');
 const handlebars = require(`express-handlebars`);
@@ -53,6 +54,7 @@ app.use('/chat', chatRouter);
 app.use('/realtimeproducts', realTimeProductsRouter);
 app.use('/api/sessions', sessionRouter);
 app.use('/mail', mailRouter);
+app.use(`/api/users`, userRouter)
 app.use(mockingRouter);
 app.use(loggerTestRouter);
 

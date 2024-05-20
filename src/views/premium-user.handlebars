@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cambiar Rol de Usuario</title>
+</head>
+<body>
+    <h1>Cambiar Rol de Usuario</h1>
+    <p>Usuario: {{user.email}}</p>
+    <p>Rol Actual: {{user.role}}</p>
+    
+    <form id="premiumForm" action="/api/users/premium/{{user._id}}" method="POST">
+        <button type="submit" id="premiumBtn">Cambiar a Premium</button>
+    </form>
+    
+    <form id="userForm" action="/api/users/premium/{{user._id}}" method="POST">
+        <button type="submit" id="userBtn">Cambiar a User</button>
+    </form>
+
+    <script>
+    const premiumForm = document.getElementById('premiumForm');
+    const userForm = document.getElementById('userForm');
+
+    premiumForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        await updateUserRole('{{user._id}}', 'premium');
+    });
+
+    userForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        await updateUserRole('{{user._id}}', 'user');
+    });
+
+    async function updateUserRole(userId, role) {
+        try {
+            const response = await fetch(`/api/users/premium/${userId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ role })
+            });
+
+            if (!response.ok) {
+                throw new Error('No se pudo cambiar el rol del usuario');
+            }
+
+            const data = await response.json();
+
+            console.log('Respuesta del servidor:', data);
+
+            alert('¡El rol del usuario se ha actualizado correctamente a ' + data.role);
+
+            // Recargar la página para actualizar la sesión
+            location.reload(true);
+
+        } catch (error) {
+            console.error('Error al cambiar el rol del usuario:', error);
+        }
+    }
+</script>
+
+</body>
+</html>
