@@ -117,19 +117,8 @@ exports.deleteCartById = async (req, res) => {
 exports.addProductToCart = async (req, res) => {
     const cartId = req.params.cid;
     const productId = req.params.pid;
-    const userId = req.session.user._id;
 
     try {
-        // Obtener el producto y verificar si pertenece al usuario premium
-        const product = await ProductService.getProductById(productId);
-        if (!product) {
-            return res.status(404).json({ error: 'Producto no encontrado' });
-        }
-
-        if (product.owner === userId && req.session.user.role === 'premium') {
-            return res.status(403).json({ error: 'No puedes agregar tu propio producto al carrito' });
-        }
-
         const result = await CartService.addProductToCart(cartId, productId, req.logger);
         if (result.error) {
             res.status(404).json({ error: result.error });
@@ -173,19 +162,8 @@ exports.updateProductQuantityInCart = async (req, res) => {
 exports.deleteProductFromCart = async (req, res) => {
     const cartId = req.params.cid;
     const productId = req.params.pid;
-    const userId = req.session.user._id;
 
     try {
-        // Verificar si el usuario es premium y si el producto le pertenece
-        const product = await ProductService.getProductById(productId);
-        if (!product) {
-            return res.status(404).json({ error: 'Producto no encontrado' });
-        }
-
-        if (req.session.user.role === 'premium' && product.owner !== userId) {
-            return res.status(403).json({ error: 'No tienes permiso para eliminar este producto' });
-        }
-
         const result = await CartService.deleteProductFromCart(cartId, productId, req.logger);
 
         if (result.error) {

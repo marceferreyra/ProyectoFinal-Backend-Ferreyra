@@ -27,11 +27,11 @@ class ProductService {
             }
         } catch (error) {
             logger.error('Error al buscar el producto:', error);
-            throw error;
+            throw error;  
         }
     }
     
-    async addProduct(title, description, price, thumbnail, code, stock, status, category, logger) {
+    async addProduct(title, description, price, thumbnail, code, stock, status, category, owner, logger) {
         try {
 
             await Product.create({
@@ -43,6 +43,7 @@ class ProductService {
                 thumbnails: [thumbnail],
                 status: true,
                 category,
+                owner
             });
 
             logger.info(`Producto ${title} agregado correctamente.`);

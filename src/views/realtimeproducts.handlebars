@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Real-Time Products</title>
 </head>
-
 <body>
     <div class="container">
         <h1 class="mt-4">Lista de productos</h1>
@@ -22,6 +20,7 @@
                     <h5 class="card-title">{{title}}</h5>
                     <p class="card-text">{{description}}</p>
                     <p class="card-text">Precio: ${{price}}</p>
+                    <p class="card-text">Dueño: {{owner}}</p>
                 </div>
             </div>
             {{/each}}
@@ -44,6 +43,10 @@
                     <div>
                         <label for="productPrice">Precio: $ </label>
                         <input type="text" id="productPrice" name="productPrice" required>
+                    </div>
+                    <div>
+                        <label for="productOwner">Dueño: </label>
+                        <input type="text" id="productOwner" name="productOwner" required>
                     </div>
                     <button type="submit">Agregar Producto</button>
                 </div>
@@ -83,6 +86,7 @@
                     existingProductElement.querySelector('.card-title').textContent = updatedProduct.title;
                     existingProductElement.querySelector('.card-text').textContent = updatedProduct.description;
                     existingProductElement.querySelector('.card-price').textContent = `Precio: $${updatedProduct.price}`;
+                    existingProductElement.querySelector('.card-owner').textContent = `Dueño: ${updatedProduct.owner}`;
                 } else {
                     const newProductCard = document.createElement('div');
                     newProductCard.className = 'card';
@@ -94,6 +98,7 @@
                             <h5 class="card-title">${updatedProduct.title}</h5>
                             <p class="card-text">${updatedProduct.description}</p>
                             <p class="card-text card-price">Precio: $${updatedProduct.price}</p>
+                            <p class="card-text card-owner">Dueño: ${updatedProduct.owner}</p>
                         </div>
                     `;
 
@@ -103,29 +108,66 @@
             }
         });
 
-        document.getElementById('addProductForm').addEventListener('submit', (event) => {
+        document.getElementById('addProductForm').addEventListener('submit', async (event) => {
             event.preventDefault();
             const productName = document.getElementById('productName').value;
             const productDescription = document.getElementById('productDescription').value;
             const productPrice = document.getElementById('productPrice').value;
+            const productOwner = document.getElementById('productOwner').value;
 
             const newProduct = {
-                id: Date.now(),
                 title: productName,
                 description: productDescription,
                 price: productPrice,
-                thumbnail: "",
+                thumbnail: "", // Puede actualizar esto para permitir subir imágenes
+                code: `code-${Date.now()}`, // Actualiza esta lógica si es necesario
+                stock: 100, // Puedes permitir al usuario ingresar esto
+                status: true,
+                category: "calzado", // Actualiza esto para permitir al usuario elegir
+                owner: productOwner
             };
 
-            socket.emit('productAdded', newProduct);
+            // Envía el nuevo producto al servidor
+            try {
+                const response = await fetch('/api/products', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(newProduct),
+                });
+                const result = await response.json();
+
+                if (response.ok) {
+                    socket.emit('productAdded', result.product);
+                } else {
+                    console.error(result.error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
         });
 
-        document.getElementById('deleteProductForm').addEventListener('submit', (event) => {
+        document.getElementById('deleteProductForm').addEventListener('submit', async (event) => {
             event.preventDefault();
             const productId = document.getElementById('productId').value;
-            socket.emit('productDeleted', productId);
+
+            // Envía la solicitud de eliminación al servidor
+            try {
+                const response = await fetch(`/api/products/${productId}`, {
+                    method: 'DELETE',
+                });
+                const result = await response.json();
+
+                if (response.ok) {
+                    socket.emit('productDeleted', { id: productId });
+                } else {
+                    console.error(result.error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
         });
     </script>
 </body>
-
 </html>
