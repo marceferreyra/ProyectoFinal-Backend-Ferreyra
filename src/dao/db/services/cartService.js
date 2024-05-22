@@ -1,43 +1,43 @@
 const Cart = require('../models/cartModel');
-const Product = require(`../models/productModel`)
-const Ticket = require(`../models/ticketModel`)
+const Product = require('../models/productModel');
+const Ticket = require('../models/ticketModel');
 
 class CartService {
     constructor() { }
 
-    async getCarts(logger) {
+    async getCarts(req) {
         try {
             const carts = await Cart.find();
             return carts || [];
         } catch (error) {
-            logger.error('Error al obtener los carritos:', error);
+            req.logger.error('Error al obtener los carritos:', error);
             throw error;
         }
     }
 
-    async saveCarts(carts, logger) {
+    async saveCarts(carts, req) {
         try {
             await Cart.insertMany(carts);
-            logger.info('Carritos guardados correctamente.');
+            req.logger.info('Carritos guardados correctamente.');
             return { message: 'Carritos guardados correctamente.' };
         } catch (error) {
-            logger.error('Error al guardar los carritos:', error);
+            req.logger.error('Error al guardar los carritos:', error);
             throw error;
         }
     }
 
-    async createCart(logger) {
+    async createCart(req) {
         try {
             const newCart = await Cart.create({ products: [] });
-            logger.info('Carrito creado:', newCart);
+            req.logger.info('Carrito creado:', newCart);
             return newCart;
         } catch (error) {
-            logger.error('Error al crear el carrito:', error);
+            req.logger.error('Error al crear el carrito:', error);
             throw error;
         }
     }
 
-    async getCartById(cartId, logger) {
+    async getCartById(cartId, req) {
         try {
             const cart = await Cart.findById(cartId);
 
@@ -50,20 +50,19 @@ class CartService {
                     }))
                 };
 
-                logger.info(`Carrito encontrado con ID ${cartId}`);
+                req.logger.info(`Carrito encontrado con ID ${cartId}`);
                 return simplifiedCart;
             } else {
-                logger.warning(`No se encontró ningún carrito con el ID ${cartId}`);
+                req.logger.warning(`No se encontró ningún carrito con el ID ${cartId}`);
                 return null;
             }
         } catch (error) {
-            logger.error('Error al obtener el carrito:', error);
+            req.logger.error('Error al obtener el carrito:', error);
             throw error;
         }
     }
 
-
-    async addProductToCart(cartId, productId, logger, quantity = 1) {
+    async addProductToCart(cartId, productId, req, quantity = 1) {
         try {
             const cart = await Cart.findById(cartId);
 
@@ -78,21 +77,20 @@ class CartService {
 
                 await cart.save();
 
-                logger.info(`Producto agregado al carrito ${cartId} correctamente.`);
+                req.logger.info(`Producto agregado al carrito ${cartId} correctamente.`);
 
                 return { message: `Producto agregado al carrito ${cartId} correctamente.`, quantity: cart.products.length };
             } else {
-                logger.warning(`No se encontró ningún carrito con el ID ${cartId}`)
+                req.logger.warning(`No se encontró ningún carrito con el ID ${cartId}`);
                 return { error: `No se encontró ningún carrito con el ID ${cartId}` };
             }
         } catch (error) {
-            logger.error('Error al agregar producto al carrito:', error);
+            req.logger.error('Error al agregar producto al carrito:', error);
             throw error;
         }
     }
 
-
-    async deleteProductFromCart(cartId, productId, logger) {
+    async deleteProductFromCart(cartId, productId, req) {
         try {
             const cart = await Cart.findById(cartId);
 
@@ -107,44 +105,42 @@ class CartService {
                     }
 
                     await cart.save();
-                    logger.info(`Producto eliminado del carrito ${cartId} correctamente.`);
+                    req.logger.info(`Producto eliminado del carrito ${cartId} correctamente.`);
                     return cart;
                 } else {
-                    logger.warning(`No se encontró el producto con el ID ${productId} en el carrito ${cartId}`);
+                    req.logger.warning(`No se encontró el producto con el ID ${productId} en el carrito ${cartId}`);
                     return cart;
                 }
             } else {
                 throw new Error(`No se encontró ningún carrito con el ID ${cartId}`);
             }
         } catch (error) {
-            logger.error('Error al eliminar producto del carrito:', error);
+            req.logger.error('Error al eliminar producto del carrito:', error);
             throw error;
         }
     }
 
-
-
-    async deleteCart(cartId, logger) {
+    async deleteCart(cartId, req) {
         try {
             const removedCart = await Cart.findByIdAndDelete(cartId);
 
             if (removedCart) {
-                logger.info(`Carrito con ID ${cartId} eliminado correctamente.`)
+                req.logger.info(`Carrito con ID ${cartId} eliminado correctamente.`);
                 return {
                     message: `Carrito con ID ${cartId} eliminado correctamente.`,
                     removedCart,
                 };
             } else {
-                logger.warning(`No se encontró ningún carrito con el ID ${cartId} para eliminar`)
+                req.logger.warning(`No se encontró ningún carrito con el ID ${cartId} para eliminar`);
                 return { error: `No se encontró ningún carrito con el ID ${cartId} para eliminar` };
             }
         } catch (error) {
-            logger.error('Error al eliminar el carrito:', error);
+            req.logger.error('Error al eliminar el carrito:', error);
             throw error;
         }
     }
 
-    async updateProductQuantityInCart(cartId, productId, logger, quantity) {
+    async updateProductQuantityInCart(cartId, productId, req, quantity) {
         try {
             const cart = await Cart.findById(cartId);
 
@@ -155,42 +151,42 @@ class CartService {
                     existingProduct.quantity = quantity;
 
                     await cart.save();
-                    logger.info(`Cantidad del producto ${productId} actualizada en el carrito ${cartId} correctamente.`);
+                    req.logger.info(`Cantidad del producto ${productId} actualizada en el carrito ${cartId} correctamente.`);
                     return { message: `Cantidad del ${productId} actualizada en el carrito ${cartId} correctamente.` };
                 } else {
-                    logger.warning(`No se encontró el producto con el ID ${productId} en el carrito ${cartId}`);
+                    req.logger.warning(`No se encontró el producto con el ID ${productId} en el carrito ${cartId}`);
                     return { error: `No se encontró el producto con el ID ${productId} en el carrito ${cartId}` };
                 }
             } else {
-                logger.warning(`No se encontró ningún carrito con el ID ${cartId}`);
+                req.logger.warning(`No se encontró ningún carrito con el ID ${cartId}`);
                 return { error: `No se encontró ningún carrito con el ID ${cartId}` };
             }
         } catch (error) {
-            logger.error('Error al actualizar la cantidad del producto en el carrito:', error);
+            req.logger.error('Error al actualizar la cantidad del producto en el carrito:', error);
             throw error;
         }
     }
 
-    async clearCart(cartId, logger) {
+    async clearCart(cartId, req) {
         try {
             const cart = await Cart.findById(cartId);
 
             if (cart) {
                 cart.products = [];
                 await cart.save();
-                logger.info(`Carrito con ID ${cartId} vaciado correctamente.`);
+                req.logger.info(`Carrito con ID ${cartId} vaciado correctamente.`);
                 return { message: `Carrito con ID ${cartId} vaciado correctamente.` };
             } else {
-                logger.warning(`No se encontró ningún carrito con el ID ${cartId}`)
+                req.logger.warning(`No se encontró ningún carrito con el ID ${cartId}`);
                 return { error: `No se encontró ningún carrito con el ID ${cartId}` };
             }
         } catch (error) {
-            logger.error('Error al vaciar el carrito:', error);
+            req.logger.error('Error al vaciar el carrito:', error);
             throw error;
         }
     }
 
-    async purchaseCart(cartId, purchaserId, logger) {
+    async purchaseCart(cartId, purchaserId, req) {
         function generateUniqueCode() {
             const randomString = Math.random().toString(36).substring(2, 8).toUpperCase();
             const timestamp = Date.now();
@@ -229,15 +225,13 @@ class CartService {
 
             cart.products = cart.products.filter(cp => !productsToPurchase.map(p => p.product.toString()).includes(cp.product.toString()));
             await cart.save();
-            logger.info('Compra realizada con éxito');
+            req.logger.info('Compra realizada con éxito');
             return { ticket, productsNotPurchased };
         } catch (error) {
-            logger.error('Error al finalizar la compra:', error);
+            req.logger.error('Error al finalizar la compra:', error);
             throw error;
         }
     }
 }
 
-const cartService = new CartService();
-
-module.exports = cartService;
+module.exports = new CartService();

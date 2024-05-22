@@ -34,7 +34,7 @@ exports.getAllCarts = async (req, res) => {
 
 exports.createCart = async (req, res) => {
     try {
-        const newCart = await CartService.createCart(req.logger);
+        const newCart = await CartService.createCart(req);
         res.status(201).json(newCart);
     } catch (error) {
         req.logger.error('Error:', error);
@@ -44,6 +44,7 @@ exports.createCart = async (req, res) => {
             code: EErrors.CART_CREATION_ERROR,
             cause: error.message
         });
+        res.status(500).send({ error: 'Error al crear el carrito', message: error.message });
     }
 };
 
@@ -65,7 +66,7 @@ exports.getCartById = async (req, res) => {
             });
         }
     } catch (error) {
-        logger.error(error);
+        req.logger.error(error);
         CustomError.createError({
             name: 'ServerInternalError',
             message: errorInfo[EErrors.SERVER_ERROR],
@@ -79,10 +80,10 @@ exports.updateCartById = async (req, res) => {
     const cartId = req.params.cid;
 
     try {
-        const updatedCart = await Cart.findByIdAndUpdate(cartId, req.body, req.logger, { new: true });
+        const updatedCart = await Cart.findByIdAndUpdate(cartId, req.body, req, { new: true });
         res.status(200).json(updatedCart);
     } catch (error) {
-        logger.error('Error:', error);
+        req.logger.error('Error:', error);
         CustomError.createError({
             name: 'CartUpdateError',
             message: errorInfo[EErrors.CART_UPDATE_ERROR],
@@ -96,7 +97,7 @@ exports.deleteCartById = async (req, res) => {
     const cartId = req.params.cid;
 
     try {
-        const result = await CartService.deleteCart(cartId, req.logger);
+        const result = await CartService.deleteCart(cartId, req);
 
         if (result.error) {
             res.status(404).json({ error: result.error });
@@ -104,7 +105,7 @@ exports.deleteCartById = async (req, res) => {
             res.status(200).json({ message: result.message });
         }
     } catch (error) {
-        logger.error('Error:', error);
+        req.logger.error('Error:', error);
         CustomError.createError({
             name: 'CartDeletionError',
             message: errorInfo[EErrors.CART_DELETION_ERROR],
@@ -119,14 +120,14 @@ exports.addProductToCart = async (req, res) => {
     const productId = req.params.pid;
 
     try {
-        const result = await CartService.addProductToCart(cartId, productId, req.logger);
+        const result = await CartService.addProductToCart(cartId, productId, req);
         if (result.error) {
             res.status(404).json({ error: result.error });
         } else {
             res.status(200).json({ message: result.message });
         }
     } catch (error) {
-        logger.error('Error:', error);
+        req.logger.error('Error:', error);
         CustomError.createError({
             name: 'ProductAdditionError',
             message: errorInfo[EErrors.PRODUCT_ADDITION_ERROR],
@@ -142,14 +143,14 @@ exports.updateProductQuantityInCart = async (req, res) => {
     const { quantity } = req.body;
 
     try {
-        const result = await CartService.updateProductQuantityInCart(cartId, productId, quantity, req.logger);
+        const result = await CartService.updateProductQuantityInCart(cartId, productId, quantity, req);
         if (result.error) {
             res.status(404).json({ error: result.error });
         } else {
             res.status(200).json({ message: result.message });
         }
     } catch (error) {
-        logger.error('Error:', error);
+        req.logger.error('Error:', error);
         CustomError.createError({
             name: 'ProductQuantityUpdateError',
             message: errorInfo[EErrors.PRODUCT_QUANTITY_UPDATE_ERROR],
@@ -164,7 +165,7 @@ exports.deleteProductFromCart = async (req, res) => {
     const productId = req.params.pid;
 
     try {
-        const result = await CartService.deleteProductFromCart(cartId, productId, req.logger);
+        const result = await CartService.deleteProductFromCart(cartId, productId, req);
 
         if (result.error) {
             res.status(404).json({ error: result.error });
@@ -172,7 +173,7 @@ exports.deleteProductFromCart = async (req, res) => {
             res.status(200).json({ message: result.message });
         }
     } catch (error) {
-        logger.error('Error:', error);
+        req.logger.error('Error:', error);
         CustomError.createError({
             name: 'ProductDeletionError',
             message: errorInfo[EErrors.PRODUCT_DELETION_ERROR],
@@ -186,7 +187,7 @@ exports.clearCart = async (req, res) => {
     const cartId = req.params.cid;
 
     try {
-        const result = await CartService.clearCart(cartId, req.logger);
+        const result = await CartService.clearCart(cartId, req);
 
         if (result.error) {
             res.status(404).json({ error: result.error });
@@ -194,7 +195,7 @@ exports.clearCart = async (req, res) => {
             res.status(200).json({ message: result.message });
         }
     } catch (error) {
-        logger.error('Error:', error);
+        req.logger.error('Error:', error);
         CustomError.createError({
             name: 'CartClearError',
             message: errorInfo[EErrors.CART_CLEAR_ERROR],
@@ -209,7 +210,7 @@ exports.purchaseCart = async (req, res) => {
     const purchaserId = req.session.user;
 
     try {
-        const { ticket, productsNotPurchased } = await CartService.purchaseCart(cartId, purchaserId, req.logger);
+        const { ticket, productsNotPurchased } = await CartService.purchaseCart(cartId, purchaserId, req);
 
         if (productsNotPurchased.length > 0) {
             res.status(200).json({ ticket, productsNotPurchased });
@@ -217,7 +218,7 @@ exports.purchaseCart = async (req, res) => {
             res.status(200).json({ ticket });
         }
     } catch (error) {
-        logger.error('Error:', error);
+        req.logger.error('Error:', error);
         CustomError.createError({
             name: 'PurchaseError',
             message: errorInfo[EErrors.PURCHASE_ERROR],
