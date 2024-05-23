@@ -54,7 +54,9 @@ exports.getProductById = async (req, res) => {
 };
 
 exports.addProduct = async (req, res) => {
-    const { title, description, price, thumbnail, code, stock, status, category, owner } = req.body;
+    const { title, description, price, thumbnail, code, stock, status, category } = req.body;
+    const owner = req.session.user ? req.session.user._id : null; 
+
     try {
         const result = await productService.addProduct(title, description, price, thumbnail, code, stock, status, category, owner, req.logger);
 
@@ -64,13 +66,14 @@ exports.addProduct = async (req, res) => {
             res.status(201).json({ message: result.message });
         }
     } catch (error) {
-        logger.error('Error:', error);
+        req.logger.error('Error:', error);
         CustomError.createError({
             name: 'AddProductError',
             message: errorInfo[EErrors.ADD_PRODUCT_ERROR],
             code: EErrors.ADD_PRODUCT_ERROR,
             cause: error.message
         });
+        res.status(500).send({ error: 'Error al agregar el producto', message: error.message });
     }
 };
 

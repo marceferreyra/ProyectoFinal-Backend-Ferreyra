@@ -65,20 +65,33 @@ class CartService {
     async addProductToCart(cartId, productId, req, quantity = 1) {
         try {
             const cart = await Cart.findById(cartId);
-
+            const userId = req.session.user._id; // Obtener el ID del usuario de la sesión
+    
             if (cart) {
-                const existingProductIndex = cart.products.findIndex((p) => p.product.equals(productId));
-
-                if (existingProductIndex !== -1) {
-                    cart.products[existingProductIndex].quantity += quantity;
+                const product = await Product.findById(productId);
+    
+                if (!product) {
+                    req.logger.warning(`No se encontró ningún producto con el ID ${productId}`);
+                    return { error: `No se encontró ningún producto con el ID ${productId}` };
+                }
+    
+                if (product.owner && product.owner.toString() === userId) {
+                    req.logger.warning(`El producto con ID ${productId} pertenece al usuario y no puede ser agregado al carrito.`);
+                    return { error: `No puedes agregar tu propio producto al carrito.` };
+                }
+    
+                const existingProduct = cart.products.find(p =>p.product.equals(productId));
+    
+                if (existingProduct) {
+                    existingProduct.quantity += quantity; // Actualizar la cantidad del producto existente
                 } else {
                     cart.products.push({ product: productId, quantity });
                 }
-
+    
                 await cart.save();
-
+    
                 req.logger.info(`Producto agregado al carrito ${cartId} correctamente.`);
-
+    
                 return { message: `Producto agregado al carrito ${cartId} correctamente.`, quantity: cart.products.length };
             } else {
                 req.logger.warning(`No se encontró ningún carrito con el ID ${cartId}`);

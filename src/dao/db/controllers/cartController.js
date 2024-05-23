@@ -122,7 +122,7 @@ exports.addProductToCart = async (req, res) => {
     try {
         const result = await CartService.addProductToCart(cartId, productId, req);
         if (result.error) {
-            res.status(404).json({ error: result.error });
+            res.status(400).json({ error: result.error }); // Cambiado el estado a 400 para indicar un error de solicitud
         } else {
             res.status(200).json({ message: result.message });
         }

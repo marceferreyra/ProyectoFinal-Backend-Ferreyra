@@ -11,12 +11,13 @@ const productSchema = new mongoose.Schema({
     status: { type: Boolean, required: true },
     category: { type: String, required: true, enum: ['calzado', 'accesorios', 'camperas'] },
     owner: {
-        type: String,
-        default: 'admin' 
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        default: '65faffb513b5bb8b23dbe8e4'
     }
 });
 
-productSchema.plugin(mongoosePaginate); 
+productSchema.plugin(mongoosePaginate);
 
 const Product = mongoose.model('Product', productSchema);
 

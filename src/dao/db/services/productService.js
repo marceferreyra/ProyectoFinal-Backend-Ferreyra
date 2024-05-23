@@ -33,7 +33,12 @@ class ProductService {
     
     async addProduct(title, description, price, thumbnail, code, stock, status, category, owner, logger) {
         try {
-
+            // Set default owner to "admin" if not provided
+            if (!owner) {
+                const adminUser = await User.findOne({ role: 'admin' });
+                owner = adminUser ? adminUser._id : null;
+            }
+    
             await Product.create({
                 title,
                 description,
@@ -45,7 +50,7 @@ class ProductService {
                 category,
                 owner
             });
-
+    
             logger.info(`Producto ${title} agregado correctamente.`);
             return { message: `Producto ${title} agregado correctamente.` };
         } catch (error) {
@@ -53,6 +58,7 @@ class ProductService {
             return { error };
         }
     }
+    
 
     async deleteProduct(id, logger) {
         try {
