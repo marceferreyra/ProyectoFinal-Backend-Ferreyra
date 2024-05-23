@@ -79,16 +79,36 @@ exports.addProduct = async (req, res) => {
 
 exports.deleteProduct = async (req, res) => {
     const productId = req.params.id;
+    const userId = req.session.user ? req.session.user._id : null;
+
+    console.log("User ID:", userId);
 
     try {
-        const result = await productService.deleteProduct(productId, req.logger);
+        const product = await productService.getProductById(productId, req.logger);
+        
+        console.log("Product:", product);
 
-        if (result.error) {
-            res.status(404).json({ error: result.error });
+        if (!product) {
+            console.log("Product not found");
+            return res.status(404).json({ error: `No se encontró ningún producto con el ID ${productId}` });
+        }
+
+        // Verifica si el usuario es el propietario del producto o si es un administrador
+        if (product.owner.equals(userId) || req.session.user.role === 'admin') {
+            console.log("User is owner or admin");
+            const result = await productService.deleteProduct(productId, req.logger);
+            if (result.error) {
+                return res.status(404).json({ error: result.error });
+            } else {
+                console.log(`Producto con ID ${productId} eliminado`);
+                return res.status(200).json({ message: `Producto con ID ${productId} eliminado` });
+            }
         } else {
-            res.status(200).json({ message: result.message });
+            console.log("User doesn't have permission");
+            return res.status(403).json({ error: 'No tienes permiso para eliminar este producto' });
         }
     } catch (error) {
+        console.log("Error:", error);
         logger.error('Error:', error);
         CustomError.createError({
             name: 'DeleteProductError',
@@ -96,8 +116,10 @@ exports.deleteProduct = async (req, res) => {
             code: EErrors.DELETE_PRODUCT_ERROR,
             cause: error.message
         });
+        return res.status(500).json({ error: 'Error al eliminar el producto', message: error.message });
     }
 };
+
 
 exports.updateProduct = async (req, res) => {
     const productId = req.params.id;

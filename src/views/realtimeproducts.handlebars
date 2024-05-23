@@ -119,15 +119,14 @@
                 title: productName,
                 description: productDescription,
                 price: productPrice,
-                thumbnail: "", // Puede actualizar esto para permitir subir imágenes
-                code: `code-${Date.now()}`, // Actualiza esta lógica si es necesario
-                stock: 100, // Puedes permitir al usuario ingresar esto
+                thumbnail: "", 
+                code: `code-${Date.now()}`, 
+                stock: 100, 
                 status: true,
-                category: "calzado", // Actualiza esto para permitir al usuario elegir
+                category: "calzado", 
                 owner: productOwner
             };
 
-            // Envía el nuevo producto al servidor
             try {
                 const response = await fetch('/api/products', {
                     method: 'POST',
@@ -152,7 +151,6 @@
             event.preventDefault();
             const productId = document.getElementById('productId').value;
 
-            // Envía la solicitud de eliminación al servidor
             try {
                 const response = await fetch(`/api/products/${productId}`, {
                     method: 'DELETE',
@@ -162,6 +160,7 @@
                 if (response.ok) {
                     socket.emit('productDeleted', { id: productId });
                 } else {
+                    alert(result.error);
                     console.error(result.error);
                 }
             } catch (error) {
