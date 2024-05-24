@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Real-Time Products</title>
 </head>
+
 <body>
     <div class="container">
         <h1 class="mt-4">Lista de productos</h1>
@@ -12,15 +14,15 @@
         {{#if products.length}}
         <div class="card-deck">
             {{#each products}}
-            <div class="card" id="{{this.id}}">
-                {{#each thumbnails}}
+            <div class="card" id="product-{{this.id}}">
+                {{#each this.thumbnails}}
                 <img src="{{this}}" class="card-img-top" alt="{{../title}}">
                 {{/each}}
                 <div class="card-body">
-                    <h5 class="card-title">{{title}}</h5>
-                    <p class="card-text">{{description}}</p>
-                    <p class="card-text">Precio: ${{price}}</p>
-                    <p class="card-text">Dueño: {{owner}}</p>
+                    <h5 class="card-title">{{this.title}}</h5>
+                    <p class="card-text">{{this.description}}</p>
+                    <p class="card-text">Precio: ${{this.price}}</p>
+                    <p class="card-text">Dueño: {{this.owner}}</p>
                 </div>
             </div>
             {{/each}}
@@ -73,27 +75,34 @@
 
             if (updatedProduct.deletedProductId) {
                 const deletedProductId = updatedProduct.deletedProductId;
-                const productElement = document.getElementById(deletedProductId);
+                const productElement = document.getElementById(`product-${deletedProductId}`);
 
                 if (productElement) {
                     productElement.remove();
                     console.log('Producto eliminado:', deletedProductId);
                 }
             } else {
-                const existingProductElement = document.getElementById(updatedProduct.id);
+                const existingProductElement = document.getElementById(`product-${updatedProduct.id}`);
 
                 if (existingProductElement) {
                     existingProductElement.querySelector('.card-title').textContent = updatedProduct.title;
                     existingProductElement.querySelector('.card-text').textContent = updatedProduct.description;
                     existingProductElement.querySelector('.card-price').textContent = `Precio: $${updatedProduct.price}`;
                     existingProductElement.querySelector('.card-owner').textContent = `Dueño: ${updatedProduct.owner}`;
+
+                    const thumbnailsContainer = existingProductElement.querySelector('.thumbnails-container');
+                    thumbnailsContainer.innerHTML = updatedProduct.thumbnails.map(url => `<img src="${url}" class="card-img-top" alt="${updatedProduct.title}">`).join('');
                 } else {
                     const newProductCard = document.createElement('div');
                     newProductCard.className = 'card';
-                    newProductCard.id = updatedProduct.id;
+                    newProductCard.id = `product-${updatedProduct.id}`;
+
+                    const thumbnails = updatedProduct.thumbnails.map(url => `<img src="${url}" class="card-img-top" alt="${updatedProduct.title}">`).join('');
 
                     newProductCard.innerHTML = `
-                        <img src="${updatedProduct.thumbnail}" class="card-img-top" alt="${updatedProduct.title}">
+                        <div class="thumbnails-container">
+                            ${thumbnails}
+                        </div>
                         <div class="card-body">
                             <h5 class="card-title">${updatedProduct.title}</h5>
                             <p class="card-text">${updatedProduct.description}</p>
@@ -119,11 +128,11 @@
                 title: productName,
                 description: productDescription,
                 price: productPrice,
-                thumbnail: "", 
-                code: `code-${Date.now()}`, 
-                stock: 100, 
+                thumbnails: "", 
+                code: `code-${Date.now()}`,
+                stock: 100,
                 status: true,
-                category: "calzado", 
+                category: "calzado",
                 owner: productOwner
             };
 
@@ -137,13 +146,15 @@
                 });
                 const result = await response.json();
 
-                if (response.ok) {
+                console.log('Resultado de la respuesta del servidor:', result);
+
+                if (response.ok && result.product) {
                     socket.emit('productAdded', result.product);
                 } else {
-                    console.error(result.error);
+                    console.error('Error en la respuesta del servidor:', result.error);
                 }
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Error en la solicitud:', error);
             }
         });
 
@@ -158,7 +169,7 @@
                 const result = await response.json();
 
                 if (response.ok) {
-                    socket.emit('productDeleted', { id: productId });
+                    socket.emit('productDeleted', productId);
                 } else {
                     alert(result.error);
                     console.error(result.error);
@@ -167,6 +178,8 @@
                 console.error('Error:', error);
             }
         });
+
     </script>
 </body>
+
 </html>

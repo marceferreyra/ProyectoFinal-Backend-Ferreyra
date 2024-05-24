@@ -20,8 +20,8 @@ const PORT = config.port;
 const server = http.createServer(app);
 const DataBase = require('./src/dao/db/db.js');
 const ChatService = require('./src/dao/db/services/chatService.js');
-const session = require ('express-session');
-const MongoStore = require ('connect-mongo');
+const session = require('express-session');
+const MongoStore = require('connect-mongo');
 const bodyParser = require('body-parser');
 const { initPassport } = require('./src/config/passport.config.js');
 const passport = require('passport');
@@ -49,7 +49,7 @@ app.use(passport.session());
 app.use(loggerMiddleware);
 
 app.use(productRouter);
-app.use('/api/carts',cartRouter);
+app.use('/api/carts', cartRouter);
 app.use('/chat', chatRouter);
 app.use('/realtimeproducts', realTimeProductsRouter);
 app.use('/api/sessions', sessionRouter);
@@ -73,13 +73,21 @@ io.on('connection', (socket) => {
     console.log('Cliente conectado');
 
     socket.on('productAdded', (newProduct) => {
-        console.log('Producto agregado:', newProduct);
-        io.emit('updateProducts', newProduct);
+        if (newProduct) {
+            console.log('Producto agregado:', newProduct);
+            io.emit('updateProducts', newProduct);
+        } else {
+            console.error('Producto agregado es null');
+        }
     });
 
     socket.on('productDeleted', (productId) => {
-        console.log(`Producto con ID ${productId} eliminado`);
-        io.emit('updateProducts', { deletedProductId: productId });
+        if (productId) {
+            console.log(`Producto con ID ${productId} eliminado`);
+            io.emit('updateProducts', { deletedProductId: productId });
+        } else {
+            console.error('ID de producto eliminado es null');
+        }
     });
 });
 

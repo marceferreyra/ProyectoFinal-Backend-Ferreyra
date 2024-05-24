@@ -62,7 +62,7 @@ exports.addProduct = async (req, res) => {
         if (result.error) {
             res.status(400).json({ error: result.error });
         } else {
-            res.status(201).json({ message: result.message });
+            res.status(201).json({ message: result.message, product: result.product });
         }
     } catch (error) {
         req.logger.error('Error:', error);
@@ -75,6 +75,7 @@ exports.addProduct = async (req, res) => {
         res.status(500).json({ error: 'Error al agregar el producto', message: error.message });
     }
 };
+
 
 exports.deleteProduct = async (req, res) => {
     const productId = req.params.id;

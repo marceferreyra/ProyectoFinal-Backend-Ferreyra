@@ -36,8 +36,8 @@ class ProductService {
                 const adminUser = await User.findOne({ role: 'admin' });
                 owner = adminUser ? adminUser._id : null;
             }
-
-            await Product.create({
+    
+            const newProduct = await Product.create({
                 title,
                 description,
                 price,
@@ -48,9 +48,9 @@ class ProductService {
                 category,
                 owner
             });
-
+    
             req.logger.info(`Producto ${title} agregado correctamente.`);
-            return { message: `Producto ${title} agregado correctamente.` };
+            return { message: `Producto ${title} agregado correctamente.`, product: newProduct };
         } catch (error) {
             req.logger.error('Error al agregar el producto:', error);
             return { error: error.message };
