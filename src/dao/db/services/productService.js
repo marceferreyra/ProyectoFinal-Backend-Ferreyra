@@ -1,44 +1,42 @@
 const Product = require('../models/productModel');
 
 class ProductService {
-    constructor() {
-    }
+    constructor() {}
 
-    async getProducts(logger) {
+    async getProducts(req) {
         try {
             const products = await Product.find();
             return products || [];
         } catch (error) {
-            logger.error('Error al obtener los productos:', error);
+            req.logger.error('Error al obtener los productos:', error);
             throw error;
         }
     }
-    
-    async getProductById(id, logger) {
+
+    async getProductById(id, req) {
         try {
-            logger.info(`Buscando producto con ID ${id}`);
+            req.logger.info(`Buscando producto con ID ${id}`);
             const product = await Product.findById(id);
             if (product) {
-                logger.info(`Producto encontrado con ID ${id}`);
+                req.logger.info(`Producto encontrado con ID ${id}`);
                 return product;
             } else {
-                logger.warning(`No se encontró ningún producto con el ID ${id}`);
+                req.logger.warning(`No se encontró ningún producto con el ID ${id}`);
                 return null;
             }
         } catch (error) {
-            logger.error('Error al buscar el producto:', error);
-            throw error;  
+            req.logger.error('Error al buscar el producto:', error);
+            throw error;
         }
     }
-    
-    async addProduct(title, description, price, thumbnail, code, stock, status, category, owner, logger) {
+
+    async addProduct(title, description, price, thumbnail, code, stock, status, category, owner, req) {
         try {
-            // Set default owner to "admin" if not provided
             if (!owner) {
                 const adminUser = await User.findOne({ role: 'admin' });
                 owner = adminUser ? adminUser._id : null;
             }
-    
+
             await Product.create({
                 title,
                 description,
@@ -50,39 +48,37 @@ class ProductService {
                 category,
                 owner
             });
-    
-            logger.info(`Producto ${title} agregado correctamente.`);
+
+            req.logger.info(`Producto ${title} agregado correctamente.`);
             return { message: `Producto ${title} agregado correctamente.` };
         } catch (error) {
-            logger.error('Error:', error);
-            return { error };
+            req.logger.error('Error al agregar el producto:', error);
+            return { error: error.message };
         }
     }
-    
 
-    async deleteProduct(id, logger) {
+    async deleteProduct(id, req) {
         try {
             const removedProduct = await Product.findByIdAndDelete(id);
 
             if (removedProduct) {
-                logger.info(`Producto ${id} eliminado correctamente.`);
-                return {                    
+                req.logger.info(`Producto ${id} eliminado correctamente.`);
+                return {
                     message: `Producto con ID ${id} eliminado correctamente.`,
                     removedProduct,
                 };
             } else {
-                logger.warning(`No se encontró ningún producto con el ID ${id} para eliminar.`);
+                req.logger.warning(`No se encontró ningún producto con el ID ${id} para eliminar.`);
                 return { error: `No se encontró ningún producto con el ID ${id} para eliminar.` };
             }
         } catch (error) {
-            logger.error('Error:', error);
-            return { error };
+            req.logger.error('Error al eliminar el producto:', error);
+            return { error: error.message };
         }
     }
 
-    async updateProduct(id, updatedProduct, logger) {
+    async updateProduct(id, updatedProduct, req) {
         try {
-
             const existingProduct = await Product.findById(id);
 
             if (existingProduct) {
@@ -90,15 +86,15 @@ class ProductService {
 
                 await existingProduct.save();
 
-                logger.info(`Producto con ID ${id} actualizado correctamente.`);
+                req.logger.info(`Producto con ID ${id} actualizado correctamente.`);
                 return { message: `Producto con ID ${id} actualizado correctamente.` };
             } else {
-                logger.warning(`No se encontró ningún producto con el ID ${id}`);
+                req.logger.warning(`No se encontró ningún producto con el ID ${id}`);
                 return { error: `No se encontró ningún producto con el ID ${id}` };
             }
         } catch (error) {
-            logger.error('Error:', error);
-            return { error };
+            req.logger.error('Error al actualizar el producto:', error);
+            return { error: error.message };
         }
     }
 }
