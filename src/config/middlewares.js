@@ -1,6 +1,10 @@
 const updateSession = require('../dao/db/controllers/userController').updateSession;
 
 const authorize = (req, res, next) => {
+    if (!req.session || !req.session.user || !req.session.user.role) {
+        return res.status(403).json({ error: 'Acceso prohibido' });
+    }
+
     const userRole = req.session.user.role;
 
     if (userRole === 'admin') {

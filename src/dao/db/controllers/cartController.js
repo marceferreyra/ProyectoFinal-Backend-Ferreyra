@@ -55,8 +55,8 @@ exports.getCartById = async (req, res) => {
         const cart = await Cart.findById(cartId).populate('products.product');
 
         if (cart) {
-            const plainCart = cart.toObject({ getters: true });
-            res.render('carts', { carts: [plainCart], cartId: cartId });
+            res.status(200).json(cart)
+            
         } else {
             CustomError.createError({
                 name: 'CartNotFoundError',
