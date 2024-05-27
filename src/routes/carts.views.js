@@ -1,9 +1,11 @@
 const Cart = require('../dao/db/models/cartModel'); 
+const cartService = require(`../dao/db/services/cartService`)
 
-async function renderCartView(req, res) {
+exports.renderCartView = async (req, res) => {
     try {
         const cartId = req.params.cid;
-        const cart = await Cart.findById(cartId)
+        const cart = await Cart.findById(cartId).populate('products.product');
+        
         
         if (cart) {
             const plainCart = cart.toObject({ getters: true });
@@ -15,6 +17,4 @@ async function renderCartView(req, res) {
         req.logger.error(error);
         res.status(500).send('Error interno del servidor');
     }
-}
-
-module.exports =  renderCartView
+};
