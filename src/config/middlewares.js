@@ -4,7 +4,9 @@ const authorize = (req, res, next) => {
     const userRole = req.session.user.role;
 
     if (userRole === 'admin') {
-        if (req.originalUrl.startsWith('/realtimeproducts')) {
+        if (req.originalUrl.startsWith('/realtimeproducts') ||
+            req.originalUrl.startsWith('/api/carts')
+        ) {
             console.log('Acceso permitido para administrador a realtimeproducts');
             return next();
         } else {

@@ -26,6 +26,22 @@ const bodyParser = require('body-parser');
 const { initPassport } = require('./src/config/passport.config.js');
 const passport = require('passport');
 const loggerMiddleware = require('./src/config/logger.js');
+const swaggerJSDoc = require (`swagger-jsdoc`);
+const swaggerUIExpress = require (`swagger-ui-express`)
+
+const swaggerOptions = {
+    definition: {
+        openapi: "3.0.1",
+        info: {
+            title: "Documentacion API Proyecto Final",
+            description: "Documentacion API Proyecto Final - Utilizando swagger"
+        }
+
+    }, apis: [`./src/docs/**/*.yaml`]
+}
+
+const specs = swaggerJSDoc(swaggerOptions)
+app.use(`/apidocs`, swaggerUIExpress.serve, swaggerUIExpress.setup(specs))
 
 app.use(express.static(__dirname + "/src/public"));
 app.use(express.json());
