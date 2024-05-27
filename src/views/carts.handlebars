@@ -32,7 +32,7 @@
 
     <a href="/api/carts/{{cartId}}/clear" class="btn btn-danger">Vaciar carrito</a>
 
-    <a href="/products" class="btn btn-info">Ver productos</a>
+    <a href="/api/products" class="btn btn-info">Ver productos</a>
         
     <a href="/api/carts/{{cartId}}/purchase" class="btn btn-dark">Finalizar compra</a>    
     </div>
@@ -43,8 +43,7 @@
             })
             .then(response => {
                 if (response.ok) {
-                    // Actualizar la interfaz de usuario (si es necesario)
-                    window.location.reload(); // Recargar la página para reflejar los cambios
+                    window.location.reload(); 
                 } else {
                     console.error('Error al disminuir la cantidad del producto en el carrito');
                 }
@@ -58,8 +57,7 @@
             })
             .then(response => {
                 if (response.ok) {
-                    // Actualizar la interfaz de usuario (si es necesario)
-                    window.location.reload(); // Recargar la página para reflejar los cambios
+                    window.location.reload(); 
                 } else {
                     console.error('Error al aumentar la cantidad del producto en el carrito');
                 }
@@ -76,8 +74,7 @@
                 console.log('Response:', response);
                 if (response.ok) {
                     console.log('Cart cleared successfully');
-                    // Actualizar la interfaz de usuario (si es necesario)
-                    window.location.reload(); // Recargar la página para reflejar los cambios
+                    window.location.reload(); 
                 } else {
                     console.error('Error al vaciar el carrito');
                 }
@@ -91,8 +88,7 @@
     })
     .then(response => {
         if (response.ok) {
-            // Actualizar la interfaz de usuario (si es necesario)
-            window.location.reload(); // Recargar la página para reflejar los cambios
+            window.location.reload(); 
         } else {
             console.error('Error al finalizar la compra');
         }
