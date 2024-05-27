@@ -7,11 +7,7 @@ const productService = require('../services/productService');
 exports.getProducts = async (req, res) => {
     try {
         const products = await productService.getProducts(req);
-        const plainProducts = products.map(product => product.toObject({ getters: true }));
-        const user = req.session.user;
-        const cartId = user ? user.cartId : null; 
-        
-        res.render('products', { products: plainProducts, user, cartId }); 
+        res.status(200).json(products);
     } catch (error) {
         req.logger.error(error);
         CustomError.createError({
@@ -29,11 +25,8 @@ exports.getProductById = async (req, res) => {
 
     try {
         const product = await productService.getProductById(productId, req);
-        
-        if (product) {    
-            const user = req.session.user;
-            const plainProduct = product.toObject({ getters: true }); 
-            res.render('productDetail', { product: plainProduct, user }); 
+        if (product) {
+            res.status(200).json(product);
         } else {
             res.status(404).json({
                 status: 'error',

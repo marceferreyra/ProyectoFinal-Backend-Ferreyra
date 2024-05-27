@@ -1,6 +1,6 @@
 const express = require('express');
 const cartController = require('../dao/db/controllers/cartController');
-const renderCartView = require(`./carts.view`)
+const renderCartView = require(`./carts.views`)
 const authorize = require('../config/middlewares');
 
 const cartRouter = express.Router();
