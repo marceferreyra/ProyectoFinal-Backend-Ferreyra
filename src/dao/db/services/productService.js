@@ -5,8 +5,24 @@ class ProductService {
 
     async getProducts(req) {
         try {
-            const products = await Product.find();
-            return products || [];
+            const { limit = 10, page = 1, category, status, owner, sort } = req.query;
+            const filters = {};
+
+            if (category) filters.category = category;
+            if (status) filters.status = status === 'true'; 
+            if (owner) filters.owner = owner;
+
+            const options = {
+                page: parseInt(page, 10),
+                limit: parseInt(limit, 10),
+            };
+
+            if (sort) {
+                options.sort = { price: sort === 'asc' ? 1 : -1 };
+            }
+
+            const result = await Product.paginate(filters, options);
+            return result.docs;
         } catch (error) {
             req.logger.error('Error al obtener los productos:', error);
             throw error;

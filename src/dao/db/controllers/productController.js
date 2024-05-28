@@ -7,9 +7,30 @@ const productService = require('../services/productService');
 exports.getProducts = async (req, res) => {
     try {
         const products = await productService.getProducts(req);
-        res.status(200).json(products);
+
+        const { docs, totalPages, page, hasPrevPage, hasNextPage, prevPage, nextPage } = products;
+        const limit = req.query.limit || 10;
+        const category = req.query.category || '';
+        const status = req.query.status || '';
+        const owner = req.query.owner || '';
+        const sort = req.query.sort || '';
+
+        const createLink = (pageNum) => `/api/products?page=${pageNum}&limit=${limit}&category=${category}&status=${status}&owner=${owner}&sort=${sort}`;
+
+        res.status(200).json({
+            status: 'success',
+            payload: docs,
+            totalPages,
+            prevPage,
+            nextPage,
+            page,
+            hasPrevPage,
+            hasNextPage,
+            prevLink: hasPrevPage ? createLink(prevPage) : null,
+            nextLink: hasNextPage ? createLink(nextPage) : null,
+        });
     } catch (error) {
-        req.logger.error(error);
+        req.logger.error('Error en el controlador de obtener productos:', error);
         CustomError.createError({
             name: 'GetProductsError',
             message: errorInfo[EErrors.GET_PRODUCTS_ERROR],
