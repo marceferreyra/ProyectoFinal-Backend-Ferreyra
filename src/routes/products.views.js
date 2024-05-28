@@ -3,7 +3,8 @@ const productService = require('../dao/db/services/productService');
 
 exports.renderProductsView = async (req, res) => {
     try {
-        const products = await productService.getProducts(req);
+        const productsResult = await productService.getProducts(req);
+        const products = productsResult.docs;
         const plainProducts = products.map(product => product.toObject({ getters: true }));
         const user = req.session.user;
         const cartId = user ? user.cartId : null;

@@ -21,8 +21,8 @@ class ProductService {
                 options.sort = { price: sort === 'asc' ? 1 : -1 };
             }
 
-            const result = await Product.paginate(filters, options);
-            return result.docs;
+            const products = await Product.paginate(filters, options);
+            return products;
         } catch (error) {
             req.logger.error('Error al obtener los productos:', error);
             throw error;

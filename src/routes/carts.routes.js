@@ -7,7 +7,7 @@ const cartRouter = express.Router();
 
 cartRouter.get('/',   cartController.getAllCarts);
 cartRouter.post('/', cartController.createCart);
-cartRouter.get('/:cid', renderCartViews.renderCartView, cartController.getCartById);
+cartRouter.get('/:cid', /*renderCartViews.renderCartView,*/ cartController.getCartById);
 cartRouter.put('/:cid', cartController.updateCartById);
 cartRouter.delete('/:cid', cartController.deleteCartById);
 cartRouter.post('/:cid/products/:pid', cartController.addProductToCart);
