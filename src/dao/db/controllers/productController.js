@@ -67,11 +67,11 @@ exports.getProductById = async (req, res) => {
 };
 
 exports.addProduct = async (req, res) => {
-    const { title, description, price, thumbnail, code, stock, status, category } = req.body;
+    const { title, description, price, thumbnails, code, stock, status, category } = req.body;
     const owner = req.session.user ? req.session.user._id : null; 
 
     try {
-        const result = await productService.addProduct(title, description, price, thumbnail, code, stock, status, category, owner, req);
+        const result = await productService.addProduct(title, description, price, thumbnails, code, stock, status, category, owner, req);
 
         if (result.error) {
             res.status(400).json({ error: result.error });

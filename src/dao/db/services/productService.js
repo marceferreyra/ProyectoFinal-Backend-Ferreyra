@@ -1,4 +1,5 @@
 const Product = require('../models/productModel');
+const User = require('../models/userModel')
 
 class ProductService {
     constructor() {}
@@ -46,7 +47,7 @@ class ProductService {
         }
     }
 
-    async addProduct(title, description, price, thumbnail, code, stock, status, category, owner, req) {
+    async addProduct(title, description, price, thumbnails, code, stock, status, category, owner, req) {
         try {
             if (!owner) {
                 const adminUser = await User.findOne({ role: 'admin' });
@@ -59,7 +60,7 @@ class ProductService {
                 price,
                 code,
                 stock,
-                thumbnails: [thumbnail],
+                thumbnails,
                 status: true,
                 category,
                 owner
