@@ -28,7 +28,7 @@ exports.githubAuthCallback = async (req, res) => {
                 cartId: newCart._id
             });
         } else if (!user.cartId) {
-            const newCart = await cartService.createCart();
+            const newCart = await cartService.createCart(req);
 
             user.cartId = newCart._id;
         }
@@ -60,7 +60,7 @@ exports.register = async (req, res) => {
 
         const role = email === 'adminCoder@coder.com' ? 'admin' : 'user';
 
-        const newCart = await cartService.createCart(req.logger);
+        const newCart = await cartService.createCart(req);
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -89,9 +89,12 @@ exports.login = async (req, res) => {
         }
 
         const { email, password, newPassword } = req.body;
+        console.log('Email:', email); 
+        console.log('Password:', password); 
         let user = await User.findOne({ email });
 
         if (!user) {
+            console.log('Usuario no encontrado'); 
             return res.status(401).json({ error: 'El usuario no existe. Regístrate para iniciar sesión' });
         }
         if (newPassword) {
@@ -101,9 +104,11 @@ exports.login = async (req, res) => {
         const passwordMatch = await bcrypt.compare(password, user.password);
 
         if (!passwordMatch) {
+            console.log('Credenciales inválidas'); 
             return res.status(401).json({ error: 'Credenciales inválidas' });
         }
 
+        console.log('Inicio de sesión exitoso');
         req.session.user = user;
         res.redirect('/api/sessions/current');
     } catch (error) {

@@ -65,7 +65,7 @@ class CartService {
     async addProductToCart(cartId, productId, req, quantity = 1) {
         try {
             const cart = await Cart.findById(cartId);
-            const userId = req.session.user._id; // Obtener el ID del usuario de la sesión
+            const userId = req.session.user._id; 
     
             if (cart) {
                 const product = await Product.findById(productId);
@@ -83,7 +83,7 @@ class CartService {
                 const existingProduct = cart.products.find(p =>p.product.equals(productId));
     
                 if (existingProduct) {
-                    existingProduct.quantity += quantity; // Actualizar la cantidad del producto existente
+                    existingProduct.quantity += quantity; 
                 } else {
                     cart.products.push({ product: productId, quantity });
                 }
