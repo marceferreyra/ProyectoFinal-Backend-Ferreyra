@@ -89,12 +89,10 @@ exports.login = async (req, res) => {
         }
 
         const { email, password, newPassword } = req.body;
-        console.log('Email:', email); 
-        console.log('Password:', password); 
+        
         let user = await User.findOne({ email });
 
         if (!user) {
-            console.log('Usuario no encontrado'); 
             return res.status(401).json({ error: 'El usuario no existe. Regístrate para iniciar sesión' });
         }
         if (newPassword) {
@@ -104,7 +102,6 @@ exports.login = async (req, res) => {
         const passwordMatch = await bcrypt.compare(password, user.password);
 
         if (!passwordMatch) {
-            console.log('Credenciales inválidas'); 
             return res.status(401).json({ error: 'Credenciales inválidas' });
         }
 
@@ -193,10 +190,9 @@ exports.sendPasswordResetEmail = async (req, res) => {
 
         const resetToken = {
             email: email,
-            expiration: new Date().getTime() + (1000 * 60 * 60) // Expira después de una hora (en milisegundos)
+            expiration: new Date().getTime() + (1000 * 60 * 60) 
         };
 
-        // Guardar el token y su fecha de expiración en la sesión
         req.session.resetToken = resetToken;
 
         const resetLink = `${req.protocol}://${req.get('host')}/api/sessions/reset-password?token=${resetToken}&expiration=${resetToken.expiration}`;
@@ -238,7 +234,6 @@ exports.resetPassword = async (req, res) => {
 
         const now = new Date().getTime();
         if (now > resetToken.expiration) {
-            // Si el token ha expirado, redirigir al usuario a la página de solicitud de restablecimiento
             return res.redirect('/api/sessions/forgot-password');
         }
 

@@ -1,15 +1,17 @@
-import mongoose from 'mongoose';
-import supertest from 'supertest';
-import { expect } from 'chai';
+const mongoose = require('mongoose');
+const supertest = require('supertest');
 
 const requester = supertest('http://localhost:8080');
 
 describe('Testing Session API', () => {
+    let expect;
+
     before(async () => {
         await mongoose.connect('mongodb+srv://marceeferreyra:Marce507@coder-backend.osbdrri.mongodb.net/ecommerce', {
-            useNewUrlParser: true,
-            useUnifiedTopology: true
         });
+
+        const chai = await import('chai');
+        expect = chai.expect;
     });
 
     after(async () => {

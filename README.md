@@ -1,4 +1,7 @@
 ENTREGA TESTING AVANZADO
 
-// Los archivo de testing tienen el formato .mjs en lugar de .js por que si no, no me permitia ejecutarlos
-//cart.test.mjs; product.test.mjs; session.test.mjs
+// package.json configurado e instaladas las dependencias correctamente y cambiado a commonJS
+// para levantar las pruebas
+// - npx mocha test/cart.test.js
+// - npx mocha test/product.test.js
+// - npx mocha test/session.test.js
