@@ -1,5 +1,6 @@
 const User = require('../models/userModel');
 const cartService = require('../services/cartService');
+const path = require('path');
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 
@@ -107,6 +108,10 @@ exports.login = async (req, res) => {
 
         console.log('Inicio de sesión exitoso');
         req.session.user = user;
+       
+        user.last_connection = new Date();
+        await user.save();
+        
         res.redirect('/api/sessions/current');
     } catch (error) {
         console.error('Error al iniciar sesión:', error);
@@ -114,14 +119,29 @@ exports.login = async (req, res) => {
     }
 };
 
-exports.logout = (req, res) => {
-    req.logout((err) => {
-        if (err) {
-            res.status(500).json({ error: 'Error interno del servidor' });
+exports.logout = async (req, res) => {
+    try {
+        if (req.session.user) {
+            const userId = req.session.user._id;
+            const user = await User.findById(userId);
+
+            if (user) {
+                user.last_connection = new Date();
+                await user.save();
+            }
+
+            req.logout((err) => {
+                if (err) {
+                    return res.status(500).json({ error: 'Error interno del servidor' });
+                }
+                res.redirect('/api/sessions/login');
+            });
         } else {
             res.redirect('/api/sessions/login');
         }
-    });
+    } catch (error) {
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
 };
 
 exports.getCurrent = async (req, res) => {
@@ -157,6 +177,14 @@ exports.getProfile = async (req, res) => {
         }
 
         const userObject = user.toObject();
+
+        if (userObject.documents && userObject.documents.length > 0) {
+            userObject.documents = userObject.documents.map(doc => ({
+                ...doc,
+                fileName: path.basename(doc.reference)
+            }));
+        }
+
         res.render('profile', { user: userObject });
     } catch (error) {
         res.status(500).json({ error: 'Error interno del servidor' });

@@ -9,12 +9,29 @@
 
 <body>
     <h1>Perfil</h1>
-    <p>Hola, {{#if user.first_name}}{{user.first_name}}{{else}}{{user.name}}{{/if}}!</p>
+    <div id="profile">
+        <div id="profile-img"> {{#if user.documents}}
+            {{#each user.documents}}
+            {{#if (eq this.name "profile")}}
+            <img src="/uploads/profiles/{{this.fileName}}" alt="Profile Image" class="profile-image">
+            {{/if}}
+            {{/each}}
+            {{/if}}
+        </div>
+        <div id="profile-greeting">{{#if user.first_name}}
+            <p>Hola, {{user.first_name}}!</p>
+        </div>
+    </div>
+
+    {{else}}
+    <p>Hola, {{user.name}}!</p>
+    {{/if}}
     <h2>Tus datos</h2>
     <p>Nombre: {{#if user.first_name}}{{user.first_name}}{{else}}{{user.name}}{{/if}}</p>
     <p>Apellido: {{user.last_name}}</p>
     <p>Edad: {{user.age}}</p>
-    <p>email: {{user.email}}</p>
+    <p>Email: {{user.email}}</p>
+
     <a href="/api/sessions/logout" class="btn btn-danger">Cerrar sesión</a>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subir Documentos</title>
+</head>
+<body>
+    <h1>Subir Documentos</h1>
+    <p>Usuario: {{user.email}}</p>
+    <p>Rol Actual: {{user.role}}</p>
+
+    <h2>Subir Documentos</h2>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <label for="profile">Imagen de Perfil:</label>
+        <input type="file" id="profile" name="profile">
+        <br>
+
+        <label for="product">Imagen de Producto:</label>
+        <input type="file" id="product" name="product">
+        <br>
+
+        <label for="document">Documentos:</label>
+        <input type="file" id="document" name="document" multiple>
+        <br>
+
+        <button type="submit">Subir Documentos</button>
+    </form>
+
+<script>
+    const uploadForm = document.getElementById('uploadForm');
+
+    uploadForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(uploadForm);
+        try {
+            const userId = "{{user._id}}"; 
+            const response = await fetch(`/api/users/${userId}/documents`, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) {
+                throw new Error('No se pudo subir los documentos');
+            }
+
+            const data = await response.json();
+
+            alert('¡Los documentos se han subido correctamente!');
+
+            location.reload(true);
+        } catch (error) {
+            console.error('Error al subir los documentos:', error);
+            alert('Error al subir los documentos. Por favor, inténtalo de nuevo más tarde.');
+        }
+    });
+</script>
+</body>
+</html>

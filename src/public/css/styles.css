@@ -44,4 +44,24 @@ label {
     flex-wrap: wrap;
 }
 
+/*profile*/
 
+.profile-image {
+    height: 250px;
+    width: 250px;
+}
+
+#profile {
+    display: flex;
+}
+#profile-img {
+    display: flex;
+}
+
+#profile-greeting {
+    display: flex;
+    align-content: space-around;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+}

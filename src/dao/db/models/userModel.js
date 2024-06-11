@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
+const documentSchema = new mongoose.Schema({
+    name: { type: String, required: true },
+    reference: { type: String, required: true }
+});
+
 const userSchema = new mongoose.Schema({
     first_name: {
         type: String,
@@ -39,6 +44,10 @@ const userSchema = new mongoose.Schema({
     cartId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Cart'
+    },
+    documents: [documentSchema],
+    last_connection: {
+        type: Date
     }
 }, {
     timestamps: true,

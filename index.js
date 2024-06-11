@@ -9,7 +9,7 @@ const mailRouter = require('./src/config/mail.js');
 const userRouter = require(`./src/routes/users.routes.js`)
 const mockingRouter = require('./src/routes/mocking.routes.js');
 const loggerTestRouter = require('./src/routes/loggerTests.routes.js');
-const handlebars = require(`express-handlebars`);
+const exphbs = require('express-handlebars');
 const path = require('path');
 const http = require(`http`);
 const { Server } = require(`socket.io`);
@@ -26,8 +26,9 @@ const bodyParser = require('body-parser');
 const { initPassport } = require('./src/config/passport.config.js');
 const passport = require('passport');
 const loggerMiddleware = require('./src/config/logger.js');
-const swaggerJSDoc = require (`swagger-jsdoc`);
-const swaggerUIExpress = require (`swagger-ui-express`)
+const swaggerJSDoc = require(`swagger-jsdoc`);
+const swaggerUIExpress = require(`swagger-ui-express`)
+
 
 const swaggerOptions = {
     definition: {
@@ -70,11 +71,19 @@ app.use('/chat', chatRouter);
 app.use('/realtimeproducts', realTimeProductsRouter);
 app.use('/api/sessions', sessionRouter);
 app.use('/mail', mailRouter);
-app.use(`/api/users`, userRouter)
+app.use(userRouter)
 app.use(mockingRouter);
 app.use(loggerTestRouter);
 
-app.engine(`handlebars`, handlebars.engine());
+const hbs = exphbs.create({
+    helpers: {
+        eq: function(a, b) {
+            return a === b;
+        }
+    }
+});
+
+app.engine('handlebars', hbs.engine);
 app.set(`view engine`, `handlebars`);
 app.set('views', __dirname + '/src/views');
 
