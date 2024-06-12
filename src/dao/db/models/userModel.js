@@ -3,7 +3,8 @@ const bcrypt = require('bcrypt');
 
 const documentSchema = new mongoose.Schema({
     name: { type: String, required: true },
-    reference: { type: String, required: true }
+    reference: { type: String, required: true }, 
+    status: { type: String, enum: ['pendiente', 'completado'], default: 'pendiente' }
 });
 
 const userSchema = new mongoose.Schema({

@@ -12,48 +12,90 @@
 
     <h2>Subir Documentos</h2>
     <form id="uploadForm" enctype="multipart/form-data">
-        <label for="profile">Imagen de Perfil:</label>
-        <input type="file" id="profile" name="profile">
+        <div>
+            <span id="profileStatus">
+                Estado: 
+                {{#each user.documents}}
+                    {{#if (eq name 'profile')}}
+                        {{status}}
+                    {{/if}}
+                {{/each}}
+                {{#unless (hasDocument user.documents 'profile')}}
+                    pendiente
+                {{/unless}}
+            </span>
+            <label for="profile">Imagen de Perfil:</label>
+            <input type="file" id="profile" name="profile">
+        </div>
+
         <br>
 
-        <label for="product">Imagen de Producto:</label>
-        <input type="file" id="product" name="product">
+        <div>
+            <span id="productStatus">
+                Estado: 
+                {{#each user.documents}}
+                    {{#if (eq name 'product')}}
+                        {{status}}
+                    {{/if}}
+                {{/each}}
+                {{#unless (hasDocument user.documents 'product')}}
+                    pendiente
+                {{/unless}}
+            </span>
+            <label for="product">Imagen de Producto:</label>
+            <input type="file" id="product" name="product">
+        </div>
+
         <br>
 
-        <label for="document">Documentos:</label>
-        <input type="file" id="document" name="document" multiple>
+        <div>
+            <span id="documentStatus">
+                Estado: 
+                {{#each user.documents}}
+                    {{#if (eq name 'document')}}
+                        {{status}}
+                    {{/if}}
+                {{/each}}
+                {{#unless (hasDocument user.documents 'document')}}
+                    pendiente
+                {{/unless}}
+            </span>
+            <label for="document">Documentos:</label>
+            <input type="file" id="document" name="document" multiple>
+        </div>
+
         <br>
 
         <button type="submit">Subir Documentos</button>
     </form>
 
-<script>
-    const uploadForm = document.getElementById('uploadForm');
+    <script>
+        const uploadForm = document.getElementById('uploadForm');
 
-    uploadForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const formData = new FormData(uploadForm);
-        try {
-            const userId = "{{user._id}}"; 
-            const response = await fetch(`/api/users/${userId}/documents`, {
-                method: 'POST',
-                body: formData
-            });
+        uploadForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(uploadForm);
+            try {
+                const userId = "{{user._id}}"; 
+                const response = await fetch(`/api/users/${userId}/documents`, {
+                    method: 'POST',
+                    body: formData
+                });
 
-            if (!response.ok) {
-                throw new Error('No se pudo subir los documentos');
+                if (!response.ok) {
+                    throw new Error('No se pudo subir los documentos');
+                }
+
+                const data = await response.json();
+
+                alert('¡Los documentos se han subido correctamente!');
+
+                location.reload(true);
+            } catch (error) {
+                console.error('Error al subir los documentos:', error);
+                alert('Error al subir los documentos. Por favor, inténtalo de nuevo más tarde.');
             }
-
-            const data = await response.json();
-
-            alert('¡Los documentos se han subido correctamente!');
-
-            location.reload(true);
-        } catch (error) {
-            console.error('Error al subir los documentos:', error);
-            alert('Error al subir los documentos. Por favor, inténtalo de nuevo más tarde.');
-        }
-    });
-</script>
+        });
+    </script>
 </body>
 </html>

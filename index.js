@@ -79,6 +79,13 @@ const hbs = exphbs.create({
     helpers: {
         eq: function(a, b) {
             return a === b;
+        },
+        hasDocument: function (documents, name) {
+            if (name === 'document') {
+                return documents.some(doc => doc.status === 'completado');
+            } else {
+                return documents.some(doc => doc.name === name && doc.status === 'completado');
+            }
         }
     }
 });

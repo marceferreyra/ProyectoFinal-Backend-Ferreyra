@@ -58,19 +58,18 @@ exports.uploadDocuments = async (req, res) => {
 
         if (req.files['profile']) {
             const profile = req.files['profile'][0];
-            user.documents.push({ name: 'profile', reference: profile.path });
+            user.documents.push({ name: 'profile', reference: profile.path, status: 'completado' });
         }
         if (req.files['product']) {
             const product = req.files['product'][0];
-            user.documents.push({ name: 'product', reference: product.path });
+            user.documents.push({ name: 'product', reference: product.path, status: 'completado' });
         }
         if (req.files['document']) {
             req.files['document'].forEach(doc => {
-                user.documents.push({ name: doc.originalname, reference: doc.path });
+                user.documents.push({ name: 'document', reference: doc.path, status: 'completado' });
             });
         }
 
-        user.status = 'documentos_subidos'; 
         await user.save();
         res.status(200).json({ message: 'Documentos subidos exitosamente' });
     } catch (error) {
