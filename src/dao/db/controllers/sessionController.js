@@ -60,17 +60,14 @@ exports.register = async (req, res) => {
         }
 
         const role = email === 'adminCoder@coder.com' ? 'admin' : 'user';
-
         const newCart = await cartService.createCart(req);
-
-        const hashedPassword = await bcrypt.hash(password, 10);
 
         const newUser = new User({
             first_name,
             last_name,
             email,
             age,
-            password: hashedPassword,
+            password,
             role,
             cartId: newCart._id
         });
@@ -89,29 +86,47 @@ exports.login = async (req, res) => {
             return res.status(400).json({ error: 'Ya has iniciado sesión' });
         }
 
-        const { email, password, newPassword } = req.body;
-        
-        let user = await User.findOne({ email });
+        const { email, password } = req.body;
+        const user = await User.findOne({ email });
 
         if (!user) {
             return res.status(401).json({ error: 'El usuario no existe. Regístrate para iniciar sesión' });
         }
-        if (newPassword) {
-            user.password = newPassword;
-            await user.save();
-        }
+
         const passwordMatch = await bcrypt.compare(password, user.password);
 
         if (!passwordMatch) {
             return res.status(401).json({ error: 'Credenciales inválidas' });
         }
 
-        console.log('Inicio de sesión exitoso');
         req.session.user = user;
-       
-        user.last_connection = new Date();
-        await user.save();
-        
+        res.redirect('/api/sessions/current');
+    } catch (error) {
+        console.error('Error al iniciar sesión:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+};
+
+exports.login = async (req, res) => {
+    try {
+        if (req.session.user) {
+            return res.status(400).json({ error: 'Ya has iniciado sesión' });
+        }
+
+        const { email, password } = req.body;
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return res.status(401).json({ error: 'El usuario no existe. Regístrate para iniciar sesión' });
+        }
+
+        const passwordMatch = await bcrypt.compare(password, user.password);
+
+        if (!passwordMatch) {
+            return res.status(401).json({ error: 'Credenciales inválidas' });
+        }
+
+        req.session.user = user;
         res.redirect('/api/sessions/current');
     } catch (error) {
         console.error('Error al iniciar sesión:', error);
@@ -218,7 +233,7 @@ exports.sendPasswordResetEmail = async (req, res) => {
 
         const resetToken = {
             email: email,
-            expiration: new Date().getTime() + (1000 * 60 * 60) 
+            expiration: new Date().getTime() + (1000 * 60 * 60)
         };
 
         req.session.resetToken = resetToken;
