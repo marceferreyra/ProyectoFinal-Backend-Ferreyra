@@ -20,7 +20,7 @@ exports.renderPremiumPage = async (req, res) => {
         const allDocumentsPresent = requiredDocuments.every(doc => userDocuments.includes(doc));
 
         if (!allDocumentsPresent) {
-            return res.status(403).send('El usuario no ha terminado de procesar su documentación');
+            return res.status(403).json({ error: 'El usuario no ha terminado de procesar su documentación'});
         }
 
         res.render('premium-user', { user });
