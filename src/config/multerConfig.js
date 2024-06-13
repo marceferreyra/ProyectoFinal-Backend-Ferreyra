@@ -9,8 +9,12 @@ const storage = multer.diskStorage({
             folder = 'profiles';
         } else if (file.fieldname === 'product') {
             folder = 'products';
-        } else if (file.fieldname === 'document') {
-            folder = 'documents';
+        } else if (file.fieldname === 'identificacion') {
+            folder = 'documents/identificacion';
+        } else if (file.fieldname === 'comprobante_domicilio') {
+            folder = 'documents/comprobante_domicilio';
+        } else if (file.fieldname === 'comprobante_estado_cuenta') {
+            folder = 'documents/comprobante_estado_cuenta';
         }
         cb(null, path.join(__dirname, '..', 'public', 'uploads', folder));
     },

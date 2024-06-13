@@ -18,23 +18,7 @@
         <button type="submit" id="userBtn">Cambiar a User</button>
     </form>
 
-    <h2>Subir Documentos</h2>
-    <form id="uploadForm" enctype="multipart/form-data">
-        <label for="identification">Identificación:</label>
-        <input type="file" id="identification" name="identification">
-        <br>
-
-        <label for="addressProof">Comprobante de Domicilio:</label>
-        <input type="file" id="addressProof" name="addressProof">
-        <br>
-
-        <label for="accountStatement">Comprobante de Estado de Cuenta:</label>
-        <input type="file" id="accountStatement" name="accountStatement">
-        <br>
-
-        <button type="submit">Subir Documentos</button>
-    </form>
-
+    
     <script>
         const premiumForm = document.getElementById('premiumForm');
         const userForm = document.getElementById('userForm');
@@ -75,33 +59,7 @@
             } catch (error) {
                 console.error('Error al cambiar el rol del usuario:', error);
             }
-        }
-
-        uploadForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const formData = new FormData(uploadForm);
-            try {
-                const response = await fetch(`/api/users/upload-documents/{{user._id}}`, {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (!response.ok) {
-                    throw new Error('No se pudo subir los documentos');
-                }
-
-                const data = await response.json();
-
-                console.log('Respuesta del servidor:', data);
-
-                alert('¡Los documentos se han subido correctamente!');
-
-                location.reload(true);
-
-            } catch (error) {
-                console.error('Error al subir los documentos:', error);
-            }
-        });
+        }        
     </script>
 
 </body>

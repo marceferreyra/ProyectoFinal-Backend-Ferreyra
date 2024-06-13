@@ -9,7 +9,9 @@ userRouter.get('/api/users/:uid/documents', userController.renderPremiumDocument
 userRouter.post('/api/users/:uid/documents', upload.fields([
     { name: 'profile', maxCount: 1 },
     { name: 'product', maxCount: 1 },
-    { name: 'document', maxCount: 3 }
+    { name: 'identificacion', maxCount: 1 },
+    { name: 'comprobante_domicilio', maxCount: 1 },
+    { name: 'comprobante_estado_cuenta', maxCount: 1 }
 ]), userController.uploadDocuments);
 
 module.exports = userRouter
