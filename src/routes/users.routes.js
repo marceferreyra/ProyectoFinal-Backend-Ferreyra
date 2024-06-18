@@ -3,6 +3,7 @@ const userRouter = express.Router();
 const userController = require(`../dao/db/controllers/userController`)
 const upload = require('../config/multerConfig')
 
+userRouter.get('/api/users', userController.getAllUsers)
 userRouter.get('/api/users/premium/:uid', userController.renderPremiumPage);
 userRouter.put('/api/users/premium/:uid', userController.togglePremium);
 userRouter.get('/api/users/:uid/documents', userController.renderPremiumDocumentsPage);

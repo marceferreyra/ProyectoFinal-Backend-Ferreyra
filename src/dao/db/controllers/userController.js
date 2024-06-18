@@ -1,6 +1,16 @@
 const mongoose = require('mongoose');
 const User = require('../models/userModel');
 
+exports.getAllUsers = async (req, res) => {
+    try {
+        const users = await User.find({}).select('name first_name last_name email role');
+        res.status(200).json(users);
+    } catch (error) {
+        console.error('Error al obtener todos los usuarios:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+};
+
 exports.renderPremiumPage = async (req, res) => {
     try {
         const userId = req.params.uid;
