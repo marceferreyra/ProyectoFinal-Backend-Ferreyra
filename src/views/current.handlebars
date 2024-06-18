@@ -19,26 +19,23 @@
     <h3>Estos son tus accesos:</h3>
 
     {{#if isAdmin}}
-    <p>Eres un administrador. Aquí puedes ver la lista de usuarios:</p>
     <ul>
-        {{#each users}}
-        <li>{{this}}</li>
-        {{/each}}
+        <a href="/users" class="btn btn-warning">Administrar usuarios</a>
         <a href="/api/products" class="btn btn-info">Ver productos</a>
         <a href="/api/sessions/logout" class="btn btn-danger">Cerrar sesión</a>
         <a href="/api/carts/{{user.cartId}}" class="btn btn-secondary">Ver carrito</a>
         <a href="/api/sessions/profile" class="btn btn-primary">Ir al perfil</a>
-        <a href="/realtimeproducts" class="btn btn-dark">Modificar productos</a>  
-        <a href="/api/users/{{user._id}}/documents" class="btn btn-success">Subir Documentos</a>      
+        <a href="/realtimeproducts" class="btn btn-dark">Modificar productos</a>
+        <a href="/api/users/{{user._id}}/documents" class="btn btn-success">Subir Documentos</a>
     </ul>
-    {{else}}   
+    {{else}}
     <a href="/api/products" class="btn btn-info">Ver productos</a>
     <a href="/api/sessions/logout" class="btn btn-danger">Cerrar sesión</a>
     <a href="/api/carts/{{user.cartId}}" class="btn btn-secondary">Ver carrito</a>
     <a href="/api/sessions/profile" class="btn btn-primary">Ir al perfil</a>
-     <a href="/realtimeproducts" class="btn btn-dark">Modificar productos</a>
-     <a href="/api/users/premium/{{user._id}}" class="btn btn-warning">Pasar a premium</a>
-     <a href="/api/users/{{user._id}}/documents" class="btn btn-success">Subir Documentos</a>
+    <a href="/realtimeproducts" class="btn btn-dark">Modificar productos</a>
+    <a href="/api/users/premium/{{user._id}}" class="btn btn-warning">Pasar a premium</a>
+    <a href="/api/users/{{user._id}}/documents" class="btn btn-success">Subir Documentos</a>
     {{/if}}
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

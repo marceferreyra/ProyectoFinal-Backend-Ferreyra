@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrar Usuarios</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div id="back-button">
+        <a href="/api/sessions/current" class="btn btn-primary">Volver</a>
+    </div>
+
+    <div class="container">
+        <h1 class="text-center mt-4">Administrar Usuarios</h1>
+
+        <div class="row justify-content-center mt-4">
+            <div class="col-12">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">Nombre</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Rol</th>
+                                <th scope="col">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each users}}
+                            <tr>
+                                <td>{{displayName this}}</td>
+                                <td>{{this.email}}</td>
+                                <td>{{this.role}}</td>
+                                <td>
+                                    <form action="/users/{{this._id}}/role" method="POST">
+                                        <select class="form-control" name="role">
+                                            <option value="admin" {{#if (eq this.role "admin" )}}selected{{/if}}>Admin
+                                            </option>
+                                            <option value="user" {{#if (eq this.role "user" )}}selected{{/if}}>User
+                                            </option>
+                                            <option value="premium" {{#if (eq this.role "premium" )}}selected{{/if}}>
+                                                Premium</option>
+                                        </select>
+                                        <button type="submit" class="btn btn-primary mt-2">Guardar</button>
+                                    </form>
+
+                                    <form action="/users/{{this._id}}?_method=DELETE" method="POST">
+                                        <button type="submit" class="btn btn-danger mt-2">Eliminar</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.10.2/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

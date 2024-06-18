@@ -17,12 +17,12 @@ const authorize = async (req, res, next) => {
 
         if (userRole === 'admin') {
             if (req.originalUrl.startsWith('/realtimeproducts') ||
-                req.originalUrl.startsWith('/api/carts')
+                req.originalUrl.startsWith('/api/carts') ||
+                req.originalUrl.startsWith('/users') ||
+                req.originalUrl.startsWith(`/users/${id}`)
             ) {
-                console.log('Acceso permitido para administrador a realtimeproducts');
                 return next();
             } else {
-                console.log('Acceso prohibido para administrador');
                 return res.status(403).json({ error: 'Acceso prohibido' });
             }
         }

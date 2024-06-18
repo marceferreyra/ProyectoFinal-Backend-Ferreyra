@@ -1,5 +1,6 @@
 const config = require('./src/config/config.js');
 const express = require('express');
+const methodOverride = require('method-override');
 const productRouter = require('./src/routes/products.routes.js');
 const cartRouter = require('./src/routes/carts.routes.js');
 const chatRouter = require('./src/routes/chat.routes.js');
@@ -9,6 +10,7 @@ const mailRouter = require('./src/config/mail.js');
 const userRouter = require(`./src/routes/users.routes.js`)
 const mockingRouter = require('./src/routes/mocking.routes.js');
 const loggerTestRouter = require('./src/routes/loggerTests.routes.js');
+const viewsRouter = require('./src/routes/views.routes.js')
 const exphbs = require('express-handlebars');
 const path = require('path');
 const http = require(`http`);
@@ -44,6 +46,12 @@ const swaggerOptions = {
 const specs = swaggerJSDoc(swaggerOptions)
 app.use(`/apidocs`, swaggerUIExpress.serve, swaggerUIExpress.setup(specs))
 
+app.use(express.urlencoded({ extended: true })); 
+app.use(methodOverride('_method'));
+app.use((req, res, next) => {
+    next();
+});
+
 app.use(express.static(__dirname + "/src/public"));
 app.use(express.json());
 
@@ -74,6 +82,7 @@ app.use('/mail', mailRouter);
 app.use(userRouter)
 app.use(mockingRouter);
 app.use(loggerTestRouter);
+app.use(viewsRouter)
 
 const hbs = exphbs.create({
     helpers: {
@@ -85,6 +94,13 @@ const hbs = exphbs.create({
                 return documents.some(doc => doc.status === 'completado');
             } else {
                 return documents.some(doc => doc.name === name && doc.status === 'completado');
+            }
+        },
+        displayName: function(user) {
+            if (user.name) {
+                return user.name;
+            } else {
+                return `${user.first_name} ${user.last_name}`;
             }
         }
     }
