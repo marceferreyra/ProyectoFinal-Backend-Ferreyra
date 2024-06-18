@@ -1,5 +1,17 @@
 const mongoose = require('mongoose');
 const User = require('../models/userModel');
+const nodemailer = require('nodemailer');
+const transporter = nodemailer.createTransport({
+    service: "gmail",
+    port: 587,
+    auth: {
+        user: "marceeferreyra@gmail.com",
+        pass: "qxdjqqquughitrbp",
+    },
+    tls: {
+        rejectUnauthorized: false
+    }
+});
 
 exports.getAllUsers = async (req, res) => {
     try {
@@ -7,6 +19,43 @@ exports.getAllUsers = async (req, res) => {
         res.status(200).json(users);
     } catch (error) {
         console.error('Error al obtener todos los usuarios:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+};
+
+exports.deleteInactiveUsers = async (req, res) => {
+    try {
+        const twoDaysAgo = new Date();
+        twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+
+        const inactiveUsers = await User.find({ last_connection: { $lt: twoDaysAgo } });
+        console.log('Usuarios inactivos:', inactiveUsers);
+
+        if (inactiveUsers.length === 0) {
+            console.log('No hay usuarios inactivos para eliminar');
+            return res.status(200).json({ message: 'No hay usuarios inactivos para eliminar.' });
+        }
+
+        const deleteResults = await User.deleteMany({ last_connection: { $lt: twoDaysAgo } });
+        console.log('Delete results:', deleteResults);
+
+        const emailPromises = inactiveUsers.map(user => {
+            const mailOptions = {
+                from: 'Coder Test <marceeferreyra@gmail>',
+                to: user.email,
+                subject: 'Cuenta eliminada por inactividad',
+                text: 'Hola, tu cuenta ha sido eliminada por inactividad.',
+                html: '<div><h1>Hola, tu cuenta ha sido eliminada por inactividad.</h1></div>',
+            };
+            return transporter.sendMail(mailOptions);
+        });
+
+        await Promise.all(emailPromises);
+        console.log('deleteInactiveUsers: Emails sent');
+
+        res.status(200).json({ message: 'Usuarios inactivos eliminados y notificados exitosamente.' });
+    } catch (error) {
+        console.error('Error al eliminar usuarios inactivos:', error);
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 };
