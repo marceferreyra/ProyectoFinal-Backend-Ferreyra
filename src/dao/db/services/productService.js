@@ -1,5 +1,19 @@
 const Product = require('../models/productModel');
 const User = require('../models/userModel')
+const nodemailer = require('nodemailer');
+
+const transporter = nodemailer.createTransport({
+    service: "gmail",
+    port: 587,
+    auth: {
+        user: "marceeferreyra@gmail.com",
+        pass: "qxdjqqquughitrbp",
+    },
+    tls: {
+        rejectUnauthorized: false
+    }
+});
+
 
 class ProductService {
     constructor() {}
@@ -80,6 +94,21 @@ class ProductService {
 
             if (removedProduct) {
                 req.logger.info(`Producto ${id} eliminado correctamente.`);
+                
+                // Enviar correo si el owner es premium
+                const owner = await User.findById(removedProduct.owner);
+                if (owner && owner.role === 'premium') {
+                    const message = {
+                        from: 'Tu App <tu_correo@gmail.com>',
+                        to: owner.email,
+                        subject: 'Producto Eliminado',
+                        text: `Tu producto con ID ${id} ha sido eliminado.`,
+                        html: `<div><h1>Producto Eliminado</h1><p>Tu producto con ID ${id} ha sido eliminado.</p></div>`
+                    };
+                    await transporter.sendMail(message);
+                    req.logger.info(`Correo enviado a ${owner.email} sobre la eliminación del producto ${id}`);
+                }
+
                 return {
                     message: `Producto con ID ${id} eliminado correctamente.`,
                     removedProduct,
