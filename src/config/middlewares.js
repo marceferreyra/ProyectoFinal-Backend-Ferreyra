@@ -18,6 +18,7 @@ const authorize = async (req, res, next) => {
         if (userRole === 'admin') {
             if (req.originalUrl.startsWith('/realtimeproducts') ||
                 req.originalUrl.startsWith('/api/carts') ||
+                req.originalUrl.startsWith('/api/users') ||
                 req.originalUrl.startsWith('/users') ||
                 req.originalUrl.startsWith(`/users/${userId}`)
             ) {

@@ -5,6 +5,7 @@ const User = require('../dao/db/models/userModel')
 const productService = require('../dao/db/services/productService');
 const Cart = require('../dao/db/models/cartModel');
 const path = require('path');
+const mongoose = require ('mongoose')
 
 //vistas users
 
@@ -45,6 +46,51 @@ viewsRouter.delete('/users/:id', authorize, async (req, res) => {
         res.redirect('/users');
     } catch (error) {
         res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
+
+viewsRouter.get('/users/premium/:uid', async (req, res) => {
+    try {
+        const userId = req.params.uid;
+        
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).send('El ID de usuario no es válido');
+        }
+
+        const user = await User.findById(userId).lean();
+
+        if (!user) {
+            return res.status(404).send('Usuario no encontrado');
+        }
+
+        const requiredDocuments = ['Identificación', 'Comprobante de domicilio', 'Comprobante de estado de cuenta'];
+        const userDocuments = user.documents.map(doc => doc.name);
+        const allDocumentsPresent = requiredDocuments.every(doc => userDocuments.includes(doc));
+
+        if (!allDocumentsPresent) {
+            return res.status(403).json({ error: 'El usuario no ha terminado de procesar su documentación'});
+        }
+
+        res.render('premium-user', { user });
+
+    } catch (error) {
+        console.error('Error al renderizar la página premium:', error);
+        res.status(500).send('Error interno del servidor');
+    }
+});
+
+viewsRouter.get('/users/:uid/documents', async (req, res) => {
+    try {
+        const userId = req.params.uid;
+        const user = await User.findById(userId).lean({ getters: true });
+
+        if (!user) {
+            return res.status(404).send('Usuario no encontrado');
+        }
+
+        res.render('premium-user-documents', { user });
+    } catch (error) {
+        res.status(500).send('Error interno del servidor');
     }
 });
 

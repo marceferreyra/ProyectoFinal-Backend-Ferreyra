@@ -88,7 +88,7 @@ exports.login = async (req, res) => {
         }
 
         req.session.user = user;
-        res.status(200).json({ message: 'Inicio de sesión exitoso', user });
+        res.status(200).json({ message: 'Inicio de sesión exitoso', email: user.email, role: user.role });
     } catch (error) {
         console.error('Error al iniciar sesión:', error);
         res.status(500).json({ error: 'Error interno del servidor' });
@@ -129,7 +129,7 @@ exports.getCurrent = async (req, res) => {
             return res.status(404).json({ error: 'Usuario no encontrado' });
         }
 
-        res.status(200).json({ user });
+        res.status(200).json({ email: user.email, role: user.role });
     } catch (error) {
         res.status(500).json({ error: 'Error interno del servidor' });
     }
@@ -153,7 +153,7 @@ exports.getProfile = async (req, res) => {
             }));
         }
 
-        res.status(200).json({ user: userObject });
+        res.status(200).json({ email: user.email, role: user.role, name: user.name || user.first_name, lastName: user.last_name, age: user.age });
     } catch (error) {
         res.status(500).json({ error: 'Error interno del servidor' });
     }
