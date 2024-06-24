@@ -1,6 +1,5 @@
 const User = require('../models/userModel');
 const cartService = require('../services/cartService');
-const path = require('path');
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 
@@ -8,7 +7,7 @@ exports.isAuthenticated = (req, res, next) => {
     if (req.session && req.session.user) {
         return next();
     } else {
-        return res.redirect('/api/sessions/login');
+        return res.status(401).json({ message: 'No autenticado' });
     }
 };
 
@@ -20,9 +19,7 @@ exports.githubAuthCallback = async (req, res) => {
 
         if (!user) {
             const { username, email } = req.user;
-
             const newCart = await cartService.createCart();
-
             user = new User({
                 first_name: username,
                 email: email,
@@ -30,24 +27,14 @@ exports.githubAuthCallback = async (req, res) => {
             });
         } else if (!user.cartId) {
             const newCart = await cartService.createCart(req);
-
             user.cartId = newCart._id;
         }
 
         await user.save();
-
-        res.redirect('/api/sessions/current');
+        res.status(200).json({ message: 'Autenticación con GitHub exitosa', user });
     } catch (error) {
         res.status(500).json({ error: 'Error interno del servidor' });
     }
-};
-
-exports.renderRegister = (req, res) => {
-    res.render('register');
-};
-
-exports.renderLogin = (req, res) => {
-    res.render('login');
 };
 
 exports.register = async (req, res) => {
@@ -73,7 +60,7 @@ exports.register = async (req, res) => {
         });
 
         await newUser.save();
-        res.redirect('/api/sessions/login');
+        res.status(201).json({ message: 'Registro exitoso', newUser });
     } catch (error) {
         console.error('Error al registrar usuario:', error);
         res.status(500).json({ error: 'Error interno del servidor' });
@@ -87,6 +74,7 @@ exports.login = async (req, res) => {
         }
 
         const { email, password } = req.body;
+
         const user = await User.findOne({ email });
 
         if (!user) {
@@ -100,34 +88,7 @@ exports.login = async (req, res) => {
         }
 
         req.session.user = user;
-        res.redirect('/api/sessions/current');
-    } catch (error) {
-        console.error('Error al iniciar sesión:', error);
-        res.status(500).json({ error: 'Error interno del servidor' });
-    }
-};
-
-exports.login = async (req, res) => {
-    try {
-        if (req.session.user) {
-            return res.status(400).json({ error: 'Ya has iniciado sesión' });
-        }
-
-        const { email, password } = req.body;
-        const user = await User.findOne({ email });
-
-        if (!user) {
-            return res.status(401).json({ error: 'El usuario no existe. Regístrate para iniciar sesión' });
-        }
-
-        const passwordMatch = await bcrypt.compare(password, user.password);
-
-        if (!passwordMatch) {
-            return res.status(401).json({ error: 'Credenciales inválidas' });
-        }
-
-        req.session.user = user;
-        res.redirect('/api/sessions/current');
+        res.status(200).json({ message: 'Inicio de sesión exitoso', user });
     } catch (error) {
         console.error('Error al iniciar sesión:', error);
         res.status(500).json({ error: 'Error interno del servidor' });
@@ -149,10 +110,10 @@ exports.logout = async (req, res) => {
                 if (err) {
                     return res.status(500).json({ error: 'Error interno del servidor' });
                 }
-                res.redirect('/api/sessions/login');
+                res.status(200).json({ message: 'Sesión cerrada exitosamente' });
             });
         } else {
-            res.redirect('/api/sessions/login');
+            res.status(200).json({ message: 'Sesión cerrada exitosamente' });
         }
     } catch (error) {
         res.status(500).json({ error: 'Error interno del servidor' });
@@ -168,15 +129,7 @@ exports.getCurrent = async (req, res) => {
             return res.status(404).json({ error: 'Usuario no encontrado' });
         }
 
-        const userObject = user.toObject();
-        const isAdmin = userObject.role === 'admin';
-
-        if (isAdmin) {
-            const users = await User.find({}, { email: 1, _id: 0 });
-            res.render('current', { user: userObject, isAdmin, users });
-        } else {
-            res.render('current', { user: userObject, isAdmin });
-        }
+        res.status(200).json({ user });
     } catch (error) {
         res.status(500).json({ error: 'Error interno del servidor' });
     }
@@ -200,14 +153,14 @@ exports.getProfile = async (req, res) => {
             }));
         }
 
-        res.render('profile', { user: userObject });
+        res.status(200).json({ user: userObject });
     } catch (error) {
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 };
 
 exports.handle404 = (req, res) => {
-    res.status(404).render('404');
+    res.status(404).json({ message: 'Recurso no encontrado' });
 };
 
 const transporter = nodemailer.createTransport({
@@ -228,7 +181,7 @@ exports.sendPasswordResetEmail = async (req, res) => {
         const user = await User.findOne({ email });
 
         if (!user) {
-            return res.redirect('/api/sessions/forgot-password');
+            return res.redirect('/forgot-password');
         }
 
         const resetToken = {
@@ -238,7 +191,7 @@ exports.sendPasswordResetEmail = async (req, res) => {
 
         req.session.resetToken = resetToken;
 
-        const resetLink = `${req.protocol}://${req.get('host')}/api/sessions/reset-password?token=${resetToken}&expiration=${resetToken.expiration}`;
+        const resetLink = `${req.protocol}://${req.get('host')}/reset-password?token=${resetToken}&expiration=${resetToken.expiration}`;
 
         const mailOptions = {
             to: email,
@@ -248,22 +201,9 @@ exports.sendPasswordResetEmail = async (req, res) => {
 
         await transporter.sendMail(mailOptions);
 
-        res.render('forgot-password-confirm');
+        res.status(200).json({ message: 'Correo de restablecimiento enviado' });
     } catch (error) {
         console.error('Error al enviar el correo electrónico de restablecimiento de contraseña:', error);
-        res.status(500).json({ error: 'Error interno del servidor' });
-    }
-};
-
-exports.renderForgotPasswordForm = (req, res) => {
-    res.render('forgot-password');
-};
-
-exports.renderResetPasswordForm = async (req, res) => {
-    try {
-        res.render('reset-password');
-    } catch (error) {
-        console.error('Error al renderizar el formulario de restablecimiento de contraseña:', error);
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 };
@@ -277,29 +217,27 @@ exports.resetPassword = async (req, res) => {
 
         const now = new Date().getTime();
         if (now > resetToken.expiration) {
-            return res.redirect('/api/sessions/forgot-password');
+            return res.status(400).json({ error: 'El enlace de restablecimiento de contraseña ha expirado. Solicita uno nuevo.' });
         }
 
         const { email, password, confirmPassword } = req.body;
         if (password !== confirmPassword) {
             return res.status(400).json({ error: 'Las contraseñas no coinciden' });
         }
-        const user = await User.findOne({ email });
 
-        if (!user) {
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const updatedUser = await User.findOneAndUpdate(
+            { email },
+            { password: hashedPassword },
+            { new: true } 
+        );
+
+        if (!updatedUser) {
             return res.status(400).json({ error: 'Correo electrónico no encontrado' });
         }
-        const isSamePassword = await bcrypt.compare(password, user.password);
 
-        if (isSamePassword) {
-            return res.status(400).json({ error: 'No puedes usar la misma contraseña' });
-        }
-        const hashedPassword = await bcrypt.hash(password, 10);
-        user.password = password;
-        await user.save();
-        const updatedUser = await User.findOne({ email });
-
-        res.redirect('/api/sessions/login');
+        res.status(200).json({ message: 'Contraseña restablecida exitosamente' });
     } catch (error) {
         console.error('Error al restablecer la contraseña:', error);
         res.status(500).json({ error: 'Error interno del servidor' });

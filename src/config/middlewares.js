@@ -19,7 +19,7 @@ const authorize = async (req, res, next) => {
             if (req.originalUrl.startsWith('/realtimeproducts') ||
                 req.originalUrl.startsWith('/api/carts') ||
                 req.originalUrl.startsWith('/users') ||
-                req.originalUrl.startsWith(`/users/${id}`)
+                req.originalUrl.startsWith(`/users/${userId}`)
             ) {
                 return next();
             } else {
@@ -30,7 +30,8 @@ const authorize = async (req, res, next) => {
         if (userRole === 'user') {
             if (req.originalUrl.startsWith('/api/carts') ||
                 req.originalUrl.startsWith('/chat') ||
-                req.originalUrl.startsWith('/products')) {
+                req.originalUrl.startsWith('/products') ||
+                req.originalUrl.startsWith('/carts')) {
                 return next();
             } else {
                 return res.status(403).json({ error: 'Acceso prohibido' });
@@ -41,7 +42,8 @@ const authorize = async (req, res, next) => {
             if (req.originalUrl.startsWith('/realtimeproducts') ||
                 req.originalUrl.startsWith('/api/carts') ||
                 req.originalUrl.startsWith('/chat') ||
-                req.originalUrl.startsWith('/products')) {
+                req.originalUrl.startsWith('/products') ||
+                req.originalUrl.startsWith('/carts')) {
                 return next();
             } else {
                 return res.status(403).json({ error: 'Acceso prohibido' });

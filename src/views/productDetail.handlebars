@@ -22,9 +22,8 @@
                 <p class="card-text">Categoría: {{product.category}}</p>
                 <p class="card-text">Estado: {{#if product.status}}Disponible{{else}}No disponible{{/if}}</p>
 
-
                 <p>Cart ID: {{user.cartId}}</p>
-                <form action="/api/carts/{{user.cartId}}/products/{{product._id}}" method="POST">
+                <form id="add-to-cart-form" action="/api/carts/{{user.cartId}}/products/{{product._id}}" method="POST">
                     <button type="submit" class="btn btn-primary">Agregar al carrito</button>
                 </form>
             </div>
@@ -34,6 +33,32 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        document.getElementById('add-to-cart-form').addEventListener('submit', async function (event) {
+            event.preventDefault();  // Evitar el envío del formulario
+
+            const form = event.target;
+            const url = form.action;
+            
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (response.ok) {
+                    alert('Producto agregado al carrito');
+                } else {
+                    const errorData = await response.json();
+                    alert('Error al agregar producto al carrito: ' + errorData.error);
+                }
+            } catch (error) {
+                alert('Error al agregar producto al carrito: ' + error.message);
+            }
+        });
+    </script>
 </body>
 
 </html>

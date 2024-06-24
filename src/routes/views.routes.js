@@ -2,6 +2,11 @@ const express = require('express');
 const viewsRouter = express.Router();
 const authorize = require('../config/middlewares')
 const User = require('../dao/db/models/userModel')
+const productService = require('../dao/db/services/productService');
+const Cart = require('../dao/db/models/cartModel');
+const path = require('path');
+
+//vistas users
 
 viewsRouter.get('/users', authorize, async (req, res) => {
     try {
@@ -41,6 +46,133 @@ viewsRouter.delete('/users/:id', authorize, async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: 'Error interno del servidor' });
     }
+});
+
+//vistas products
+
+viewsRouter.get('/products', async (req, res) => {
+    try {
+        const productsResult = await productService.getProducts(req);
+        const products = productsResult.docs;
+        const plainProducts = products.map(product => product.toObject({ getters: true }));
+        const user = req.session.user;
+        const cartId = user ? user.cartId : null;
+
+        res.render('products', { products: plainProducts, user, cartId });
+    } catch (error) {
+        req.logger.error(error);
+        res.status(500).send('Error interno del servidor');
+    }
+});
+
+viewsRouter.get('/products/:id', async (req, res) => {
+    const productId = req.params.id;
+
+    try {
+        const product = await productService.getProductById(productId, req);
+        if (product) {
+            const plainProduct = product.toObject({ getters: true });
+            const user = req.session.user;
+            res.render('productDetail', { product: plainProduct, user });
+        } else {
+            res.status(404).send('Producto no encontrado');
+        }
+    } catch (error) {
+        req.logger.error(error);
+        res.status(500).send('Error interno del servidor');
+    }
+});
+
+//vistas carts
+
+viewsRouter.get('/carts/:cid', authorize, async (req, res) => {
+    try {
+        const cartId = req.params.cid;
+        const cart = await Cart.findById(cartId).populate('products.product');
+
+        if (cart) {
+            const plainCart = cart.toObject({ getters: true });
+            res.render('carts', { carts: [plainCart], cartId: cartId });
+        } else {
+            res.status(404).send('Carrito no encontrado');
+        }
+    } catch (error) {
+        req.logger.error(error);
+        res.status(500).send('Error interno del servidor');
+    }
+});
+
+//vistas sessions
+
+viewsRouter.get('/register', async (req, res) => {
+    res.render('register')
+})
+
+viewsRouter.get('/login', (req, res) => {
+    res.render('login');
+});
+
+viewsRouter.get('/forgot-password', (req, res) => {
+    res.render('forgot-password');
+});
+
+viewsRouter.get('/forgot-password-confirm', (req, res) => {
+    res.render('forgot-password-confirm');
+});
+
+viewsRouter.get('/reset-password', (req, res) => {
+    res.render('reset-password');
+});
+
+viewsRouter.get('/profile',  async (req, res) => {
+    try {
+        const userId = req.session.user._id;
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ error: 'Usuario no encontrado' });
+        }
+
+        const userObject = user.toObject();
+
+        if (userObject.documents && userObject.documents.length > 0) {
+            userObject.documents = userObject.documents.map(doc => ({
+                ...doc,
+                fileName: path.basename(doc.reference)
+            }));
+        }
+
+        res.render('profile', { user: userObject });
+    } catch (error) {
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
+
+viewsRouter.get('/current', async (req, res) => {
+    try {
+        const userId = req.session.user._id;
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ error: 'Usuario no encontrado' });
+        }
+
+        const userObject = user.toObject();
+        const isAdmin = userObject.role === 'admin';
+
+        if (isAdmin) {
+            const users = await User.find({}, { email: 1, _id: 0 });
+            res.render('current', { user: userObject, isAdmin, users });
+        } else {
+            res.render('current', { user: userObject, isAdmin });
+        }
+    } catch (error) {
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
+
+viewsRouter.get('*', (req, res) => {
+    res.status(404).render('404');
 });
 
 module.exports = viewsRouter;

@@ -4,31 +4,75 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <h1>Registro</h1>
-<form action="/api/sessions/register" method="post">
-    <label for="first_name">First Name:</label>
-    <input type="text" id="first_name" name="first_name" required>
+    <div class="container mt-5">
+        <h1 class="mb-4">Registro</h1>
+        <form id="registrationForm" action="/api/sessions/register" method="post">
+            <div class="form-group">
+                <label for="first_name">First Name:</label>
+                <input type="text" class="form-control" id="first_name" name="first_name" required>
+            </div>
+            <div class="form-group">
+                <label for="last_name">Last Name:</label>
+                <input type="text" class="form-control" id="last_name" name="last_name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="age">Age:</label>
+                <input type="number" class="form-control" id="age" name="age" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-success">Registrarse</button>
+            <a href="/api/sessions/github" class="btn btn-dark">Registrarse con GitHub</a>
+        </form>
+    </div>
 
-    <label for="last_name">Last Name:</label>
-    <input type="text" id="last_name" name="last_name" required>
-
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" required>
-
-    <label for="age">Age:</label>
-    <input type="number" id="age" name="age" required>
-
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required>
-
-    <button type="submit" class="btn btn-success">Registrarse</button>
-
-    <a href="/api/sessions/github" class="btn btn-dark">Registrarse con GitHub</a>
-</form>
-   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        document.getElementById('registrationForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const formData = {
+                first_name: document.getElementById('first_name').value,
+                last_name: document.getElementById('last_name').value,
+                email: document.getElementById('email').value,
+                age: document.getElementById('age').value,
+                password: document.getElementById('password').value
+            };
+
+            try {
+                const response = await fetch('/api/sessions/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    window.location.href = '/login';
+                } else {
+                    console.error('Error al registrar:', data.error);
+                    alert('Error al registrar. Por favor, inténtelo de nuevo.');
+                }
+            } catch (error) {
+                console.error('Error al registrar:', error);
+                alert('Error interno del servidor. Por favor, inténtelo de nuevo más tarde.');
+            }
+        });
+    </script>
 </body>
 </html>

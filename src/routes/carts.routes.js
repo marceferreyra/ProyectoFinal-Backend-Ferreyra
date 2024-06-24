@@ -1,13 +1,12 @@
 const express = require('express');
 const cartController = require('../dao/db/controllers/cartController');
-const renderCartViews = require(`./carts.views`)
-const authorize = require('../config/middlewares');
+
 
 const cartRouter = express.Router();
 
 cartRouter.get('/',   cartController.getAllCarts);
 cartRouter.post('/', cartController.createCart);
-cartRouter.get('/:cid', /*renderCartViews.renderCartView,*/ cartController.getCartById);
+cartRouter.get('/:cid', cartController.getCartById);
 cartRouter.put('/:cid', cartController.updateCartById);
 cartRouter.delete('/:cid', cartController.deleteCartById);
 cartRouter.post('/:cid/products/:pid', cartController.addProductToCart);

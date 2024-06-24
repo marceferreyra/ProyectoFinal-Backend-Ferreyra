@@ -21,18 +21,18 @@
     {{#if isAdmin}}
     <ul>
         <a href="/users" class="btn btn-warning">Administrar usuarios</a>
-        <a href="/api/products" class="btn btn-info">Ver productos</a>
-        <a href="/api/sessions/logout" class="btn btn-danger">Cerrar sesión</a>
-        <a href="/api/carts/{{user.cartId}}" class="btn btn-secondary">Ver carrito</a>
-        <a href="/api/sessions/profile" class="btn btn-primary">Ir al perfil</a>
+        <a href="/products" class="btn btn-info">Ver productos</a>
+        <a href="#" class="btn btn-danger" id="logout-btn">Cerrar sesión</a>
+        <a href="/carts/{{user.cartId}}" class="btn btn-secondary">Ver carrito</a>
+        <a href="/profile" class="btn btn-primary">Ir al perfil</a>
         <a href="/realtimeproducts" class="btn btn-dark">Modificar productos</a>
         <a href="/api/users/{{user._id}}/documents" class="btn btn-success">Subir Documentos</a>
     </ul>
     {{else}}
-    <a href="/api/products" class="btn btn-info">Ver productos</a>
-    <a href="/api/sessions/logout" class="btn btn-danger">Cerrar sesión</a>
-    <a href="/api/carts/{{user.cartId}}" class="btn btn-secondary">Ver carrito</a>
-    <a href="/api/sessions/profile" class="btn btn-primary">Ir al perfil</a>
+    <a href="/products" class="btn btn-info">Ver productos</a>
+    <a href="#" class="btn btn-danger" id="logout-btn">Cerrar sesión</a>
+    <a href="/carts/{{user.cartId}}" class="btn btn-secondary">Ver carrito</a>
+    <a href="/profile" class="btn btn-primary">Ir al perfil</a>
     <a href="/realtimeproducts" class="btn btn-dark">Modificar productos</a>
     <a href="/api/users/premium/{{user._id}}" class="btn btn-warning">Pasar a premium</a>
     <a href="/api/users/{{user._id}}/documents" class="btn btn-success">Subir Documentos</a>
@@ -41,6 +41,26 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        document.getElementById('logout-btn').addEventListener('click', async function (event) {
+            event.preventDefault();
+            try {
+                const response = await fetch('/api/sessions/logout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                if (response.ok) {
+                    window.location.href = '/login';
+                } else {
+                    console.error('Error al cerrar sesión');
+                }
+            } catch (error) {
+                console.error('Error al cerrar sesión:', error);
+            }
+        });
+    </script>
 </body>
 
 </html>
