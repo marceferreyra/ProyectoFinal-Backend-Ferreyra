@@ -83,8 +83,6 @@ exports.getUserRole = async (req, res) => {
 
 exports.togglePremium = async (req, res) => {
     try {
-        console.log('Iniciando proceso para cambiar el rol del usuario...');
-
         const userId = req.params.uid;
         const newRole = req.body.role;
 
@@ -109,7 +107,6 @@ exports.togglePremium = async (req, res) => {
 
         await user.save();
 
-        console.log('Rol del usuario actualizado correctamente a:', newRole);
         res.status(200).json({ message: 'Rol de usuario actualizado exitosamente', role: newRole });
     } catch (error) {
         console.error('Error al cambiar el rol del usuario:', error);

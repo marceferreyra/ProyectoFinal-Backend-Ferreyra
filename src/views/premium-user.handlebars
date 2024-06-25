@@ -3,24 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cambiar Rol de Usuario</title>
+    <title>Gestión de Usuario</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <h1>Cambiar Rol de Usuario</h1>
-    <p>Usuario: {{user.email}}</p>
-    <p>Rol Actual: {{user.role}}</p>
-    
-    <form id="premiumForm" action="/api/users/premium/{{user._id}}" method="POST">
-        <button type="submit" id="premiumBtn">Cambiar a Premium</button>
-    </form>
-    
-    <form id="userForm" action="/api/users/premium/{{user._id}}" method="POST">
-        <button type="submit" id="userBtn">Cambiar a User</button>
-    </form>
+    <div class="container mt-5">
+        <h1 class="mb-4">Gestión de Usuario</h1>
+        <div class="mb-3">
+            <p><strong>Usuario:</strong> {{user.email}}</p>
+            <p><strong>Rol Actual:</strong> {{user.role}}</p>
+        </div>      
 
-    <a href="/current" class="btn btn-warning">Volver</a>
+        <h2 class="mb-3">Subir Documentos</h2>
+        <form id="uploadForm" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="profile">Imagen de Perfil:</label>
+                <input type="file" class="form-control-file" id="profile" name="profile">
+                <small id="profileStatus" class="form-text text-muted">
+                    Estado: 
+                    {{#each user.documents}}
+                        {{#if (eq name 'profile')}}
+                            {{status}}
+                        {{/if}}
+                    {{/each}}
+                    {{#unless (hasDocument user.documents 'profile')}}
+                        pendiente
+                    {{/unless}}
+                </small>
+            </div>
 
-    
+            <div class="form-group">
+                <label for="product">Imagen de Producto:</label>
+                <input type="file" class="form-control-file" id="product" name="product">
+                <small id="productStatus" class="form-text text-muted">
+                    Estado: 
+                    {{#each user.documents}}
+                        {{#if (eq name 'product')}}
+                            {{status}}
+                        {{/if}}
+                    {{/each}}
+                    {{#unless (hasDocument user.documents 'product')}}
+                        pendiente
+                    {{/unless}}
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label for="identificacion">Identificación:</label>
+                <input type="file" class="form-control-file" id="identificacion" name="identificacion">
+                <small id="identificacionStatus" class="form-text text-muted">
+                    Estado: 
+                    {{#each user.documents}}
+                        {{#if (eq name 'Identificación')}}
+                            {{status}}
+                        {{/if}}
+                    {{/each}}
+                    {{#unless (hasDocument user.documents 'Identificación')}}
+                        pendiente
+                    {{/unless}}
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label for="comprobante_domicilio">Comprobante de Domicilio:</label>
+                <input type="file" class="form-control-file" id="comprobante_domicilio" name="comprobante_domicilio">
+                <small id="comprobanteDomicilioStatus" class="form-text text-muted">
+                    Estado: 
+                    {{#each user.documents}}
+                        {{#if (eq name 'Comprobante de domicilio')}}
+                            {{status}}
+                        {{/if}}
+                    {{/each}}
+                    {{#unless (hasDocument user.documents 'Comprobante de domicilio')}}
+                        pendiente
+                    {{/unless}}
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label for="comprobante_estado_cuenta">Comprobante de Estado de Cuenta:</label>
+                <input type="file" class="form-control-file" id="comprobante_estado_cuenta" name="comprobante_estado_cuenta">
+                <small id="comprobanteEstadoCuentaStatus" class="form-text text-muted">
+                    Estado: 
+                    {{#each user.documents}}
+                        {{#if (eq name 'Comprobante de estado de cuenta')}}
+                            {{status}}
+                        {{/if}}
+                    {{/each}}
+                    {{#unless (hasDocument user.documents 'Comprobante de estado de cuenta')}}
+                        pendiente
+                    {{/unless}}
+                </small>
+            </div>
+
+            <button type="submit" class="btn btn-success">Subir Documentos</button>
+        </form>
+
+        <h2 class="mb-3">Cambiar Rol de Usuario</h2>
+        <form id="premiumForm" class="mb-2">
+            <button type="submit" class="btn btn-primary" id="premiumBtn">Cambiar a Premium</button>
+        </form>
+        
+        <form id="userForm" class="mb-4">
+            <button type="submit" class="btn btn-secondary" id="userBtn">Cambiar a User</button>
+        </form>
+
+        
+        <a href="/current" class="btn btn-warning mt-4">Volver</a>
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
     <script>
         const premiumForm = document.getElementById('premiumForm');
         const userForm = document.getElementById('userForm');
@@ -28,11 +124,21 @@
 
         premiumForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            const currentRole = "{{user.role}}";
+            if (currentRole === 'premium') {
+                alert('El usuario ya es Premium.');
+                return;
+            }
             await updateUserRole('{{user._id}}', 'premium');
         });
 
         userForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            const currentRole = "{{user.role}}";
+            if (currentRole === 'user') {
+                alert('El usuario ya es User.');
+                return;
+            }
             await updateUserRole('{{user._id}}', 'user');
         });
 
@@ -47,7 +153,8 @@
                 });
 
                 if (!response.ok) {
-                    throw new Error('No se pudo cambiar el rol del usuario');
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'No se pudo cambiar el rol del usuario');
                 }
 
                 const data = await response.json();
@@ -60,9 +167,35 @@
 
             } catch (error) {
                 console.error('Error al cambiar el rol del usuario:', error);
+                alert(error.message);
             }
-        }        
-    </script>
+        }
 
+        uploadForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(uploadForm);
+            try {
+                const userId = "{{user._id}}"; 
+                const response = await fetch(`/api/users/${userId}/documents`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error('No se pudo subir los documentos');
+                }
+
+                const data = await response.json();
+
+                alert('¡Los documentos se han subido correctamente!');
+
+                location.reload(true);
+            } catch (error) {
+                console.error('Error al subir los documentos:', error);
+                alert('Error al subir los documentos. Por favor, inténtalo de nuevo más tarde.');
+            }
+        });
+    </script>
 </body>
 </html>
+

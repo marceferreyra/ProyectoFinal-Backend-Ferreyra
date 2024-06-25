@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfil</title>
 </head>
-
 <body>
     <h1>Current session. Iniciaste sesión como {{user.role}}</h1>
     <h2>Hola, {{#if user.first_name}}{{user.first_name}}{{else}}{{user.name}}{{/if}}!</h2>
@@ -25,17 +23,15 @@
         <a href="#" class="btn btn-danger" id="logout-btn">Cerrar sesión</a>
         <a href="/carts/{{user.cartId}}" class="btn btn-secondary">Ver carrito</a>
         <a href="/profile" class="btn btn-primary">Ir al perfil</a>
-        <a href="/realtimeproducts" class="btn btn-dark">Modificar productos</a>
-        <a href="/api/users/{{user._id}}/documents" class="btn btn-success">Subir Documentos</a>
+        <a href="/realtimeproducts" class="btn btn-dark" id="modify-products-btn">Modificar productos</a>
     </ul>
     {{else}}
     <a href="/products" class="btn btn-info">Ver productos</a>
     <a href="#" class="btn btn-danger" id="logout-btn">Cerrar sesión</a>
     <a href="/carts/{{user.cartId}}" class="btn btn-secondary">Ver carrito</a>
     <a href="/profile" class="btn btn-primary">Ir al perfil</a>
-    <a href="/realtimeproducts" class="btn btn-dark">Modificar productos</a>
+    <a href="#" class="btn btn-dark" id="modify-products-btn">Modificar productos</a>
     <a href="/users/premium/{{user._id}}" class="btn btn-warning">Pasar a premium</a>
-    <a href="/users/{{user._id}}/documents" class="btn btn-success">Subir Documentos</a>
     {{/if}}
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -60,7 +56,16 @@
                 console.error('Error al cerrar sesión:', error);
             }
         });
+
+        document.getElementById('modify-products-btn').addEventListener('click', function (event) {
+            event.preventDefault();
+            const userRole = "{{user.role}}";
+            if (userRole !== 'premium' && userRole !== 'admin') {
+                alert('Necesitas ser premium para agregar un producto');
+            } else {
+                window.location.href = '/realtimeproducts';
+            }
+        });
     </script>
 </body>
-
 </html>

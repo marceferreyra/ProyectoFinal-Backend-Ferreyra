@@ -52,7 +52,7 @@ viewsRouter.delete('/users/:id', authorize, async (req, res) => {
 viewsRouter.get('/users/premium/:uid', async (req, res) => {
     try {
         const userId = req.params.uid;
-        
+
         if (!mongoose.Types.ObjectId.isValid(userId)) {
             return res.status(400).send('El ID de usuario no es válido');
         }
@@ -61,14 +61,6 @@ viewsRouter.get('/users/premium/:uid', async (req, res) => {
 
         if (!user) {
             return res.status(404).send('Usuario no encontrado');
-        }
-
-        const requiredDocuments = ['Identificación', 'Comprobante de domicilio', 'Comprobante de estado de cuenta'];
-        const userDocuments = user.documents.map(doc => doc.name);
-        const allDocumentsPresent = requiredDocuments.every(doc => userDocuments.includes(doc));
-
-        if (!allDocumentsPresent) {
-            return res.status(403).json({ error: 'El usuario no ha terminado de procesar su documentación'});
         }
 
         res.render('premium-user', { user });

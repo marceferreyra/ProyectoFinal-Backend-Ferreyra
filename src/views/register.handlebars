@@ -63,9 +63,11 @@
                 const data = await response.json();
 
                 if (response.ok) {
+                    alert('Registro exitoso. Redirigiendo a la página de inicio de sesión.');
                     window.location.href = '/login';
+                } else if (response.status === 400 && data.error === 'El usuario ya existe. Inicia sesión.') {
+                    alert('El usuario ya existe. Por favor, inicia sesión.');
                 } else {
-                    console.error('Error al registrar:', data.error);
                     alert('Error al registrar. Por favor, inténtelo de nuevo.');
                 }
             } catch (error) {
