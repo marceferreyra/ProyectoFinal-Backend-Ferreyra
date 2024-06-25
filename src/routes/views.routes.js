@@ -2,6 +2,7 @@ const express = require('express');
 const viewsRouter = express.Router();
 const authorize = require('../config/middlewares')
 const User = require('../dao/db/models/userModel')
+const Product = require('../dao/db/models/productModel')
 const productService = require('../dao/db/services/productService');
 const Cart = require('../dao/db/models/cartModel');
 const path = require('path');
@@ -117,6 +118,39 @@ viewsRouter.get('/products/:id', async (req, res) => {
         }
     } catch (error) {
         req.logger.error(error);
+        res.status(500).send('Error interno del servidor');
+    }
+});
+
+//vistas realTimeProducts
+
+viewsRouter.get('/realtimeproducts', authorize, async (req, res) => {
+    try {
+        const { limit = 10, page = 1, category, status, owner, sort } = req.query;
+        const filters = {};
+
+        if (category) filters.category = category;
+        if (status) filters.status = status === 'true'; 
+        if (owner) filters.owner = owner;
+
+        const options = {
+            page: parseInt(page, 10),
+            limit: parseInt(limit, 10),
+        };
+
+        if (sort) {
+            options.sort = { price: sort === 'asc' ? 1 : -1 };
+        }
+
+        const products = await Product.paginate(filters, options);
+
+        const plainProducts = products.docs.map(product => product.toObject({ getters: true }));
+        const user = req.session.user;
+        const cartId = user ? user.cartId : null;
+
+        res.render('realtimeproducts', { products: plainProducts, user, cartId });
+    } catch (error) {
+        console.error('Error al obtener productos en tiempo real:', error);
         res.status(500).send('Error interno del servidor');
     }
 });

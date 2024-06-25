@@ -4,8 +4,7 @@ const methodOverride = require('method-override');
 const productRouter = require('./src/routes/products.routes.js');
 const cartRouter = require('./src/routes/carts.routes.js');
 const chatRouter = require('./src/routes/chat.routes.js');
-const realTimeProductsRouter = require('./src/routes/realTimeProducts.routes.js');
-const sessionRouter = require('./src/routes/sessions.routes.js');
+    const sessionRouter = require('./src/routes/sessions.routes.js');
 const mailRouter = require('./src/config/mail.js');
 const userRouter = require(`./src/routes/users.routes.js`)
 const mockingRouter = require('./src/routes/mocking.routes.js');
@@ -76,7 +75,6 @@ app.use(loggerMiddleware);
 app.use(productRouter);
 app.use('/api/carts', cartRouter);
 app.use('/chat', chatRouter);
-app.use('/realtimeproducts', realTimeProductsRouter);
 app.use('/api/sessions', sessionRouter);
 app.use('/mail', mailRouter);
 app.use(userRouter)
