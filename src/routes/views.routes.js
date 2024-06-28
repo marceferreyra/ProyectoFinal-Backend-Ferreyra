@@ -8,6 +8,30 @@ const Cart = require('../dao/db/models/cartModel');
 const path = require('path');
 const mongoose = require ('mongoose')
 
+//vistas payment
+
+viewsRouter.get('/payment/:cid', async (req, res) => {
+    
+    try {
+        const cartId = req.params.cid;
+        const cart = await Cart.findById(cartId).populate('products.product');
+        if (!cart) {
+            return res.status(404).send('Carrito no encontrado');
+        }
+      
+        const totalPrice = cart.products.reduce((total, item) => {
+            return total + (item.product.price * item.quantity);
+        }, 0);
+
+        const plainCart = cart.toObject({ getters: true });
+
+        res.render('payment', { cart: plainCart, totalPrice, stripePublicKey: process.env.STRIPE_PUBLIC_KEY });
+    } catch (error) {
+        console.error('Error al procesar solicitud de pago:', error);
+        res.status(500).send('Error interno del servidor');
+    }
+});
+
 //vistas users
 
 viewsRouter.get('/users', authorize, async (req, res) => {

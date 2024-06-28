@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pago</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Detalle del Pago</h1>
+        
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Productos en tu Carrito</h5>
+                <ul class="list-group">
+                    {{#each cart.products}}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{this.product.title}}
+                            <span class="badge badge-primary badge-pill">{{this.quantity}}</span>
+                        </li>
+                    {{/each}}
+                </ul>
+            </div>
+            <div class="card-footer text-muted">
+                Total: ${{totalPrice}}
+            </div>
+        </div>
+
+        <form id="payment-form" action="/api/payments/process-payment/{{cart._id}}" method="POST">
+            <div class="form-group">
+                <label for="card-element">
+                    Ingresa los detalles de tu tarjeta de crédito
+                </label>
+                <div id="card-element">
+                    <!-- A Stripe Element will be inserted here. -->
+                </div>
+                <!-- Used to display form errors. -->
+                <div id="card-errors" role="alert"></div>
+            </div>
+        
+            <button class="btn btn-primary" id="submit-payment">
+                Pagar
+            </button>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
+    <script>
+        const stripePublicKey = "{{stripePublicKey}}";
+        const stripe = Stripe(stripePublicKey);
+        const elements = stripe.elements();
+
+        // Create an instance of the card Element.
+        const card = elements.create('card');
+
+        // Add an instance of the card Element into the `card-element` div.
+        card.mount('#card-element');
+
+        // Handle real-time validation errors from the card Element.
+        card.addEventListener('change', ({ error }) => {
+            const displayError = document.getElementById('card-errors');
+            if (error) {
+                displayError.textContent = error.message;
+            } else {
+                displayError.textContent = '';
+            }
+        });
+
+        // Handle form submission.
+        const form = document.getElementById('payment-form');
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            try {
+                const { token, error } = await stripe.createToken(card);
+
+                if (error) {
+                    // Inform the user if there was an error.
+                    const errorElement = document.getElementById('card-errors');
+                    errorElement.textContent = error.message;
+                } else {
+                    // Send the token to your server.
+                    stripeTokenHandler(token);
+                }
+            } catch (error) {
+                console.error('Error generando token de pago:', error);
+                alert('Error generando token de pago: ' + error.message);
+            }
+        });
+
+        // Submit the form with the token ID.
+        async function stripeTokenHandler(token) {
+            try {
+                // Send the payment process request to the backend
+                const paymentResponse = await fetch(`/api/payments/process-payment/{{cart._id}}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ stripeToken: token.id })
+                });
+
+                const paymentResult = await paymentResponse.json();
+
+                if (paymentResponse.ok) {
+                    console.log('Pago realizado con éxito:', paymentResult);
+
+                    // Complete the purchase
+                    const purchaseResponse = await fetch(`/api/carts/{{cart._id}}/purchase`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    const purchaseResult = await purchaseResponse.json();
+
+                    if (purchaseResponse.ok) {
+                        alert('Compra realizada con éxito');
+                        window.location.href = '/products';
+                    } else {
+                        console.error('Error en la compra:', purchaseResult.message);
+                        alert('Error en la compra: ' + purchaseResult.message);
+                    }
+                } else {
+                    console.error('Error en el pago:', paymentResult.message);
+                    alert('Error en el pago: ' + paymentResult.message);
+                }
+            } catch (error) {
+                console.error('Error en la solicitud de pago:', error);
+                alert('Error en el pago: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>
+

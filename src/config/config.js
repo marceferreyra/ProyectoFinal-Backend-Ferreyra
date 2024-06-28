@@ -24,7 +24,9 @@ const config = {
     passNodeMailer: process.env.PASS_NODEMAILER,
     userAdmin: process.env.USER_ADMIN,
     passAdmin: process.env.PASS_ADMIN,
-    environment: environment
+    environment: environment,
+    stripePublicKey: process.env.STRIPE_PUBLIC_KEY,
+    stripeSecretKey: process.env.STRIPE_SECRET_KEY
 };
 
 module.exports = config;

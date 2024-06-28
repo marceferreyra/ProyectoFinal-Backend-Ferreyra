@@ -4,13 +4,15 @@ const methodOverride = require('method-override');
 const productRouter = require('./src/routes/products.routes.js');
 const cartRouter = require('./src/routes/carts.routes.js');
 const chatRouter = require('./src/routes/chat.routes.js');
-    const sessionRouter = require('./src/routes/sessions.routes.js');
+const sessionRouter = require('./src/routes/sessions.routes.js');
 const mailRouter = require('./src/config/mail.js');
 const userRouter = require(`./src/routes/users.routes.js`)
+const paymentRouter = require('./src/routes/payments.routes.js')
 const mockingRouter = require('./src/routes/mocking.routes.js');
 const loggerTestRouter = require('./src/routes/loggerTests.routes.js');
 const viewsRouter = require('./src/routes/views.routes.js')
 const exphbs = require('express-handlebars');
+const cors = require('cors')
 const path = require('path');
 const http = require(`http`);
 const { Server } = require(`socket.io`);
@@ -56,6 +58,7 @@ app.use(express.json());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(cors())
 
 app.use(session({
     store: MongoStore.create({
@@ -81,6 +84,7 @@ app.use(userRouter)
 app.use(mockingRouter);
 app.use(loggerTestRouter);
 app.use(viewsRouter)
+app.use('/api/payments', paymentRouter)
 
 const hbs = exphbs.create({
     helpers: {
