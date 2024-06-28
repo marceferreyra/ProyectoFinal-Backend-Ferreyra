@@ -6,7 +6,7 @@
     <title>Carrito de Compras</title>
 </head>
 <body>
-     <div class="container">
+    <div class="container">
         <h2 class="mt-4">Carrito de Compras</h2>
 
         {{#each carts}}
@@ -30,12 +30,14 @@
         {{/if}}
         {{/each}}
 
-    <a href="/api/carts/{{cartId}}/clear" class="btn btn-danger">Vaciar carrito</a>
+        <a href="/api/carts/{{cartId}}/clear" class="btn btn-danger">Vaciar carrito</a>
 
-    <a href="/products" class="btn btn-info">Ver productos</a>
+        <a href="/products" class="btn btn-info">Ver productos</a>
         
-    <a href="/api/carts/{{cartId}}/purchase" class="btn btn-dark">Finalizar compra</a>    
+        <a href="/payment/{{cartId}}" class="btn btn-dark">Ir a pagar</a> <!-- Cambio de "Finalizar compra" a "Ir a pagar" -->
+
     </div>
+
     <script>
         function decreaseQuantity(productId, cartId) {
             fetch(`/api/carts/${cartId}/products/${productId}`, {
@@ -66,14 +68,11 @@
         }
 
         function clearCart(cartId) {
-            console.log('Clearing cart:', cartId);
             fetch(`/api/carts/${cartId}/clear`, {
                 method: 'DELETE'
             })
             .then(response => {
-                console.log('Response:', response);
                 if (response.ok) {
-                    console.log('Cart cleared successfully');
                     window.location.reload(); 
                 } else {
                     console.error('Error al vaciar el carrito');
@@ -81,20 +80,6 @@
             })
             .catch(error => console.error('Error:', error));
         }
-
-        function purchaseCart(cartId) {
-    fetch(`/api/carts/${cartId}/purchase`, {
-        method: 'POST'
-    })
-    .then(response => {
-        if (response.ok) {
-            window.location.reload(); 
-        } else {
-            console.error('Error al finalizar la compra');
-        }
-    })
-    .catch(error => console.error('Error:', error));
-}
     </script>
 </body>
 </html>

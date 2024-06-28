@@ -22,11 +22,8 @@ class PaymentService {
         try {
             const paymentIntent = await this.stripe.paymentIntents.confirm(paymentIntentId);
 
-            console.log('Pago confirmado exitosamente:', paymentIntent);
-
             return paymentIntent;
         } catch (error) {
-            console.error('Error al confirmar el pago:', error);
             throw error;
         }
     }

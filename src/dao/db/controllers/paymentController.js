@@ -42,12 +42,10 @@ exports.processPayment = async (req, res) => {
             },
         });
 
-        // Confirm the payment intent
         await paymentService.confirmPaymentIntent(paymentIntentInfo.id);
 
         res.json({ client_secret: paymentIntentInfo.client_secret });
     } catch (error) {
-        console.error('Error al procesar el pago:', error);
         res.status(500).json({ error: 'Error al procesar el pago', message: error.message });
     }
 };
