@@ -1,19 +1,12 @@
-.card {
-    display: flex;
-    width: 400px;
-    margin: 20px;
+
+
+/*products*/
+
+.body {
+    max-width: 100% ;
 }
 
-.card-deck {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-}
-
-.card-img-top {
-    height: 250px;
-    object-fit: contain;
-}
+/*realtimerproduct*/
 
 #addProductForm {
     display: flex;
@@ -73,4 +66,23 @@ label {
     justify-content: flex-end;
     padding-top: 20px;
     padding-right: 20px;
+}
+
+/*navbar*/
+
+.navbar-custom {
+    background-color: #638dd7; 
+}
+
+.navbar-custom .navbar-brand,
+.navbar-custom .navbar-nav .nav-link {
+    color: #ffffff; 
+}
+
+.navbar-custom .nav-link:hover {
+    color: #ffffff; 
+}
+
+.nav-link {
+    font-weight: bold;
 }

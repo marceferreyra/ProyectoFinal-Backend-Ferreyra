@@ -5,43 +5,193 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Productos</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+
+    <style>
+        h2 {
+            margin-top: 50px;
+            margin-bottom: 50px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: bold;
+        }
+
+        span {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: bold;
+            font-size: larger
+        }
+
+        .container {
+            text-align: center;
+            display: flex;
+            width: 100%;
+            padding: 0 15px;
+            justify-content: center;
+        }
+
+
+
+        .card {
+            display: flex;
+            flex-direction: column;
+            max-width: 500px;
+            width: 100%;
+            height: 700px;
+            margin: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .cards-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .carousel-inner {
+            height: 500px;
+        }
+
+        .carousel-item img {
+            object-fit: contain;
+            height: 100%;
+            width: 100%;
+        }
+
+        .card-body {
+            padding: 15px;
+            text-align: center;
+            height: 500px;
+            border-top: 1px solid #ccc;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            margin-bottom: 10px;
+        }
+
+        .card-text {
+            margin-bottom: 10px;
+        }
+
+        .btn-primary {
+            font-weight: bold;
+            background-color: #638dd7;
+            border-color: #007bff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+        }
+
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            filter: invert(1);
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+        }
+
+        .navbar-custom {
+            background-color: #638dd7;
+        }
+
+        .navbar-custom .navbar-brand,
+        .navbar-custom .navbar-nav .nav-link {
+            color: #ffffff;
+        }
+
+        .navbar-custom .nav-link:hover {
+            color: #ffffff;
+        }
+
+        .nav-link {
+            font-weight: bold;
+        }
+    </style>
 </head>
 
 <body>
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                {{#if user}}
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <span class="navbar-text">
+                            ¡Bienvenido/a, {{#if user.first_name}}{{user.first_name}}{{else}}{{user.name}}{{/if}}!
+                        </span>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/profile">Ir al perfil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/carts/{{user.cartId}}">Ir al carrito</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="logout-btn">Cerrar sesión</a>
+                    </li>
+                </ul>
+                {{else}}
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login">Iniciar sesión</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/register">Registrarse</a>
+                    </li>
+                </ul>
+                {{/if}}
+            </div>
+        </div>
+    </nav>
+
     <div class="container">
-        {{#if user}}
-           <h2 class="mt-4">¡Bienvenido, {{#if user.first_name}}{{user.first_name}}{{else}}{{user.name}}{{/if}}!</h2>
-            <a href="#" class="btn btn-danger" id="logout-btn">Cerrar sesión</a>
-            <a href="/profile" class="btn btn-info mr-2">Ir al perfil</a>
-            <a href="/carts/{{user.cartId}}" class="btn btn-dark mr-2">Ir al carrito</a>
-        {{else}}
-            <div class="mt-4">
-                <a href="/login" class="btn btn-primary mr-2">Iniciar sesión</a>
-                <a href="/register" class="btn btn-success">Registrarse</a>                
-            </div>
-        {{/if}}
+        <h2>Lista de productos</h2>
+    </div>
 
-        <h2 class="mt-4">Lista de productos</h2>
 
-        {{#if products.length}}
-            <div class="card-deck">
-                {{#each products}}
-                    <div class="card" id="{{this.id}}">
-                        {{#each this.thumbnails}}
-                            <img src="{{this}}" class="card-img-top" alt="{{../title}}">
-                        {{/each}}
-                        <div class="card-body">
-                            <h5 class="card-title">{{this.title}}</h5>
-                            <p class="card-text">Precio: ${{this.price}}</p>
-                            <p class="card-text">Propietario: {{this.owner}}</p>
-                            <a href="products/{{this._id}}" class="btn btn-primary">Ver detalles</a>
-                        </div>
+    {{#if products.length}}
+    <div class="cards-container">
+        {{#each products}}
+        <div class="card" id="{{this.id}}">
+            <div id="carousel-{{this.id}}" class="carousel slide" data-ride="carousel">
+                <div class="carousel-inner">
+                    {{#each this.thumbnails}}
+                    <div class="carousel-item {{#if @first}}active{{/if}}">
+                        <img src="{{this}}" class="d-block w-100" alt="{{../title}}">
                     </div>
-                {{/each}}
+                    {{/each}}
+                </div>
+                <a class="carousel-control-prev" href="#carousel-{{this.id}}" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#carousel-{{this.id}}" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
             </div>
-        {{else}}
-            <p class="mt-4">No hay productos disponibles.</p>
-        {{/if}}
+            <div class="card-body">
+                <h5 class="card-title">{{this.title}}</h5>
+                <p class="card-text">Precio: ${{this.price}}</p>
+                <p class="card-text">Propietario: {{this.owner}}</p>
+                <a href="products/{{this._id}}" class="btn btn-primary">Ver detalles</a>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+    {{else}}
+    <p class="mt-4">No hay productos disponibles.</p>
+    {{/if}}
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -65,6 +215,16 @@
             } catch (error) {
                 console.error('Error al cerrar sesión:', error);
             }
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var carousels = document.querySelectorAll('.carousel');
+
+            carousels.forEach(function (carousel) {
+                $(carousel).carousel({
+                    interval: 6000
+                });
+            });
         });
     </script>
 </body>
