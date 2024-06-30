@@ -185,10 +185,11 @@ viewsRouter.get('/carts/:cid', authorize, async (req, res) => {
     try {
         const cartId = req.params.cid;
         const cart = await Cart.findById(cartId).populate('products.product');
+        const user = req.session.user;
 
         if (cart) {
             const plainCart = cart.toObject({ getters: true });
-            res.render('carts', { carts: [plainCart], cartId: cartId });
+            res.render('carts', { carts: [plainCart], cartId: cartId, user });
         } else {
             res.status(404).send('Carrito no encontrado');
         }
