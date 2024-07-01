@@ -42,9 +42,12 @@ viewsRouter.get('/payment/:cid', async (req, res) => {
 
 viewsRouter.get('/users', authorize, async (req, res) => {
     try {
+        const userId = req.session.user._id;    
+        const user = await User.findById(userId).lean();
         const users = await User.find().lean(); 
+       
 
-        res.render('users', { users });
+        res.render('users', { user, users, userId});
     } catch (error) {
         console.error('Error al obtener usuarios:', error);
         res.status(500).json({ error: 'Error interno del servidor' });
@@ -54,6 +57,7 @@ viewsRouter.get('/users', authorize, async (req, res) => {
 viewsRouter.post('/users/:id/role', authorize, async (req, res) => {
     const { id } = req.params;
     const { role } = req.body;
+    
 
     try {
         await User.findByIdAndUpdate(id, { role });
@@ -127,7 +131,7 @@ viewsRouter.get('/products', async (req, res) => {
         const user = req.session.user;
         const cartId = user ? user.cartId : null;
 
-        res.render('products', { products: plainProducts, user, cartId });
+        res.render('products', { products: plainProducts, user, cartId, isAdmin: user.role === 'admin'  });
     } catch (error) {
         req.logger.error(error);
         res.status(500).send('Error interno del servidor');
@@ -142,7 +146,7 @@ viewsRouter.get('/products/:id', async (req, res) => {
         if (product) {
             const plainProduct = product.toObject({ getters: true });
             const user = req.session.user;
-            res.render('productDetail', { product: plainProduct, user });
+            res.render('productDetail', { product: plainProduct, user, isAdmin: user.role === 'admin' });
         } else {
             res.status(404).send('Producto no encontrado');
         }
@@ -178,7 +182,7 @@ viewsRouter.get('/realtimeproducts', authorize, async (req, res) => {
         const user = req.session.user;
         const cartId = user ? user.cartId : null;
 
-        res.render('realtimeproducts', { products: plainProducts, user, cartId });
+        res.render('realtimeproducts', { products: plainProducts, user, cartId, isAdmin: user.role === 'admin'  });
     } catch (error) {
         console.error('Error al obtener productos en tiempo real:', error);
         res.status(500).send('Error interno del servidor');

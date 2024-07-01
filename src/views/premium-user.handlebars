@@ -166,6 +166,25 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script>
+        document.getElementById('logout-btn').addEventListener('click', async function (event) {
+            event.preventDefault();
+            try {
+                const response = await fetch('/api/sessions/logout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                if (response.ok) {
+                    window.location.href = '/login';
+                } else {
+                    console.error('Error al cerrar sesión');
+                }
+            } catch (error) {
+                console.error('Error al cerrar sesión:', error);
+            }
+        });
+
         const premiumForm = document.getElementById('premiumForm');
         const userForm = document.getElementById('userForm');
         const uploadForm = document.getElementById('uploadForm');
