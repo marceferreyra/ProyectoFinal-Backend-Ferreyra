@@ -263,6 +263,8 @@ viewsRouter.get('/profile', async (req, res) => {
     }
 });
 
+//vistas chats
+
 viewsRouter.get('/current', async (req, res) => {
     try {
         const userId = req.session.user._id;

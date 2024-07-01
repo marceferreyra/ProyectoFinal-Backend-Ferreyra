@@ -101,7 +101,7 @@
             </div>
 
             <div class="form-group">
-                <label for="identificacion">Identificación:</label>
+                <label for="identificacion">Identificación: (Obligatorio)</label>
                 <input type="file" class="form-control-file" id="identificacion" name="identificacion">
                 <small id="identificacionStatus" class="form-text text-muted">
                     Estado:
@@ -117,7 +117,7 @@
             </div>
 
             <div class="form-group">
-                <label for="comprobante_domicilio">Comprobante de Domicilio:</label>
+                <label for="comprobante_domicilio">Comprobante de Domicilio: (Obligatorio)</label>
                 <input type="file" class="form-control-file" id="comprobante_domicilio" name="comprobante_domicilio">
                 <small id="comprobanteDomicilioStatus" class="form-text text-muted">
                     Estado:
@@ -133,7 +133,7 @@
             </div>
 
             <div class="form-group">
-                <label for="comprobante_estado_cuenta">Comprobante de Estado de Cuenta:</label>
+                <label for="comprobante_estado_cuenta">Comprobante de Estado de Cuenta: (Obligatorio)</label>
                 <input type="file" class="form-control-file" id="comprobante_estado_cuenta"
                     name="comprobante_estado_cuenta">
                 <small id="comprobanteEstadoCuentaStatus" class="form-text text-muted">
@@ -170,124 +170,145 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.all.min.js"></script>
 
     <script>
-        document.getElementById('logout-btn').addEventListener('click', async function (event) {
-            event.preventDefault();
-            try {
-                const response = await fetch('/api/sessions/logout', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-                if (response.ok) {
-                    window.location.href = '/login';
-                } else {
-                    console.error('Error al cerrar sesión');
+    document.getElementById('logout-btn').addEventListener('click', async function (event) {
+        event.preventDefault();
+        try {
+            const response = await fetch('/api/sessions/logout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
                 }
-            } catch (error) {
-                console.error('Error al cerrar sesión:', error);
+            });
+            if (response.ok) {
+                window.location.href = '/login';
+            } else {
+                console.error('Error al cerrar sesión');
+            }
+        } catch (error) {
+            console.error('Error al cerrar sesión:', error);
+        }
+    });
+
+    const premiumForm = document.getElementById('premiumForm');
+    const userForm = document.getElementById('userForm');
+    const uploadForm = document.getElementById('uploadForm');
+
+    premiumForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const currentRole = "{{user.role}}";
+        if (currentRole === 'premium') {
+            Swal.fire({
+                icon: 'info',
+                title: 'El usuario ya es Premium.',
+            });
+            return;
+        }
+        await updateUserRole('{{user._id}}', 'premium');
+    });
+
+    userForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const currentRole = "{{user.role}}";
+        if (currentRole === 'user') {
+            Swal.fire({
+                icon: 'info',
+                title: 'El usuario ya es User.',
+            });
+            return;
+        }
+        await updateUserRole('{{user._id}}', 'user');
+    });
+
+    async function updateUserRole(userId, role) {
+        try {
+            const response = await fetch(`/api/users/premium/${userId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ role })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'No se pudo cambiar el rol del usuario');
+            }
+
+            const data = await response.json();
+
+            console.log('Respuesta del servidor:', data);
+
+            Swal.fire({
+                icon: 'success',
+                title: `¡El rol del usuario se ha actualizado correctamente a ${data.role}!`,
+            }).then(() => {
+                location.reload(true);
+            });
+
+        } catch (error) {
+            console.error('Error al cambiar el rol del usuario:', error);
+            Swal.fire({
+                icon: 'warning',
+                title: 'Error al cambiar el rol del usuario',
+                text: error.message,
+            });
+        }
+    }
+
+    uploadForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const requiredDocuments = ['identificacion', 'comprobante_domicilio', 'comprobante_estado_cuenta'];
+        let allDocumentsUploaded = true;
+
+        requiredDocuments.forEach(documentName => {
+            const fileInput = document.getElementById(documentName);
+            if (!fileInput.files.length) {
+                allDocumentsUploaded = false;
             }
         });
 
-        const premiumForm = document.getElementById('premiumForm');
-        const userForm = document.getElementById('userForm');
-        const uploadForm = document.getElementById('uploadForm');
-
-        premiumForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const currentRole = "{{user.role}}";
-            if (currentRole === 'premium') {
-                Swal.fire({
-                    icon: 'info',
-                    title: 'El usuario ya es Premium.',
-                });
-                return;
-            }
-            await updateUserRole('{{user._id}}', 'premium');
-        });
-
-        userForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const currentRole = "{{user.role}}";
-            if (currentRole === 'user') {
-                Swal.fire({
-                    icon: 'info',
-                    title: 'El usuario ya es User.',
-                });
-                return;
-            }
-            await updateUserRole('{{user._id}}', 'user');
-        });
-
-        async function updateUserRole(userId, role) {
-            try {
-                const response = await fetch(`/api/users/premium/${userId}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ role })
-                });
-
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error || 'No se pudo cambiar el rol del usuario');
-                }
-
-                const data = await response.json();
-
-                console.log('Respuesta del servidor:', data);
-
-                Swal.fire({
-                    icon: 'success',
-                    title: `¡El rol del usuario se ha actualizado correctamente a ${data.role}!`,
-                }).then(() => {
-                    location.reload(true);
-                });
-
-            } catch (error) {
-                console.error('Error al cambiar el rol del usuario:', error);
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Error al cambiar el rol del usuario',
-                    text: error.message,
-                });
-            }
+        if (!allDocumentsUploaded) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Faltan documentos',
+                text: 'Por favor, sube todos los documentos requeridos.',
+            });
+            return;
         }
 
-        uploadForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const formData = new FormData(uploadForm);
-            try {
-                const userId = "{{user._id}}";
-                const response = await fetch(`/api/users/${userId}/documents`, {
-                    method: 'POST',
-                    body: formData
-                });
+        const formData = new FormData(uploadForm);
+        try {
+            const userId = "{{user._id}}";
+            const response = await fetch(`/api/users/${userId}/documents`, {
+                method: 'POST',
+                body: formData
+            });
 
-                if (!response.ok) {
-                    throw new Error('No se pudo subir los documentos');
-                }
-
-                const data = await response.json();
-
-                Swal.fire({
-                    icon: 'success',
-                    title: '¡Los documentos se han subido correctamente!',
-                }).then(() => {
-                    location.reload(true);
-                });
-
-            } catch (error) {
-                console.error('Error al subir los documentos:', error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error al subir los documentos',
-                    text: 'Hubo un problema al intentar subir los documentos. Por favor, inténtelo de nuevo más tarde.',
-                });
+            if (!response.ok) {
+                throw new Error('No se pudo subir los documentos');
             }
-        });
-    </script>
+
+            const data = await response.json();
+
+            Swal.fire({
+                icon: 'success',
+                title: '¡Los documentos se han subido correctamente!',
+            }).then(() => {
+                location.reload(true);
+            });
+
+        } catch (error) {
+            console.error('Error al subir los documentos:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error al subir los documentos',
+                text: 'Hubo un problema al intentar subir los documentos. Por favor, inténtelo de nuevo más tarde.',
+            });
+        }
+    });
+</script>
+
 </body>
 
 </html>

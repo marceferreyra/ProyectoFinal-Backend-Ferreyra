@@ -132,7 +132,11 @@
                     stripeTokenHandler(token);
                 }
             } catch (error) {
-                alert('Error generando token de pago: ' + error.message);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error generando token de pago',
+                    text: error.message,
+                });
             }
         });
 
