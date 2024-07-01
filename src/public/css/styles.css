@@ -118,3 +118,21 @@ span {
     background-color: #dc3545 !important;
     border-color: #c9302c !important;
 }
+
+.btn-warning {
+    font-weight: bold !important;
+    background-color: #ffc107 !important;
+    border-color: #ffc107 !important;
+}
+
+.btn-secondary {
+    font-weight: bold !important;
+    background-color: #6c757d !important;
+    border-color: #6c757d !important;
+}
+
+.btn-success {
+    font-weight: bold !important;
+    background-color: #28a745 !important;
+    border-color: #28a745 !important;
+}

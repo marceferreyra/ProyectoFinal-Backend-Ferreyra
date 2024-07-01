@@ -1,18 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Usuario</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        h2 {
+            margin-top: 50px;
+            margin-bottom: 50px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: bold;
+        }
+
+        label {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: bold;
+            font-size: larger
+        }
+    </style>
 </head>
+
 <body>
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <span class="navbar-text">
+                            ¡Bienvenido/a,
+                            {{#if user.first_name}}{{user.first_name}}{{else}}{{user.name}}{{/if}}!
+                        </span>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/products">Productos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/profile">Ir al perfil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/carts/{{user.cartId}}">Ir al carrito</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="logout-btn" href="#">Cerrar sesión</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
     <div class="container mt-5">
         <h1 class="mb-4">Gestión de Usuario</h1>
         <div class="mb-3">
             <p><strong>Usuario:</strong> {{user.email}}</p>
-            <p><strong>Rol Actual:</strong> {{user.role}}</p>
-        </div>      
+            <p><strong>Membresia Actual:</strong> {{user.role}}</p>
+        </div>
 
         <h2 class="mb-3">Subir Documentos</h2>
         <form id="uploadForm" enctype="multipart/form-data">
@@ -20,14 +69,14 @@
                 <label for="profile">Imagen de Perfil:</label>
                 <input type="file" class="form-control-file" id="profile" name="profile">
                 <small id="profileStatus" class="form-text text-muted">
-                    Estado: 
+                    Estado:
                     {{#each user.documents}}
-                        {{#if (eq name 'profile')}}
-                            {{status}}
-                        {{/if}}
+                    {{#if (eq name 'profile')}}
+                    {{status}}
+                    {{/if}}
                     {{/each}}
                     {{#unless (hasDocument user.documents 'profile')}}
-                        pendiente
+                    pendiente
                     {{/unless}}
                 </small>
             </div>
@@ -36,14 +85,14 @@
                 <label for="product">Imagen de Producto:</label>
                 <input type="file" class="form-control-file" id="product" name="product">
                 <small id="productStatus" class="form-text text-muted">
-                    Estado: 
+                    Estado:
                     {{#each user.documents}}
-                        {{#if (eq name 'product')}}
-                            {{status}}
-                        {{/if}}
+                    {{#if (eq name 'product')}}
+                    {{status}}
+                    {{/if}}
                     {{/each}}
                     {{#unless (hasDocument user.documents 'product')}}
-                        pendiente
+                    pendiente
                     {{/unless}}
                 </small>
             </div>
@@ -52,14 +101,14 @@
                 <label for="identificacion">Identificación:</label>
                 <input type="file" class="form-control-file" id="identificacion" name="identificacion">
                 <small id="identificacionStatus" class="form-text text-muted">
-                    Estado: 
+                    Estado:
                     {{#each user.documents}}
-                        {{#if (eq name 'Identificación')}}
-                            {{status}}
-                        {{/if}}
+                    {{#if (eq name 'Identificación')}}
+                    {{status}}
+                    {{/if}}
                     {{/each}}
                     {{#unless (hasDocument user.documents 'Identificación')}}
-                        pendiente
+                    pendiente
                     {{/unless}}
                 </small>
             </div>
@@ -68,48 +117,47 @@
                 <label for="comprobante_domicilio">Comprobante de Domicilio:</label>
                 <input type="file" class="form-control-file" id="comprobante_domicilio" name="comprobante_domicilio">
                 <small id="comprobanteDomicilioStatus" class="form-text text-muted">
-                    Estado: 
+                    Estado:
                     {{#each user.documents}}
-                        {{#if (eq name 'Comprobante de domicilio')}}
-                            {{status}}
-                        {{/if}}
+                    {{#if (eq name 'Comprobante de domicilio')}}
+                    {{status}}
+                    {{/if}}
                     {{/each}}
                     {{#unless (hasDocument user.documents 'Comprobante de domicilio')}}
-                        pendiente
+                    pendiente
                     {{/unless}}
                 </small>
             </div>
 
             <div class="form-group">
                 <label for="comprobante_estado_cuenta">Comprobante de Estado de Cuenta:</label>
-                <input type="file" class="form-control-file" id="comprobante_estado_cuenta" name="comprobante_estado_cuenta">
+                <input type="file" class="form-control-file" id="comprobante_estado_cuenta"
+                    name="comprobante_estado_cuenta">
                 <small id="comprobanteEstadoCuentaStatus" class="form-text text-muted">
-                    Estado: 
+                    Estado:
                     {{#each user.documents}}
-                        {{#if (eq name 'Comprobante de estado de cuenta')}}
-                            {{status}}
-                        {{/if}}
+                    {{#if (eq name 'Comprobante de estado de cuenta')}}
+                    {{status}}
+                    {{/if}}
                     {{/each}}
                     {{#unless (hasDocument user.documents 'Comprobante de estado de cuenta')}}
-                        pendiente
+                    pendiente
                     {{/unless}}
                 </small>
             </div>
 
             <button type="submit" class="btn btn-success">Subir Documentos</button>
         </form>
+        <div>
+            <h2 class="mb-3">Cambiar Rol de Usuario</h2>
+            <form id="premiumForm" class="mb-2">
+                <button type="submit" class="btn btn-warning" id="premiumBtn">Cambiar a Premium</button>
+            </form>
 
-        <h2 class="mb-3">Cambiar Rol de Usuario</h2>
-        <form id="premiumForm" class="mb-2">
-            <button type="submit" class="btn btn-primary" id="premiumBtn">Cambiar a Premium</button>
-        </form>
-        
-        <form id="userForm" class="mb-4">
-            <button type="submit" class="btn btn-secondary" id="userBtn">Cambiar a User</button>
-        </form>
-
-        
-        <a href="/current" class="btn btn-warning mt-4">Volver</a>
+            <form id="userForm" class="mb-4">
+                <button type="submit" class="btn btn-secondary" id="userBtn">Cambiar a User</button>
+            </form>
+        </div>
 
     </div>
 
@@ -175,7 +223,7 @@
             e.preventDefault();
             const formData = new FormData(uploadForm);
             try {
-                const userId = "{{user._id}}"; 
+                const userId = "{{user._id}}";
                 const response = await fetch(`/api/users/${userId}/documents`, {
                     method: 'POST',
                     body: formData
@@ -197,5 +245,5 @@
         });
     </script>
 </body>
-</html>
 
+</html>
