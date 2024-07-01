@@ -8,6 +8,12 @@ const Cart = require('../dao/db/models/cartModel');
 const path = require('path');
 const mongoose = require ('mongoose')
 
+//home
+
+viewsRouter.get(`/`, (req, res) => {
+    res.redirect('/products')
+});
+
 //vistas payment
 
 viewsRouter.get('/payment/:cid', async (req, res) => {

@@ -4,10 +4,6 @@ const productController = require('../dao/db/controllers/productController.js');
 
 const productRouter = express.Router();
 
-productRouter.get(`/`, (req, res) => {
-    res.redirect('/login')
-});
-
 productRouter.get('/api/products', productController.getProducts);
 productRouter.post('/api/products', productController.addProduct);
 productRouter.get('/api/products/:id', productController.getProductById);
