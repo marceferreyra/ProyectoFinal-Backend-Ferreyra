@@ -156,6 +156,8 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.all.min.js"></script>
+
     <script>
         function decreaseQuantity(productId, cartId) {
             fetch(`/api/carts/${cartId}/products/${productId}`, {
@@ -191,13 +193,25 @@
             })
                 .then(response => {
                     if (response.ok) {
-                        alert('¡Carrito vaciado!');
+                        Swal.fire({
+                            icon: 'info',
+                            title: '¡Carrito vaciado!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
                         window.location.reload();
                     } else {
                         console.error('Error al vaciar el carrito');
                     }
                 })
-                .catch(error => console.error('Error:', error));
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Error al vaciar el carrito'
+                    });
+                });
         }
 
         document.getElementById('logout-btn').addEventListener('click', async function (event) {

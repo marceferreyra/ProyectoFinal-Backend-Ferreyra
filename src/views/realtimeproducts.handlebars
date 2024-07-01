@@ -215,8 +215,7 @@
             <div class="card-body">
                 <h5 class="card-title">{{this.title}}</h5>
                 <p class="card-text">Precio: ${{this.price}}</p>
-                <p class="card-text">Propietario: {{this.owner}}</p>
-                <a href="products/{{this._id}}" class="btn btn-primary">Ver detalles</a>
+                <p class="card-text">Propietario: {{this.owner}}</p>                
             </div>
         </div>
         {{/each}}
@@ -227,6 +226,8 @@
     </div>
 
     <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.all.min.js"></script>
+
     <script>
         document.getElementById('logout-btn').addEventListener('click', async function (event) {
             event.preventDefault();
@@ -327,15 +328,26 @@
                 });
                 const result = await response.json();
 
-                console.log('Resultado de la respuesta del servidor:', result);
-
                 if (response.ok && result.product) {
                     socket.emit('productAdded', result.product);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Producto agregado exitosamente',
+                    });
                 } else {
-                    console.error('Error en la respuesta del servidor:', result.error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error al agregar el producto',
+                        text: result.error || 'Error en la respuesta del servidor',
+                    });
                 }
             } catch (error) {
                 console.error('Error en la solicitud:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Error en la solicitud. Por favor, intenta de nuevo.',
+                });
             }
         });
 
@@ -343,7 +355,7 @@
             event.preventDefault();
             const productId = document.getElementById('productId').value;
 
-            try {
+           try {
                 const response = await fetch(`/api/products/${productId}`, {
                     method: 'DELETE',
                 });
@@ -351,12 +363,24 @@
 
                 if (response.ok) {
                     socket.emit('productDeleted', productId);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Producto eliminado correctamente',
+                    });
                 } else {
-                    alert(result.error);
-                    console.error(result.error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error al eliminar el producto',
+                        text: result.error || 'No se pudo eliminar el producto',
+                    });
                 }
             } catch (error) {
                 console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Error al procesar la solicitud. Por favor, intenta de nuevo.',
+                });
             }
         });
 

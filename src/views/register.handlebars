@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.3/dist/sweetalert2.min.css">
 </head>
 <body>
     <div class="container mt-5">
@@ -38,6 +39,7 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.3/dist/sweetalert2.min.js"></script>
 
     <script>
         document.getElementById('registrationForm').addEventListener('submit', async function(event) {
@@ -63,16 +65,33 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    alert('Registro exitoso. Redirigiendo a la página de inicio de sesión.');
-                    window.location.href = '/login';
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Registro exitoso',
+                        text: 'Redirigiendo a la página de inicio de sesión.'
+                    }).then(() => {
+                        window.location.href = '/login';
+                    });
                 } else if (response.status === 400 && data.error === 'El usuario ya existe. Inicia sesión.') {
-                    alert('El usuario ya existe. Por favor, inicia sesión.');
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Error en el registro',
+                        text: 'El usuario ya existe. Por favor, inicia sesión.'
+                    });
                 } else {
-                    alert('Error al registrar. Por favor, inténtelo de nuevo.');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error en el registro',
+                        text: 'Error al registrar. Por favor, inténtelo de nuevo.'
+                    });
                 }
             } catch (error) {
                 console.error('Error al registrar:', error);
-                alert('Error interno del servidor. Por favor, inténtelo de nuevo más tarde.');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error interno del servidor',
+                    text: 'Error interno del servidor. Por favor, inténtelo de nuevo más tarde.'
+                });
             }
         });
     </script>

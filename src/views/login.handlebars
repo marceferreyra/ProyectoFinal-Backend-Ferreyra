@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.3/dist/sweetalert2.min.css">
 </head>
 
 <body>
@@ -32,45 +33,62 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.3/dist/sweetalert2.min.js"></script>
 
 <script>
-    document.getElementById('loginForm').addEventListener('submit', async function(event) {
-        event.preventDefault();
+        document.getElementById('loginForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
 
-        const formData = {
-            email: document.getElementById('email').value,
-            password: document.getElementById('password').value
-        };
+            const formData = {
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value
+            };
 
-        try {
-            const response = await fetch('/api/sessions/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            });
+            try {
+                const response = await fetch('/api/sessions/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
 
-            const data = await response.json();
+                const data = await response.json();
 
-            if (response.ok) {
-                window.location.href = '/products';
-            } else {
-                console.error('Error al iniciar sesión:', data.error);
-                if (data.error === 'Credenciales inválidas') {
-                    alert('Credenciales inválidas. Por favor, inténtelo de nuevo.');
-                } else if (data.error === 'El usuario no existe. Regístrate para iniciar sesión') {
-                    alert('El usuario no existe. Regístrate para iniciar sesión.');
+                if (response.ok) {
+                    window.location.href = '/products';
                 } else {
-                    alert('Error al iniciar sesión. Por favor, inténtelo de nuevo.');
+                    console.error('Error al iniciar sesión:', data.error);
+                    if (data.error === 'Credenciales inválidas') {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Error al iniciar sesión',
+                            text: 'Credenciales inválidas. Por favor, inténtelo de nuevo.'
+                        });
+                    } else if (data.error === 'El usuario no existe. Regístrate para iniciar sesión') {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Error al iniciar sesión',
+                            text: 'El usuario no existe. Regístrate para iniciar sesión.'
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error al iniciar sesión',
+                            text: 'Error al iniciar sesión. Por favor, inténtelo de nuevo.'
+                        });
+                    }
                 }
+            } catch (error) {
+                console.error('Error al iniciar sesión:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error al iniciar sesión',
+                    text: 'Error interno del servidor. Por favor, inténtelo de nuevo más tarde.'
+                });
             }
-        } catch (error) {
-            console.error('Error al iniciar sesión:', error);
-            alert('Error interno del servidor. Por favor, inténtelo de nuevo más tarde.');
-        }
-    });
-</script>
+        });
+    </script>
 </body>
 
 </html>

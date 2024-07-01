@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Usuario</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.3/dist/sweetalert2.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.3/dist/sweetalert2.min.css">
+
     <style>
         h2 {
             margin-top: 50px;
@@ -164,6 +167,7 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.all.min.js"></script>
 
     <script>
         document.getElementById('logout-btn').addEventListener('click', async function (event) {
@@ -193,7 +197,10 @@
             e.preventDefault();
             const currentRole = "{{user.role}}";
             if (currentRole === 'premium') {
-                alert('El usuario ya es Premium.');
+                Swal.fire({
+                    icon: 'info',
+                    title: 'El usuario ya es Premium.',
+                });
                 return;
             }
             await updateUserRole('{{user._id}}', 'premium');
@@ -203,7 +210,10 @@
             e.preventDefault();
             const currentRole = "{{user.role}}";
             if (currentRole === 'user') {
-                alert('El usuario ya es User.');
+                Swal.fire({
+                    icon: 'info',
+                    title: 'El usuario ya es User.',
+                });
                 return;
             }
             await updateUserRole('{{user._id}}', 'user');
@@ -228,13 +238,20 @@
 
                 console.log('Respuesta del servidor:', data);
 
-                alert('¡El rol del usuario se ha actualizado correctamente a ' + data.role);
-
-                location.reload(true);
+                Swal.fire({
+                    icon: 'success',
+                    title: `¡El rol del usuario se ha actualizado correctamente a ${data.role}!`,
+                }).then(() => {
+                    location.reload(true);
+                });
 
             } catch (error) {
                 console.error('Error al cambiar el rol del usuario:', error);
-                alert(error.message);
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Error al cambiar el rol del usuario',
+                    text: error.message,
+                });
             }
         }
 
@@ -254,12 +271,20 @@
 
                 const data = await response.json();
 
-                alert('¡Los documentos se han subido correctamente!');
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Los documentos se han subido correctamente!',
+                }).then(() => {
+                    location.reload(true);
+                });
 
-                location.reload(true);
             } catch (error) {
                 console.error('Error al subir los documentos:', error);
-                alert('Error al subir los documentos. Por favor, inténtalo de nuevo más tarde.');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error al subir los documentos',
+                    text: 'Hubo un problema al intentar subir los documentos. Por favor, inténtelo de nuevo más tarde.',
+                });
             }
         });
     </script>
