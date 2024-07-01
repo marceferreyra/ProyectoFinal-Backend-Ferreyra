@@ -143,3 +143,12 @@ span {
     border-color: #000000 !important;
     color: #ffffff !important; 
 }
+
+/*alerts*/
+
+.swal2-x-mark-line-right, .swal2-x-mark-line-left,
+.swal2-success-line-tip, .swal2-success-line-long,
+.swal2-warning-icon .swal2-icon-content,
+.swal2-info-icon .swal2-icon-content {
+    font-size: 16px !important;
+}

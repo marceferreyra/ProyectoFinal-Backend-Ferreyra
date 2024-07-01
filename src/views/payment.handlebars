@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pago</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://js.stripe.com/v3/"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
 </head>
+
 <body>
     <nav class="navbar navbar-expand-lg navbar-custom">
         <div class="container">
@@ -18,8 +20,7 @@
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
                         <span class="navbar-text">
-                            ¡Bienvenido/a,
-                            {{#if user.first_name}}{{user.first_name}}{{else}}{{user.name}}{{/if}}!
+                            ¡Bienvenido/a, {{#if user.first_name}}{{user.first_name}}{{else}}{{user.name}}{{/if}}!
                         </span>
                     </li>
                 </ul>
@@ -41,21 +42,21 @@
     </nav>
     <div class="container mt-5">
         <h1 class="mb-4">Detalle del Pago</h1>
-        
+
         <div class="card mb-4">
             <div class="card-body">
                 <h5 class="card-title">Productos en tu Carrito</h5>
                 <ul class="list-group">
                     {{#each cart.products}}
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            {{this.product.title}}
-                            <span class="badge badge-primary badge-pill">{{this.quantity}}</span>
-                        </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{this.product.title}}
+                        <span class="badge badge-primary badge-pill">{{this.quantity}}</span>
+                    </li>
                     {{/each}}
                 </ul>
             </div>
             <div class="card-footer text-muted">
-                Total: ${{totalPrice}}
+                <strong>Total: ${{totalPrice}}</strong>
             </div>
         </div>
 
@@ -68,7 +69,7 @@
                 </div>
                 <div id="card-errors" role="alert"></div>
             </div>
-        
+
             <button class="btn btn-primary" id="submit-payment">
                 Pagar
             </button>
@@ -78,17 +79,18 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.all.min.js"></script>
+
     <script>
         const stripePublicKey = "{{stripePublicKey}}";
         const stripe = Stripe(stripePublicKey);
         const elements = stripe.elements();
 
         const card = elements.create('card');
-
         card.mount('#card-element');
 
-        card.addEventListener('change', ({ error }) => {
+        card.on('change', ({ error }) => {
             const displayError = document.getElementById('card-errors');
             if (error) {
                 displayError.textContent = error.message;
@@ -128,7 +130,6 @@
                 const paymentResult = await paymentResponse.json();
 
                 if (paymentResponse.ok) {
-
                     const purchaseResponse = await fetch(`/api/carts/{{cart._id}}/purchase`, {
                         method: 'POST',
                         headers: {
@@ -139,19 +140,36 @@
                     const purchaseResult = await purchaseResponse.json();
 
                     if (purchaseResponse.ok) {
-                        alert('Compra realizada con éxito');
+                        await Swal.fire({
+                            icon: 'success',
+                            title: 'Compra realizada con éxito',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
                         window.location.href = '/products';
                     } else {
-                        alert('Error en la compra: ' + purchaseResult.message);
+                        await Swal.fire({
+                            icon: 'error',
+                            title: 'Error en la compra',
+                            text: purchaseResult.message
+                        });
                     }
                 } else {
-                    alert('Error en el pago: ' + paymentResult.message);
+                    await Swal.fire({
+                        icon: 'error',
+                        title: 'Error en el pago',
+                        text: paymentResult.message
+                    });
                 }
             } catch (error) {
-                alert('Error en el pago: ' + error.message);
+                await Swal.fire({
+                    icon: 'error',
+                    title: 'Error en el pago',
+                    text: error.message
+                });
             }
         }
     </script>
 </body>
-</html>
 
+</html>
