@@ -86,3 +86,35 @@ label {
 .nav-link {
     font-weight: bold;
 }
+
+h2 {
+    margin-top: 50px;
+    margin-bottom: 50px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+}
+
+p {
+    font-family: 'Montserrat', sans-serif;
+    
+}
+
+span {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+    font-size: larger
+}
+
+/* buttons */
+
+.btn-primary {
+    font-weight: bold !important;
+    background-color: #638dd7 !important;
+    border-color: #007bff !important;
+}
+
+.btn-danger {
+    font-weight: bold !important;
+    background-color: #dc3545 !important;
+    border-color: #c9302c !important;
+}

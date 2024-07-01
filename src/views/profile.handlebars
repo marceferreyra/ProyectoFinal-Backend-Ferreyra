@@ -5,37 +5,111 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfil</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .profile-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-top: 50px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-image {
+            max-width: 150px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+
+        .btn-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 
 <body>
-    <h1>Perfil</h1>
-    <div id="profile">
-        <div id="profile-img"> 
-            {{#if user.documents}}
-                {{#each user.documents}}
-                    {{#if (eq this.name "profile")}}
-                        <img src="/uploads/profiles/{{this.fileName}}" alt="Profile Image" class="profile-image">
-                    {{/if}}
-                {{/each}}
-            {{/if}}
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <span class="navbar-text">
+                            ¡Bienvenido/a,
+                            {{#if user.first_name}}{{user.first_name}}{{else}}{{user.name}}{{/if}}!
+                        </span>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/products">Productos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/carts/{{user.cartId}}">Ir al carrito</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="logout-btn">Cerrar sesión</a>
+                    </li>
+                </ul>
+            </div>
         </div>
-        <div id="profile-greeting">
-            {{#if user.first_name}}
-                <p>Hola, {{user.first_name}}!</p>
+    </nav>
+
+    <div class="container profile-container">
+        <div class="text-center">
+            <h1>Perfil</h1>
+            <div>
+
+            </div>
+            <div id="profile-img">
+                {{#if user.documents}}
+                {{#each user.documents}}
+                {{#if (eq this.name "profile")}}
+                <img src="/uploads/profiles/{{this.fileName}}" alt="Profile Image" class="profile-image">
+                {{/if}}
+                {{/each}}
+                {{/if}}
+            </div>
+            <div id="profile-greeting">
+                {{#if user.first_name}}
+                <p> <strong> Hola, {{user.first_name}}!</strong></p>
+                {{else}}
+                <p> <strong> Hola, {{user.name}}!</p></strong>
+                {{/if}}
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="profile-info">
+            <h2>Información Personal</h2>
+            <p><strong>Nombre:</strong>
+                {{#if user.first_name}}{{user.first_name}}{{else}}{{user.name}}{{/if}}</p>
+            <p><strong>Apellido:</strong> {{user.last_name}}</p>
+            <p><strong>Edad:</strong> {{user.age}}</p>
+            <p><strong>Email:</strong> {{user.email}}</p>
+            <p><strong>Membresia:</strong> {{user.role}}</p>
+        </div>
+
+        <div class="btn-container">
+            {{#if isAdmin}}
+            <a href="/users" class="btn btn-warning">Administrar usuarios</a>
+            <a href="/realtimeproducts" class="btn btn-dark" id="modify-products-btn">Modificar productos</a>
+
             {{else}}
-                <p>Hola, {{user.name}}!</p>
+            <a href="#" class="btn btn-dark" id="modify-products-btn">Modificar productos</a>
+            <a href="/users/premium/{{user._id}}" class="btn btn-warning">Pasar a premium</a>
             {{/if}}
+
         </div>
     </div>
-
-    <h2>Tus datos</h2>
-    <p>Nombre: {{#if user.first_name}}{{user.first_name}}{{else}}{{user.name}}{{/if}}</p>
-    <p>Apellido: {{user.last_name}}</p>
-    <p>Edad: {{user.age}}</p>
-    <p>Email: {{user.email}}</p>
-
-    <a href="#" class="btn btn-danger" id="logout-btn">Cerrar sesión</a>
-    <a href="/current" class="btn btn-primary">Volver</a>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
@@ -57,6 +131,16 @@
                 }
             } catch (error) {
                 console.error('Error al cerrar sesión:', error);
+            }
+        });
+
+        document.getElementById('modify-products-btn').addEventListener('click', function (event) {
+            event.preventDefault();
+            const userRole = "{{user.role}}";
+            if (userRole !== 'premium' && userRole !== 'admin') {
+                alert('Necesitas ser premium para agregar un producto');
+            } else {
+                window.location.href = '/realtimeproducts';
             }
         });
     </script>

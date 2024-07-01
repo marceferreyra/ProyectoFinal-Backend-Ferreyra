@@ -221,7 +221,7 @@ viewsRouter.get('/reset-password', (req, res) => {
     res.render('reset-password');
 });
 
-viewsRouter.get('/profile',  async (req, res) => {
+viewsRouter.get('/profile', async (req, res) => {
     try {
         const userId = req.session.user._id;
         const user = await User.findById(userId);
@@ -231,6 +231,7 @@ viewsRouter.get('/profile',  async (req, res) => {
         }
 
         const userObject = user.toObject();
+        const isAdmin = userObject.role === 'admin';
 
         if (userObject.documents && userObject.documents.length > 0) {
             userObject.documents = userObject.documents.map(doc => ({
@@ -239,7 +240,12 @@ viewsRouter.get('/profile',  async (req, res) => {
             }));
         }
 
-        res.render('profile', { user: userObject });
+        if (isAdmin) {
+            const users = await User.find({}, { email: 1, _id: 0 });
+            res.render('profile', { user: userObject, isAdmin, users });
+        } else {
+            res.render('profile', { user: userObject, isAdmin });
+        }
     } catch (error) {
         res.status(500).json({ error: 'Error interno del servidor' });
     }
