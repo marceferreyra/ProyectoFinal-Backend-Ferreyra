@@ -5,9 +5,125 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat App</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f8f9fa;
+            padding-top: 60px;
+        }
+
+        .navbar-nav.ml-auto .nav-link {
+            color: #fff;
+        }
+
+        .navbar-nav.ml-auto .nav-link:hover {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        h2 {
+            margin-top: 50px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        #chat {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #messages {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #messages li {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+
+        #messages li:nth-child(even) {
+            background-color: #e9ecef;
+        }
+
+        #messageForm {
+            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        #messageForm input,
+        #messageForm button {
+            margin-bottom: 10px;
+            margin-right: 10px;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        #usernameButton {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        #usernameButton:hover {
+            background-color: #0056b3;
+        }
+
+        #messageInput {
+            flex-grow: 1;
+        }
+
+        #messageInput:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+    </style>
 </head>
 
 <body>
+    <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
+        <div class="container">
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <span class="navbar-text">
+                            ¡Bienvenido/a,
+                            {{#if user.first_name}}{{user.first_name}}{{else}}{{user.name}}{{/if}}!
+                        </span>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/products">Productos</a>
+                    </li>
+                    {{#unless isAdmin}}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/carts/{{user.cartId}}">Ir al carrito</a>
+                    </li>
+                    {{/unless}}
+                    <li class="nav-item">
+                        <a class="nav-link" id="logout-btn" href="#">Cerrar sesión</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
     <h2 class="mt-4">Chat</h2>
     <div id="chat">
         <ul id="messages">
@@ -17,13 +133,15 @@
         </ul>
         <form id="messageForm">
             <input id="usernameInput" autocomplete="off" placeholder="Ingresa tu nombre" />
-            <button id="usernameButton" type="button">Ingresar</button><br>
+            <button id="usernameButton" type="button" class="btn btn-secondary">Ingresar</button><br>
             <input id="messageInput" autocomplete="off" placeholder="Ingresa tu mensaje" />
-            <button type="submit">Enviar</button>
+            <button type="submit" class="btn btn-primary">Enviar</button>
         </form>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
         const socket = io();
         let username;
@@ -42,7 +160,12 @@
             const inputMessage = document.getElementById('messageInput');
 
             if (!username) {
-                alert('Por favor, ingresa tu nombre antes de enviar un mensaje.');
+                Swal.fire({
+                    icon: 'warning',
+                    title: '¡Atención!',
+                    text: 'Por favor, ingresa tu nombre antes de enviar un mensaje.',
+                    confirmButtonText: 'OK'
+                });
                 return;
             }
 
