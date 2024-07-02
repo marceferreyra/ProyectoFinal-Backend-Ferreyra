@@ -104,6 +104,13 @@ const hbs = exphbs.create({
             } else {
                 return `${user.first_name} ${user.last_name}`;
             }
+        },
+        range: function (start, end) {
+            let array = [];
+            for (let i = start; i <= end; i++) {
+                array.push(i);
+            }
+            return array;
         }
     }
 });

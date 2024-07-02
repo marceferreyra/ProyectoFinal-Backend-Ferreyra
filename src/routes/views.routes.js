@@ -132,8 +132,27 @@ viewsRouter.get('/products', async (req, res) => {
         const plainProducts = products.map(product => product.toObject({ getters: true }));
         const user = req.session.user || null;
         const cartId = user ? user.cartId : null;
+        const { totalPages, page, hasPrevPage, hasNextPage, prevPage, nextPage } = productsResult;
+        const limit = req.query.limit || 9;
+        const category = req.query.category || '';
+        const status = req.query.status || '';
+        const owner = req.query.owner || '';
+        const sort = req.query.sort || '';
 
-        res.render('products', { products: plainProducts, user, cartId, isAdmin: user ? user.role === 'admin' : false });
+        const createLink = (pageNum) => `/products?page=${pageNum}&limit=${limit}&category=${category}&status=${status}&owner=${owner}&sort=${sort}`;
+
+        res.render('products', { 
+            products: plainProducts, 
+            user, 
+            cartId, 
+            isAdmin: user ? user.role === 'admin' : false, 
+            totalPages, 
+            page, 
+            hasPrevPage, 
+            hasNextPage, 
+            prevLink: hasPrevPage ? createLink(prevPage) : null, 
+            nextLink: hasNextPage ? createLink(nextPage) : null 
+        });
     } catch (error) {
         req.logger.error(error);
         res.status(500).send('Error interno del servidor');

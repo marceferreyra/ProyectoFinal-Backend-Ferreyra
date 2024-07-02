@@ -113,8 +113,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-custom">
         <div class="container">
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
@@ -157,7 +156,6 @@
         <h2>Lista de productos</h2>
     </div>
 
-
     {{#if products.length}}
     <div class="cards-container">
         {{#each products}}
@@ -188,10 +186,34 @@
         </div>
         {{/each}}
     </div>
+
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center mt-4">
+            {{#if hasPrevPage}}
+            <li class="page-item">
+                <a class="page-link" href="{{prevLink}}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {{/if}}
+            {{#each (range 1 totalPages)}}
+            <li class="page-item {{#if (eq ../page this)}}active{{/if}}">
+                <a class="page-link" href="/products?page={{this}}">{{this}}</a>
+            </li>
+            {{/each}}
+            {{#if hasNextPage}}
+            <li class="page-item">
+                <a class="page-link" href="{{nextLink}}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            {{/if}}
+        </ul>
+    </nav>
+
     {{else}}
     <p class="mt-4">No hay productos disponibles.</p>
     {{/if}}
-    </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
