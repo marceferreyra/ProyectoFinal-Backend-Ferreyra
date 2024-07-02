@@ -40,7 +40,7 @@ class SessionService {
             }
 
             await user.save();
-            res.redirect('/products');
+            res.redirect('/products')
         } catch (error) {
             res.status(500).json({ error: 'Error interno del servidor' });
         }

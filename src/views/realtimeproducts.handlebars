@@ -194,7 +194,7 @@
     {{#if products.length}}
     <div class="cards-container">
         {{#each products}}
-        <div class="card" id="{{this.id}}">
+        <div class="card" id="product-{{this.id}}">
             <div id="carousel-{{this.id}}" class="carousel slide" data-ride="carousel">
                 <div class="carousel-inner">
                     {{#each this.thumbnails}}
@@ -253,7 +253,7 @@
         socket.on('updateProducts', (updatedProduct) => {
             console.log('Productos actualizados:', updatedProduct);
 
-            const cardDeck = document.querySelector('.card-deck');
+            const cardDeck = document.querySelector('.cards-container');
 
             if (updatedProduct.deletedProductId) {
                 const deletedProductId = updatedProduct.deletedProductId;
