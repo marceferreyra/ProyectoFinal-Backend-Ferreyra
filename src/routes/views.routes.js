@@ -130,10 +130,10 @@ viewsRouter.get('/products', async (req, res) => {
         const productsResult = await productService.getProducts(req);
         const products = productsResult.docs;
         const plainProducts = products.map(product => product.toObject({ getters: true }));
-        const user = req.session.user;
+        const user = req.session.user || null;
         const cartId = user ? user.cartId : null;
 
-        res.render('products', { products: plainProducts, user, cartId, isAdmin: user.role === 'admin' });
+        res.render('products', { products: plainProducts, user, cartId, isAdmin: user ? user.role === 'admin' : false });
     } catch (error) {
         req.logger.error(error);
         res.status(500).send('Error interno del servidor');
