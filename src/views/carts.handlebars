@@ -101,6 +101,11 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/profile">Ir al perfil</a>
                     </li>
+                   {{#unless isAdmin}}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/chat">Chat</a>
+                    </li>
+                    {{/unless}}
                     <li class="nav-item">
                         <a class="nav-link" id="logout-btn" href="#">Cerrar sesión</a>
                     </li>
