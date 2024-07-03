@@ -84,9 +84,10 @@ class ProductService {
             return { message: `Producto ${title} agregado correctamente.`, product: newProduct };
         } catch (error) {
             req.logger.error('Error al agregar el producto:', error);
-            return { error: error.message };
+            throw error;
         }
     }
+    
 
     async deleteProduct(id, req) {
         try {

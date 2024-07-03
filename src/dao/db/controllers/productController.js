@@ -67,8 +67,15 @@ exports.getProductById = async (req, res) => {
 };
 
 exports.addProduct = async (req, res) => {
-    const { title, description, price, thumbnails, code, stock, status, category } = req.body;
-    const owner = req.session.user ? req.session.user._id : null; 
+    const { title, description, price, code, stock, category, status } = req.body;
+    let thumbnails = [];
+
+    if (req.files) {
+        thumbnails = req.files.map(file => `/images/${file.filename}`);
+    } else if (req.body.thumbnails) {
+        thumbnails = req.body.thumbnails;
+    }
+    const owner = req.session.user ? req.session.user._id : null;
 
     try {
         const result = await productService.addProduct(title, description, price, thumbnails, code, stock, status, category, owner, req);
@@ -97,7 +104,7 @@ exports.deleteProduct = async (req, res) => {
 
     try {
         const product = await productService.getProductById(productId, req);
-        
+
         if (!product) {
             return res.status(404).json({ error: `No se encontró ningún producto con el ID ${productId}` });
         }

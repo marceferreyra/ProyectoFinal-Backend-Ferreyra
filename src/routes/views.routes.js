@@ -181,7 +181,7 @@ viewsRouter.get('/products/:id', async (req, res) => {
 
 viewsRouter.get('/realtimeproducts', authorize, async (req, res) => {
     try {
-        const { limit = 10, page = 1, category, status, owner, sort } = req.query;
+        const { limit = 9, page = 1, category, status, owner, sort } = req.query;
         const filters = {};
 
         if (category) filters.category = category;
