@@ -239,6 +239,10 @@
 
     <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.all.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 
     <script>
         document.getElementById('logout-btn').addEventListener('click', async function (event) {
@@ -395,6 +399,10 @@
                     text: 'Error al procesar la solicitud. Por favor, intenta de nuevo.',
                 });
             }
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var carousels = document.querySelectorAll('.carousel');;
         });
 
     </script>
