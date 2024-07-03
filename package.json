@@ -34,7 +34,7 @@
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "node index.js",
     "test": "mocha 'test/**/*.js'"
   },
   "keywords": [],
