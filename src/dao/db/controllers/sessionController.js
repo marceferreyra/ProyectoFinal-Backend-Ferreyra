@@ -75,14 +75,6 @@ exports.getProfile = async (req, res) => {
     }
 };
 
-exports.handle404 = async (req, res) => {
-    try {
-        await sessionService.handle404(req, res);
-    } catch (error) {
-        res.status(500).json({ error: 'Error interno del servidor' });
-    }
-};
-
 exports.sendPasswordResetEmail = async (req, res) => {
     try {
         await sessionService.sendPasswordResetEmail(req, res);

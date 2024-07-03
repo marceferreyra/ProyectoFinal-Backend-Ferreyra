@@ -17,6 +17,5 @@ sessionRouter.get('/profile', sessionController.isAuthenticated, sessionControll
 sessionRouter.post('/forgot-password', sessionController.sendPasswordResetEmail);
 sessionRouter.post('/reset-password', sessionController.resetPassword);
 
-sessionRouter.get('*', sessionController.handle404);
 
 module.exports = sessionRouter;

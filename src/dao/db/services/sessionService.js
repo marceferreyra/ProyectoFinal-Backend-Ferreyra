@@ -161,10 +161,6 @@ class SessionService {
         }
     }
 
-    async handle404(req, res) {
-        res.status(404).json({ message: 'Recurso no encontrado' });
-    }
-
     async sendPasswordResetEmail(req, res) {
         try {
             const { email } = req.body;
